@@ -168,8 +168,8 @@ else
 * Création du fichier de config.php
 */
 
-$file_config_copy = "config.inc.php";
-$file_config_final = "Applications/core/conf/config.php";
+$file_config_copy = __DIR__."/config.inc.php";
+$file_config_final = __DIR__."/Applications/core/conf/config.php";
 $buffer = file_get_contents($file_config_copy);
 
 $variables = array(
@@ -192,8 +192,8 @@ fclose($file);
 * Création du fichier description.json
 */
 
-$file_desc_copy = "description.json.inc";
-$file_desc_final = "Applications/core/conf/description.json";
+$file_desc_copy = __DIR__."/description.json.inc";
+$file_desc_final = __DIR__."/Applications/core/conf/description.json";
 $buffer = json_decode(file_get_contents($file_desc_copy), true);
 $buffer['domain'] = $_SERVER['SERVER_NAME'];
 $buffer['administrator'] = 'newsmaster@'.$_SERVER['SERVER_NAME'];

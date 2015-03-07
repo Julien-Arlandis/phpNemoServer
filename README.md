@@ -38,8 +38,9 @@ Installation
 Copy phpNemoServer.tar.gz in your website.
 tar xzvf phpNemoServer.tar.gz
 
-Go to http://yourserver/NemoServer/install.php .
+Go to http://yourserver/NemoServer/install.php.
 Delete install.php file.
+Copy .htaccess at the root folder of the site.
 Configure your feed in Applications/core/conf/description.json, do not forget to set actif=1 for active feeds.
 Greats :)
 
