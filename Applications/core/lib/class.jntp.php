@@ -415,12 +415,11 @@ class JNTP
 				}
 			}
 
-			//if(!$startFeed || in_array($server, $this->packet{'Route'})) continue;
+			if(!$startFeed || in_array($server, $this->packet{'Route'})) continue;
 			$jid = str_replace("'","\'",$this->packet{'Jid'});
 			$datatype = str_replace("'","\'",$this->packet{'Data'}{'DataType'});
 			$dataid = str_replace("'","\'",$this->packet{'Data'}{'DataID'});
 			$cmd = PHP_PATH.' '.__DIR__.'/../../../connector/'.$this->config{'feed'}{$server}{'type'}[1].' '.$server." '$jid' '$datatype' '$dataid'";
-echo $cmd;
 			shell_exec($cmd. ' >> /dev/null &');
 		}
 	}
