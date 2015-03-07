@@ -24,7 +24,7 @@ This file is part of PhpNemoServer.
 require_once("Applications/core/conf/config.php");
 require_once("Applications/core/lib/class.jntp.php");
 
-if( file_exists( $_SERVER{'DOCUMENT_ROOT'} . '/NemoServer/install.php'))
+if( file_exists( __DIR__ . '/install.php'))
 {
 	die( '500 You must delete install.php file to continue' );
 }
