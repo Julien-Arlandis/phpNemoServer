@@ -43,12 +43,10 @@ if($this->param{'Data'})
 elseif($this->param{'Packet'})
 {
 	$this->packet = $this->param{'Packet'};
-
 	$this->loadDataType();
-	$feeds = $this->getFeeds();
 
 	// Vérifie si le feed est autorisé
-	if( $feeds{$this->param{'From'}}{'actif'} == 1 && in_array($_SERVER['REMOTE_ADDR'], $this->getIPs() ) )
+	if( $this->config['feed'][$this->param{'From'}]['actif'] == 1 && in_array($_SERVER['REMOTE_ADDR'], $this->getIPs() ) )
 	{
 		// Vérifie si le paquet est déjà dans la base
 		if(!$this->isStorePacket($this->packet{'Jid'}) )
@@ -82,14 +80,14 @@ elseif($this->param{'Packet'})
 	else
 	{
 		$this->reponse{'code'} = "500";
-		$this->reponse{'body'} = $_SERVER['REMOTE_ADDR']." not autorised to feed";
+		$this->reponse{'body'} = $_SERVER['REMOTE_ADDR']." not autorised to feed for ".$this->param{'From'};
 		break;
 	}
 }
 elseif($this->param{'Propose'})
 {
 	// Vérifie si le feed est autorisé
-	if( $this->param{'From'} == 'julien' || ($this->config['feed'][$this->param{'From'}]['actif'] == 1 && in_array($_SERVER['REMOTE_ADDR'], $this->getIPs() ) ) )
+	if( $this->config['feed'][$this->param{'From'}]['actif'] == 1 && in_array($_SERVER['REMOTE_ADDR'], $this->getIPs() ) )
 	{
 		for($i=0; $i<count($this->param{'Propose'}); $i++)
 		{
