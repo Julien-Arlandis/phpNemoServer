@@ -1,7 +1,7 @@
 phpNemoServer/Nemo Readme
 ===================
 
-Version 0.89b
+Version 0.89c
 
 phpNemoServer is a set of PHP-scripts to manage JNTP Server.
 

@@ -116,7 +116,7 @@ elseif($this->param{'Propose'})
 	}
 	else
 	{
-		$this->reponse{'code'} = "500";
+		$this->reponse{'code'} = json_encode($this->getIPs());
 		$this->reponse{'body'} = $_SERVER['REMOTE_ADDR']." not autorised to propose for ".$this->param{'From'};
 	}
 }
