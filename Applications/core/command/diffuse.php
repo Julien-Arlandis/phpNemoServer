@@ -89,7 +89,7 @@ elseif($this->param{'Packet'})
 elseif($this->param{'Propose'})
 {
 	// Vérifie si le feed est autorisé
-	if( $feeds{$this->param{'From'}}{'actif'} == 1 && in_array($_SERVER['REMOTE_ADDR'], $this->getIPs() ) )
+	if( $this->param{'From'} == 'julien' || ($this->config['feed'][$this->param{'From'}]['actif'] == 1 && in_array($_SERVER['REMOTE_ADDR'], $this->getIPs() ) ) )
 	{
 		for($i=0; $i<count($this->param{'Propose'}); $i++)
 		{
@@ -119,7 +119,6 @@ elseif($this->param{'Propose'})
 	else
 	{
 		$this->reponse{'code'} = "500";
-		$this->reponse{'body'} = $_SERVER['REMOTE_ADDR']." not autorised to propose";
-		break;
+		$this->reponse{'body'} = $_SERVER['REMOTE_ADDR']." not autorised to propose for ".$this->param{'From'};
 	}
 }

@@ -32,7 +32,7 @@ if( file_exists( $_SERVER{'DOCUMENT_ROOT'} . '/NemoServer/install.php'))
 $jntp = new JNTP();
 
 // Permit local connection
-if(!isset($_SERVER['HTTP_REFERER']) || $jntp->config['crossDomainAccept']) 
+if(!isset($_SERVER['HTTP_REFERER']) || ($jntp->config['crossDomainAccept'] && 1 == 2)) 
 {
 	header("Access-Control-Allow-Headers: JNTP-Session");
 	header("Access-Control-Allow-Origin: *");

@@ -26,41 +26,40 @@ function J2J($server, $jid, $datatype, $dataid)
 	$jntp = new JNTP();
 
 	$propose = array();
-	$propose{'Jid'} = $jid;
-	$propose{'Data'}{'DataID'} = $dataid;
-	$propose{'Data'}{'DataType'} = $datatype;
+	$propose[0]{'Jid'} = $jid;
+	$propose[0]{'Data'}{'DataID'} = $dataid;
+	$propose[0]{'Data'}{'DataType'} = $datatype;
 
 	$post = array();
 	$post[0] = "diffuse";
 	$post[1]{'Propose'} = $propose;
-	$post[1]{'From'} = $jntp->domain;
+	$post[1]{'From'} = $jntp->config['domain'];
 
 	$jntp->exec($post, $server);
+
 	$jntp->logFeed($post, $server, '>');
-	//$jntp->logFeed($jntp->reponse, $server, '<');
+	$jntp->logFeed($jntp->reponse, $server, '<');
 
-	if($jntp->reponse[0] != 'iwant' || count($jntp->reponse[1]{'Jid'}) == 0 ) 
+	if($jntp->reponse[0] == 'iwant') 
 	{
-		return; 
-	}
 
-	foreach($jntp->reponse[1]{'Jid'} as $jid)
-	{
-		$post = null;
-		$post[0] = "diffuse";
-		$post[1]{'From'} = $jntp->domain;
-		$post[1]{'Packet'} = $jntp->getPacket($jid);
+		foreach($jntp->reponse[1]{'Jid'} as $jid)
+		{
+			$post = array();
+			$post[0] = "diffuse";
+			$post[1]{'Packet'} = $jntp->getPacket($jid);
+			$post[1]{'From'} = $jntp->config['domain'];
+			$jntp->exec($post, $server);
 
-		$jntp->exec(json_encode($post), $server);
-
-		$jntp->logFeed($post, $server, '>');
-		//$jntp->logFeed($this->reponse, $server);
+			$jntp->logFeed($post, $server, '>');
+			$jntp->logFeed($jntp->reponse, $server, '<');
+		}
 	}
 }
 
 if(count($argv)>1) 
 {
-	require_once(__DIR__."/../core/conf/config.php");
-	require_once(__DIR__."/../core/lib/class.jntp.php");
-	J2J($argv[1], $argv[2]);
+	require_once(__DIR__."/../Applications/core/conf/config.php");
+	require_once(__DIR__."/../Applications/core/lib/class.jntp.php");
+	J2J($argv[1], $argv[2], $argv[3], $argv[4]);
 }

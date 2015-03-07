@@ -59,6 +59,8 @@ class JNTP
 	{
 		if($server)
 		{
+			$post = is_array($post) ? json_encode($post) : $post;
+
 			$options = array(
 				CURLOPT_URL            => "http://".$server."/jntp/",
 				CURLOPT_RETURNTRANSFER => true,
@@ -383,7 +385,6 @@ class JNTP
 		foreach($this->config{'feed'} as $server => $value)
 		{
 			if(!$this->config{'feed'}{$server}{'actif'}) continue;
-			
 			$startFeed = false;
 			foreach($this->config{'feed'}{$server}{'match'} as $key => $match)
 			{
@@ -414,11 +415,12 @@ class JNTP
 				}
 			}
 
-			if(!$startFeed || in_array($server, $this->packet{'Route'})) continue;
+			//if(!$startFeed || in_array($server, $this->packet{'Route'})) continue;
 			$jid = str_replace("'","\'",$this->packet{'Jid'});
 			$datatype = str_replace("'","\'",$this->packet{'Data'}{'DataType'});
 			$dataid = str_replace("'","\'",$this->packet{'Data'}{'DataID'});
 			$cmd = PHP_PATH.' '.__DIR__.'/../../../connector/'.$this->config{'feed'}{$server}{'type'}[1].' '.$server." '$jid' '$datatype' '$dataid'";
+echo $cmd;
 			shell_exec($cmd. ' >> /dev/null &');
 		}
 	}
@@ -446,6 +448,7 @@ class JNTP
 	{
 		if(ACTIVE_LOG)
 		{
+			$post = is_array($post) ? json_encode($post) : $post;
 			$handle = fopen(LOG_FEED_PATH, 'a');
 			$put = '['.date(DATE_RFC822).'] ['.$server.'] '.$direct.' '.rtrim(mb_strimwidth($post, 0, 300))."\n";
 			fwrite($handle, $put);
