@@ -1,0 +1,62 @@
+<?php
+
+/**
+Copyright © 2013-2014 Julien Arlandis
+    @author : Julien Arlandis <julien.arlandis_at_gmail.com>
+    @Licence : http://www.gnu.org/licenses/agpl-3.0.txt
+
+This file is part of PhpNemoServer.
+
+    PhpNemoServer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    PhpNemoServer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with PhpNemoServer.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+require_once("Applications/core/conf/config.php");
+require_once("Applications/core/lib/class.jntp.php");
+
+if( file_exists( $_SERVER{'DOCUMENT_ROOT'} . '/NemoServer/install.php'))
+{
+	die( '500 You must delete install.php file to continue' );
+}
+
+$jntp = new JNTP();
+
+// Permit local connection
+if(!isset($_SERVER['HTTP_REFERER']) || $jntp->config['crossDomainAccept']) 
+{
+	header("Access-Control-Allow-Headers: JNTP-Session");
+	header("Access-Control-Allow-Origin: *");
+	$headers = apache_request_headers();
+	if(isset( $headers['JNTP-Session'] )) 
+	{
+		$_COOKIE['JNTP-Session'] = $headers['JNTP-Session'];
+	}
+}
+
+$post = file_get_contents("php://input");
+
+if($resource = isset($_GET['resource']) ? $_GET['resource'] : false) 
+{
+	die( $jntp->getResource($resource) );
+}
+
+if($post === '') 
+{
+	$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == true) ? 'https' : 'http';
+	die( "200 ".$protocol.'://'.$jntp->config{'domain'}.'/jntp/ - PhpNemoServer/'.$jntp->config{'serverVersion'}.' - JNTP Service Ready - '.$jntp->config{'administrator'}.' - Type ["help"] for help' );
+}
+
+$jntp->log($post);
+$jntp->exec($post);
+$jntp->send();
+

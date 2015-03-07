@@ -1,0 +1,62 @@
+{
+	"domain": "news.exemple.net",
+	"organization": "Nemoweb",
+	"publicServer": ["news2.nemoweb.net"],
+	"serverVersion": "0.89b",
+	"protocolVersion": "0.19.2",
+	"administrator": "newsmaster@exemple.net",
+	"maxDataLength": 1000,
+	"crossDomainAccept": true,
+	"activeInscription": true,
+	"application": {
+		"core": {
+			"description": "JNTP Server core",
+			"commands": ["diffuse","get","auth","whoami","quit"]
+		},
+		"NemoNetwork": {
+			"description": "Manage a server of newsgroups for Nemo network",
+			"commands": ["getNewsgroup","set","delete","ban","synchronizeNewsgroup","inscription","help","changePassword"],
+			"maxCrosspost": 5,
+			"maxFU2": 5,
+			"maxCrosspostWithoutFU2": 3
+		}
+	},
+	"DataType": {
+		"ProtoData": {
+			"application": "core",
+			"filter": ["Jid", "ID", "Data.DataType", "Data.DataID", "Data.InjectionDate", "Data.Protocol"]
+		},
+		"Article": {
+			"application": "NemoNetwork",
+			"filter": ["Jid", "ID", "Data.Newsgroups", "Data.UserAgent", "Data.FromName", "Data.FromMail", "Data.Subject", "Data.ThreadID", "Data.UserID", "Data.ReferenceUserID"]
+		},
+		"ListGroup": {
+			"application": "NemoNetwork",
+			"filter": ["Jid", "ID", "Data.Newsgroups", "Data.Hierarchy"]
+		},
+		"Like": {
+			"application": "NemoNetwork",
+			"filter": ["Jid", "ID", "Data.Newsgroups", "Data.JidLike"]
+		}
+	},
+	"feed": {
+		"news.exemple2.net": {
+			"actif":0,
+			"type": ["JNTP", "J2J.php"],
+			"match": {
+				"Data.DataType": ["*"],
+				"Data.Newsgroups": ["*"]
+			},
+			"mail":"newsmaster@exemple2.net"
+		},
+		"nntpserver.net": {
+			"actif":0,
+			"type": ["Gateway", ""],
+			"match": {
+				"Data.DataType": ["Article"],
+				"Data.Newsgroups": ["fr.*","nemo.*"]
+			},
+			"mail":"newsmaster@nntpserver.net"
+		}
+	}
+}
