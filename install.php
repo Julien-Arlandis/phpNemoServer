@@ -21,7 +21,7 @@ This file is part of PhpNemoServer.
     along with PhpNemoServer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-$server_version = '0.89c';
+$server_version = '0.89d';
 $config = array(
     "private_key_bits" => 1024,
     "private_key_type" => OPENSSL_KEYTYPE_RSA,
@@ -71,7 +71,7 @@ if (!isset($_POST['action']) )
 <html>
 <head>
 <title>Installation de PHP Nemo Server <?=$server_version?></title>
-<script src="../core/jquery/jquery-2.1.1.min.js"></script>
+<script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
 <style>
 
 textarea, .champ, input {
@@ -169,7 +169,7 @@ else
 */
 
 $file_config_copy = __DIR__."/config.inc.php";
-$file_config_final = __DIR__."/Applications/core/conf/config.php";
+$file_config_final = __DIR__."/conf/config.php";
 $buffer = file_get_contents($file_config_copy);
 
 $variables = array(
@@ -193,7 +193,7 @@ fclose($file);
 */
 
 $file_desc_copy = __DIR__."/description.json.inc";
-$file_desc_final = __DIR__."/Applications/core/conf/description.json";
+$file_desc_final = __DIR__."/conf/description.json";
 $buffer = json_decode(file_get_contents($file_desc_copy), true);
 $buffer['domain'] = $_SERVER['SERVER_NAME'];
 $buffer['administrator'] = 'newsmaster@'.$_SERVER['SERVER_NAME'];
@@ -224,6 +224,7 @@ if(isset($_POST['DEL_DB']))
 if(isset($_POST['ADD_ADMIN']))
 {
 	$hashkey = (string)rand(100000000000, 99999999999999);
+	$session = $hashkey = (string)rand(100000000000, 99999999999999);
 	$checksum = sha1(uniqid());
 	$password_crypt = sha1($checksum.$_POST['PASSWORD']);
 	$date = date("Y-m-d").'T'.date("H:i:s").'Z';
@@ -235,14 +236,15 @@ if(isset($_POST['ADD_ADMIN']))
 		array("new" => true, "upsert"=>true)
 	);
 	$userid = $res['seq'];
-	$user = array('UserID' => $userid, 'user' => $_POST['USER'], 'email' => $_POST['EMAIL'], 'password' => $password_crypt, 'privilege' => 'admin', 'hashkey' => $hashkey, 'date' => $date, 'checksum' => $checksum);
+	$user = array('UserID' => $userid, 'user' => $_POST['USER'], 'email' => $_POST['EMAIL'], 'password' => $password_crypt, 'privilege' => 'admin', 'hashkey' => $hashkey, 'date' => $date, 'checksum' => $checksum, 'Session'=>$session);
 
 	$jntp->mongo->user->insert($user);
 }
+
 /*
 * Synchronisation des groupes
 */
-
+$jntp->privilege = 'admin';
 $jntp->exec('["synchronizeNewsgroup"]');
 
 }
@@ -260,7 +262,7 @@ Installation de PHP Nemo Server (version <?=$server_version?>) terminée. La bas
 <p>
 Vous devez supprimer le fichier install.php pour continuer.
 <p>
-Vous pouvez désormais configurez les feeds dans le fichier NemoServer/applications/core/conf/description.json.
+Vous pouvez désormais configurez les feeds dans le fichier conf/description.json.
 
 </body>
 </html>

@@ -1,6 +1,5 @@
 <?php
-require_once("../core/conf/config.php");
-require_once("../core/lib/class.jntp.php");
+require_once(__DIR__."/../core/lib/class.jntp.php");
 
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 $check = isset($_GET['check']) ? $_GET['check'] : '';

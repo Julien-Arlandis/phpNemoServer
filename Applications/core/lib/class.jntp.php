@@ -40,10 +40,11 @@ class JNTP
 	// Constructeur
 	function __construct()
 	{
+		require_once(__DIR__."/../../../conf/config.php");
 		date_default_timezone_set('UTC');
 		$m = new MongoClient();
 		$this->mongo = $m->selectDB(DB_NAME);
-		$this->config = json_decode(file_get_contents(__DIR__.'/../conf/description.json'),true);
+		$this->config = json_decode(file_get_contents(__DIR__.'/../../../conf/description.json'),true);
 		$this->maxDataLength = $this->config['maxDataLength'];
 		foreach($this->config['application'] as $application => $content)
 		{
@@ -160,7 +161,7 @@ class JNTP
 		{
 			$datatype = 'ProtoData';
 		}
-		require_once(__DIR__.'/../../'.$this->config{'DataType'}{$datatype}{'application'}.'/DataType/'.$datatype.'/'.$datatype.'.php');
+		require_once(__DIR__.'/../../../DataType/'.$datatype.'/'.$datatype.'.php');
 		$this->datatype = new DataType();
 		return $isdatatype;
 	}
@@ -187,6 +188,7 @@ class JNTP
 	function setSession()
 	{
 		$session = $_COOKIE["JNTP-Session"];
+
 		if(!$session)
 		{
 			$headers = getallheaders();

@@ -15,27 +15,27 @@
 		},
 		"NemoNetwork": {
 			"description": "Manage a server of newsgroups for Nemo network",
-			"commands": ["getNewsgroup","set","delete","ban","synchronizeNewsgroup","inscription","help","changePassword"],
+			"commands": ["getNewsgroup","set","inscription","help","changePassword"],
 			"maxCrosspost": 5,
 			"maxFU2": 5,
 			"maxCrosspostWithoutFU2": 3
+		},
+		"NemoAdmin": {
+			"description": "Administration of Nemo network",
+			"commands": ["delete","ban","synchronizeNewsgroup"]
 		}
 	},
 	"DataType": {
 		"ProtoData": {
-			"application": "core",
 			"filter": ["Jid", "ID", "Data.DataType", "Data.DataID", "Data.InjectionDate", "Data.Protocol"]
 		},
 		"Article": {
-			"application": "NemoNetwork",
 			"filter": ["Jid", "ID", "Data.Newsgroups", "Data.UserAgent", "Data.FromName", "Data.FromMail", "Data.Subject", "Data.ThreadID", "Data.UserID", "Data.ReferenceUserID"]
 		},
 		"ListGroup": {
-			"application": "NemoNetwork",
 			"filter": ["Jid", "ID", "Data.Newsgroups", "Data.Hierarchy"]
 		},
 		"Like": {
-			"application": "NemoNetwork",
 			"filter": ["Jid", "ID", "Data.Newsgroups", "Data.JidLike"]
 		}
 	},

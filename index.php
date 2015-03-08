@@ -21,8 +21,7 @@ This file is part of PhpNemoServer.
     along with PhpNemoServer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-require_once("Applications/core/conf/config.php");
-require_once("Applications/core/lib/class.jntp.php");
+require_once(__DIR__."/Applications/core/lib/class.jntp.php");
 
 if( file_exists( __DIR__ . '/install.php'))
 {

@@ -2,7 +2,7 @@
 
 function mailRecupPassword($email, $userid, $check, $organization, $administrator, $domain)
 {
-	require_once(__DIR__.'/../lib/class.phpmailer.php');
+	require_once(__DIR__.'/../../core/lib/class.phpmailer.php');
 	$ObjMail = new PHPMailer();
 	$url = "http://".$domain."/NemoServer/Applications/NemoNetwork/account.php?action=changepassword&amp;userid=".$userid."&amp;check=".$check;
 	$message = "
