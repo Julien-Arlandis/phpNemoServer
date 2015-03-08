@@ -95,14 +95,14 @@ elseif($this->param{'Propose'})
 			$res = array();
 			if( !isset($pack{'Data'}{'DataID'}) || $pack{'Jid'} == $pack{'Data'}{'DataID'} )
 			{
-				if( $this->isStorePacket( array('Jid' => $pack{'Jid'}) ) )
+				if( !$this->isStorePacket( array('Jid' => $pack{'Jid'}) ) )
 				{
 					array_push($res, $pack{'Jid'});
 				}
 			}
 			else
 			{
-				if( $this->isStorePacket( array('Data.DataID'=>$pack{'Data'}{'DataID'}, 'Data.DataType'=>$pack{'Data'}{'DataType'} ) ) )
+				if( !$this->isStorePacket( array('Data.DataID'=>$pack{'Data'}{'DataID'}, 'Data.DataType'=>$pack{'Data'}{'DataType'} ) ) )
 				{
 					array_push($res, $pack{'Jid'});
 				}

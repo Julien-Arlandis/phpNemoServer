@@ -296,7 +296,8 @@ class JNTP
 	// Vérifie si un packet d'un Jid donné est stocké dans la base
 	function isStorePacket( $query )
 	{
-		return ($this->mongo->packet->find($query)->count() > 0 ) ? true : false;
+		$bool = ($this->mongo->packet->find( $query )->count() > 0 ) ? true : false;
+		return $bool;
 	}
 
 	// Retourne la ressource d'un packet requêtée au format URI ex : http://[server]/jntp/[Jid]/Data/FromName
