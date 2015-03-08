@@ -48,8 +48,34 @@ elseif($this->param{'Packet'})
 	// Vérifie si le feed est autorisé
 	if( $this->config['feed'][$this->param{'From'}]['actif'] == 1 && in_array($_SERVER['REMOTE_ADDR'], $this->getIPs() ) )
 	{
+		$want = false;
 		// Vérifie si le paquet est déjà dans la base
-		if(!$this->isStorePacket(  array('Jid'=>$this->packet{'Jid'}) ) )
+		if( !isset($this->packet{'Data'}{'DataID'}) || $this->packet{'Jid'} == $this->packet{'Data'}{'DataID'} )
+		{
+			if( !$this->isStorePacket( array('Jid' => $this->packet{'Jid'}) ) )
+			{
+				$want = true;
+			}
+			else
+			{
+				$this->reponse{'code'} = "300";
+				$this->reponse{'body'} = 'Jid ' . $this->packet{'Jid'} . " already inserted";
+			}
+		}
+		else
+		{
+			if( !$this->isStorePacket( array('Data.DataID'=>$this->packet{'Data'}{'DataID'}, 'Data.DataType'=>$this->packet{'Data'}{'DataType'} ) ) )
+			{
+				$want = true;
+			}
+			else
+			{
+				$this->reponse{'code'} = "300";
+				$this->reponse{'body'} = $this->packet{'Data'}{'DataType'} .':'. $this->packet{'Data'}{'DataID'} . " already inserted";
+			}
+		}
+
+		if( $want )
 		{
 			if( $this->isValidPacket() )
 			{
@@ -73,7 +99,7 @@ elseif($this->param{'Packet'})
 		}
 		else
 		{
-			$this->reponse{'code'} = "200";
+			$this->reponse{'code'} = "300";
 			$this->reponse{'body'} = $this->packet{'Jid'} . " already inserted";
 		}
 	}
