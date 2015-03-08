@@ -21,7 +21,7 @@ This file is part of PhpNemoServer.
     along with PhpNemoServer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-function J2J($server, $jid, $datatype, $dataid) 
+function J2J($server, $jid, $dataid, $datatype)
 {
 	$jntp = new JNTP();
 

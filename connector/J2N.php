@@ -21,14 +21,14 @@ This file is part of PhpNemoServer.
     along with PhpNemoServer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-function J2N($server, $messageid)
+function J2N($server, $jid, $dataid, $datatype)
 {
 	$jntp = new JNTP();
 	$fp = fsockopen($server, 119, $errno, $errstr, 10);
 	fgets($fp, 128);
 	if (!$fp && $argv[0]) { die ($errstr." ".$errno."\n"); }
 
-	$put = "CHECK <".$messageid.">\n";
+	$put = "CHECK <".$dataid.">\n";
 	fputs($fp, $put);
 	$jntp->logFeed($put, $server, '>');
 	$reponse = fgets($fp);
@@ -37,8 +37,8 @@ function J2N($server, $messageid)
 	$reponses = preg_split("/[\s]+/", $reponse);
 	if ($reponses[0] == "238")
 	{
-		$article = $jntp->getPacket( array('DataType'=>'Article', 'Data.DataID'=>$messageid) );
-		$put = "TAKETHIS <".$article{'Jid'}.">\n".NNTP::articleJ2N($article)."\r\n.\r\n";
+		$packet = $jntp->getPacket( array('DataType'=>'Article', 'Data.DataID'=>$dataid) );
+		$put = "TAKETHIS <".$packet{'Data'}{'DataID'}.">\n".NNTP::articleJ2N($packet)."\r\n.\r\n";
 		fputs($fp, $put);
 		$jntp->logFeed($put, $server, '>');
 		$reponse = fgets($fp);
@@ -53,5 +53,5 @@ if(count($argv)>1)
 	require_once(__DIR__."/../Applications/core/conf/config.php");
 	require_once(__DIR__."/../Applications/core/lib/class.jntp.php");
 	require_once(__DIR__."/../Applications/NemoNetwork/lib/class.nntp.php");
-	J2N($argv[1], $argv[2]);
+	J2J($argv[1], $argv[2], $argv[3], $argv[4]);
 }
