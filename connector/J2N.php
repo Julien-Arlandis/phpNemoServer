@@ -26,18 +26,21 @@ function J2N($server, $jid, $dataid, $datatype)
 	$jntp = new JNTP();
 	$fp = fsockopen($server, 119, $errno, $errstr, 10);
 	fgets($fp, 128);
-	if (!$fp && $argv[0]) { die ($errstr." ".$errno."\n"); }
+	if (!$fp && $argv[0]) 
+	{
+		$jntp->logFeed('can not connect', $server, '>');
+		die ($errstr." ".$errno."\n"); 
+	}
 
 	$put = "CHECK <".$dataid.">\n";
 	fputs($fp, $put);
 	$jntp->logFeed($put, $server, '>');
 	$reponse = fgets($fp);
 	$jntp->logFeed($reponse, $server, '<');
-
 	$reponses = preg_split("/[\s]+/", $reponse);
 	if ($reponses[0] == "238")
 	{
-		$packet = $jntp->getPacket( array('DataType'=>'Article', 'Data.DataID'=>$dataid) );
+		$packet = $jntp->getPacket( array('Data.DataType'=>'Article', 'Data.DataID'=>$dataid) );
 		$put = "TAKETHIS <".$packet{'Data'}{'DataID'}.">\n".NNTP::articleJ2N($packet)."\r\n.\r\n";
 		fputs($fp, $put);
 		$jntp->logFeed($put, $server, '>');
@@ -52,5 +55,5 @@ if(count($argv)>1)
 {
 	require_once(__DIR__."/../Applications/core/lib/class.jntp.php");
 	require_once(__DIR__."/../Applications/NemoNetwork/lib/class.nntp.php");
-	J2J($argv[1], $argv[2], $argv[3], $argv[4]);
+	J2N($argv[1], $argv[2], $argv[3], $argv[4]);
 }

@@ -24,7 +24,7 @@
 	"localNewsgroups": [
 		{
 			"name": "nemo.local",	
-			"decritption": "Groupe local de test",
+			"description": "Groupe local de test",
 			"rules": { "w": "1" }
 		}
 	],

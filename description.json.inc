@@ -51,7 +51,7 @@
 		},
 		"nntpserver.net": {
 			"actif":0,
-			"type": ["Gateway", ""],
+			"type": ["NNTP", "J2N.php"],
 			"match": {
 				"Data.DataType": ["Article"],
 				"Data.Newsgroups": ["fr.*","nemo.*"]
