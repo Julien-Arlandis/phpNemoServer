@@ -189,16 +189,16 @@ fputs($file, $buffer);
 fclose($file);
 
 /* 
-* Création du fichier description.json
+* Création du fichier general.json
 */
 
-$file_desc_copy = __DIR__."/description.json.inc";
-$file_desc_final = __DIR__."/conf/description.json";
-$buffer = json_decode(file_get_contents($file_desc_copy), true);
+$file_general_copy = __DIR__."/general.json.inc";
+$file_general_final = __DIR__."/conf/general.json";
+$buffer = json_decode(file_get_contents($file_general_copy), true);
 $buffer['domain'] = $_SERVER['SERVER_NAME'];
 $buffer['administrator'] = 'newsmaster@'.$_SERVER['SERVER_NAME'];
 $buffer = json_encode($buffer, JSON_PRETTY_PRINT);
-$file = fopen($file_desc_final, 'w');
+$file = fopen($file_general_final, 'w');
 fputs($file, $buffer);
 fclose($file);
 
@@ -262,7 +262,7 @@ Installation de PHP Nemo Server (version <?=$server_version?>) terminée. La bas
 <p>
 Vous devez supprimer le fichier install.php pour continuer.
 <p>
-Vous pouvez désormais configurez les feeds dans le fichier conf/description.json.
+Vous pouvez désormais configurez les feeds dans le fichier conf/general.json.
 
 </body>
 </html>

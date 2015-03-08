@@ -1,33 +1,138 @@
 {
-	"rules":{
-		"nemo.test": {
-			"rulesIfNotConnected": {
-			    "w": "1"
-			}
-		},
-		"nemo.bavardages": {
-			"rulesIfNotConnected": {
-			    "w": "1"
-			}
-		},
-		"fr.test": {
-			"rulesIfNotConnected": {
-			    "w": "1"
-			}
-		}
-	},
-	"categories": {
-		"Groupes Nemo": {"tri":1,"Hierarchies":["nemo.*"]},
-		"Usenet francophone": {"tri":2,"Hierarchies":["fr.*","grisbi.*"]},
-		"Big8": {"tri":3,"Hierarchies":["comp.*","humanities.*","misc.*","news.*","rec.*","sci.*","soc.*","talk.*"]}
-	},
-	"localNewsgroups": [
-		{
-			"name": "nemo.local",	
-			"description": "Groupe local de test",
-			"rules": { "w": "1" }
-		}
-	],
-	"hierarchy": ["fr.*","nemo.*","big8","grisbi.*"]
+    "domain": "devnews.nemoweb.net",
+    "organization": "Nemoweb",
+    "publicServer": [
+        "news2.nemoweb.net"
+    ],
+    "serverVersion": "0.89d",
+    "protocolVersion": "0.19.2",
+    "administrator": "newsmaster@devnews.nemoweb.net",
+    "maxDataLength": 1000,
+    "crossDomainAccept": true,
+    "activeInscription": true,
+    "application": {
+        "core": {
+            "description": "JNTP Server core",
+            "commands": [
+                "diffuse",
+                "get",
+                "auth",
+                "whoami",
+                "quit"
+            ]
+        },
+        "NemoNetwork": {
+            "description": "Manage a server of newsgroups for Nemo network",
+            "commands": [
+                "getNewsgroup",
+                "set",
+                "inscription",
+                "help",
+                "changePassword"
+            ],
+            "maxCrosspost": 5,
+            "maxFU2": 5,
+            "maxCrosspostWithoutFU2": 3
+        },
+        "NemoAdmin": {
+            "description": "Administration of Nemo network",
+            "commands": [
+                "delete",
+                "ban",
+                "synchronizeNewsgroup"
+            ]
+        }
+    },
+    "DataType": {
+        "ProtoData": {
+            "filter": [
+                "Jid",
+                "ID",
+                "Data.DataType",
+                "Data.DataID",
+                "Data.InjectionDate",
+                "Data.Protocol"
+            ]
+        },
+        "Article": {
+            "filter": [
+                "Jid",
+                "ID",
+                "Data.Newsgroups",
+                "Data.UserAgent",
+                "Data.FromName",
+                "Data.FromMail",
+                "Data.Subject",
+                "Data.ThreadID",
+                "Data.UserID",
+                "Data.ReferenceUserID"
+            ]
+        },
+        "ListGroup": {
+            "filter": [
+                "Jid",
+                "ID",
+                "Data.Newsgroups",
+                "Data.Hierarchy"
+            ]
+        },
+        "Like": {
+            "filter": [
+                "Jid",
+                "ID",
+                "Data.Newsgroups",
+                "Data.JidLike"
+            ]
+        }
+    },
+    "feed": {
+        "devnews2.nemoweb.net": {
+            "actif": 1,
+            "type": [
+                "JNTP",
+                "J2J.php"
+            ],
+            "match": {
+                "Data.DataType": [
+                    "*"
+                ],
+                "Data.Newsgroups": [
+                    "*"
+                ]
+            },
+            "mail": "julien.arlandis@gmail.com"
+        },
+        "test.pasdenom.info": {
+            "actif": 1,
+            "type": [
+                "JNTP",
+                "J2J.php"
+            ],
+            "match": {
+                "Data.DataType": [
+                    "*"
+                ],
+                "Data.Newsgroups": [
+                    "*"
+                ]
+            },
+            "mail": "newsmaster@nntpserver.net"
+        },
+        "usenet.pasdenom.info": {
+            "actif": 0,
+            "type": [
+                "NNTP",
+                "J2N.php"
+            ],
+            "match": {
+                "Data.DataType": [
+                    "Article"
+                ],
+                "Data.Newsgroups": [
+                    "*"
+                ]
+            },
+            "mail": "newsmaster@nntpserver.net"
+        }
+    }
 }
-

@@ -78,7 +78,7 @@ class DataType
 	{
 		global $jntp;
 
-		$cfg = json_decode(file_get_contents(__DIR__.'/../../conf/general.json'), true);
+		$cfg = json_decode(file_get_contents(__DIR__.'/../../conf/newsgroups.json'), true);
 
 		if( $jntp->packet{'Data'}{'Newsgroups'}[0] == '@newsgroups' && $jntp->packet{'Data'}{'DataType'} == 'ListGroup' && $jntp->packet{'Data'}{'ListGroup'} )
 		{

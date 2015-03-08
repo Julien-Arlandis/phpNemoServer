@@ -1,5 +1,5 @@
 <?php
-$cfg = json_decode(file_get_contents(__DIR__.'/../../../conf/general.json'));
+$cfg = json_decode(file_get_contents(__DIR__.'/../../../conf/newsgroups.json'));
 
 $this->setSession();
 
@@ -12,6 +12,7 @@ if($this->privilege == 'admin')
 	{
 		for($j=0; $j<count($this->config{'publicServer'}); $j++)
 		{
+			//Mettre à jour la requête : Penser à remplacer les / par des ., total => limit
 			$query = '["get", {"filter":{"Data/Newsgroups":"@newsgroups","Data/DataType":"ListGroup","Data/Hierarchy":"'.$cfg->hierarchy[$i].'","total":"1"} } ]';
 			$this->exec($query, $this->config{'publicServer'}[$j]);
 			$this->packet = $this->reponse{'body'}[0];
