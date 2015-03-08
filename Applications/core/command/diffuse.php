@@ -49,7 +49,7 @@ elseif($this->param{'Packet'})
 	if( $this->config['feed'][$this->param{'From'}]['actif'] == 1 && in_array($_SERVER['REMOTE_ADDR'], $this->getIPs() ) )
 	{
 		// Vérifie si le paquet est déjà dans la base
-		if(!$this->isStorePacket($this->packet{'Jid'}) )
+		if(!$this->isStorePacket(  array('Jid'=>$this->packet{'Jid'}) ) )
 		{
 			if( $this->isValidPacket() )
 			{
@@ -95,14 +95,14 @@ elseif($this->param{'Propose'})
 			$res = array();
 			if( !isset($pack{'Data'}{'DataID'}) || $pack{'Jid'} == $pack{'Data'}{'DataID'} )
 			{
-				if( $this->mongo->packet->find(array('Jid'=>$pack{'Jid'}))->count() == 0)
+				if( $this->isStorePacket( array('Jid' => $pack{'Jid'}) ) )
 				{
 					array_push($res, $pack{'Jid'});
 				}
 			}
 			else
 			{
-				if( $this->mongo->packet->find(array('Data.DataID'=>$pack{'Data'}{'DataID'}, 'Data.DataType'=>$pack{'Data'}{'DataType'} ))->count() == 0)
+				if( $this->isStorePacket( array('Data.DataID'=>$pack{'Data'}{'DataID'}, 'Data.DataType'=>$pack{'Data'}{'DataType'} ) ) )
 				{
 					array_push($res, $pack{'Jid'});
 				}
@@ -116,7 +116,7 @@ elseif($this->param{'Propose'})
 	}
 	else
 	{
-		$this->reponse{'code'} = json_encode($this->getIPs());
+		$this->reponse{'code'} = "500";
 		$this->reponse{'body'} = $_SERVER['REMOTE_ADDR']." not autorised to propose for ".$this->param{'From'};
 	}
 }

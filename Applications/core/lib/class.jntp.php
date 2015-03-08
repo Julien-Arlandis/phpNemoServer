@@ -282,37 +282,28 @@ class JNTP
 	}
 
 	// Supprime un packet JNTP
-	function deletePacket($jid)
+	function deletePacket( $query )
 	{
-		return $this->mongo->packet->remove(array('$or' => array(array('Jid' =>  $jid), array('ID' => $jid))));
+		return $this->mongo->packet->remove( $query );
 	}
 
 	// Récupère un packet JNTP
-	function getPacket($id)
+	function getPacket( $query )
 	{
-		if(!is_numeric($id))
-		{
-			return $this->mongo->packet->findOne(array('Jid' => $id),array('_id'=>0));
-		}
-		else
-		{
-			return $this->mongo->packet->findOne(array('ID' => intval($id)),array('_id'=>0));
-		}
+		return $this->mongo->packet->findOne( $query, array('_id'=>0) );
 	}
 
 	// Vérifie si un packet d'un Jid donné est stocké dans la base
-	function isStorePacket($jid)
+	function isStorePacket( $query )
 	{
-		$total = $this->mongo->packet->find(array('Jid' => $jid))->count();
-		$bool = ($total > 0 ) ? true : false;
-		return $bool;
+		return ($this->mongo->packet->find($query)->count() > 0 ) ? true : false;
 	}
 
 	// Retourne la ressource d'un packet requêtée au format URI ex : http://[server]/jntp/[Jid]/Data/FromName
 	function getResource($path)
 	{
 		$tab = split('/', $path);
-		$json = $this->getPacket($tab[0]);
+		$json = $this->getPacket( array('Jid'=>$tab[0]) );
 		$tab = preg_split("/([:\.\/]+)/", $tab[1], -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY );
 
 		if(!$json) {

@@ -27,8 +27,11 @@ function J2J($server, $jid, $datatype, $dataid)
 
 	$propose = array();
 	$propose[0]{'Jid'} = $jid;
-	$propose[0]{'Data'}{'DataID'} = $dataid;
 	$propose[0]{'Data'}{'DataType'} = $datatype;
+	if($jid != $dataid) 
+	{
+		$propose[0]{'Data'}{'DataID'} = $dataid;
+	}
 
 	$post = array();
 	$post[0] = "diffuse";
@@ -42,12 +45,11 @@ function J2J($server, $jid, $datatype, $dataid)
 
 	if($jntp->reponse[0] == 'iwant') 
 	{
-
 		foreach($jntp->reponse[1]{'Jid'} as $jid)
 		{
 			$post = array();
 			$post[0] = "diffuse";
-			$post[1]{'Packet'} = $jntp->getPacket($jid);
+			$post[1]{'Packet'} = $jntp->getPacket( array('Jid'=>$jid) );
 			$post[1]{'From'} = $jntp->config['domain'];
 			$jntp->exec($post, $server);
 

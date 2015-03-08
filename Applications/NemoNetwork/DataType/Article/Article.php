@@ -61,7 +61,7 @@ function checkControl()
 	if( $jntp->packet{'Data'}{'Control'}[0] === 'cancel' )
 	{
 		$jid = $jntp->packet{'Data'}{'Control'}[1];
-		$article = $jntp->getPacket($jid);
+		$article = $jntp->getPacket( array('Jid'=>$jid) );
 
 		if($article{'Data'}{'DataID'} === $article{'Jid'}) 
 		{
@@ -82,7 +82,7 @@ function checkControl()
 
 			if( $hashClient === $article{'Data'}{'HashClient'} || $jntp->privilege == 'admin')
 			{
-				$jntp->deletePacket($jid);
+				$jntp->deletePacket( array('Jid'=> $jid) );
 				return true;
 			}
 			else
@@ -95,7 +95,7 @@ function checkControl()
 		{
 			if( ($jntp->param{'Data'} && $jntp->privilege == 'admin') || $jntp->param{'Packet'} )
 			{
-				$jntp->deletePacket($jid);
+				$jntp->deletePacket( array('Jid'=> $jid) );
 				return true;
 			}
 			else
@@ -275,7 +275,7 @@ class DataType
 					else
 					{
 						// Affectation de Data/ReferenceUserID
-						$packet = $jntp->getPacket($jntp->packet{'Data'}{'References'}[$nb_ref-1]);
+						$packet = $jntp->getPacket( array('Jid'=>$jntp->packet{'Data'}{'References'}[$nb_ref-1]) );
 						if(!$jntp->packet{'Data'}{'ReferenceUserID'} && $packet{'Data'}{'Protocol'} === "JNTP-Strict")
 						{
 							$jntp->packet{'Data'}{'ReferenceUserID'} = $packet{'Data'}{'UserID'};
@@ -292,10 +292,10 @@ class DataType
 				// Suppression de l'ancien article supersédé.
 				if($jid = $jntp->packet{'Data'}{'Supersedes'})
 				{
-					$article = $jntp->getPacket($jid);
+					$article = $jntp->getPacket( array('Jid'=>$jid) );
 					if($article{'Data'}{'Protocol'} === 'JNTP-Transitional') 
 					{
-						$jntp->deletePacket($jid);
+						$jntp->deletePacket( array('Jid'=> $jid) );
 					}
 				}
 			}
