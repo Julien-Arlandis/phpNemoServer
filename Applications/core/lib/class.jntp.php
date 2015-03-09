@@ -273,7 +273,7 @@ class JNTP
 			array("new" => true, "upsert"=>true)
 		);
 
-		$this->packet{'ID'} = $res['seq'];
+		$this->packet{'ID'} = $this->packet{'Data'}{'InjectionDate'}.'/'.$res['seq'];
 
 		try {
 			$this->mongo->packet->save($this->packet);
