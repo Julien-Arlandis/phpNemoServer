@@ -264,7 +264,7 @@ class NNTP
 
 	static function articleJ2N($json)
 	{
-		if(!is_array($json) || $json{'Data'}{'Protocol'} === 'JNTP-Transitional' || $json{'Data'}{'Origin'} === 'NNTP')
+		if(!is_array($json) || $json{'Data'}{'DataID'} == $json{'Jid'})
 		{
 			die();
 		}
@@ -290,13 +290,10 @@ class NNTP
 
 		mb_internal_encoding('UTF-8');
 
-		$article = "Path: jntp.".DOMAIN."!from-jntp\r\n";
-		$article .= "Message-ID: <".$json{'Jid'}.">\r\n";
+		$article = "Path: !from-jntp\r\n";
+		$article .= "Message-ID: <".$json{'Data'}{'DataID'}.">\r\n";
 		$article .= "JNTP-Route: ".implode("|", $json{'Route'})."\r\n";
-		if($json{'ServerSign'})
-		{
-			$article .= "JNTP-ServerSign: ".$json{'ServerSign'}."\r\n";
-		}
+
 		foreach ($json{'Data'} as $cle=>$value) 
 		{
 			if(empty($value)) continue;
