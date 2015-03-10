@@ -45,7 +45,7 @@ class NNTP
 
 	static function articleN2J($txt)
 	{
-		$article = null;
+		$article = array();
 		$article{'Jid'} = null;
 		$article{'Route'} = array();
 		$article{'Data'}{'DataType'} = "Article";
