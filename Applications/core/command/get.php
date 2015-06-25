@@ -91,7 +91,7 @@ if( $this->param{'filter'})
 		{
 			if( $value[1] == 'contain' )
 			{
-				$value = new MongoRegex("/^".preg_quote(str_replace(".","\.", $value[0]))."/");
+				$value = new MongoRegex("/^".preg_quote($value[0])."/");
 				array_push($query, array($key => $value));
 			}
 			elseif( $value[1] == 'min' )

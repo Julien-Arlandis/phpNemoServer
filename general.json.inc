@@ -2,7 +2,7 @@
 	"domain": "news.exemple.net",
 	"organization": "Nemoweb",
 	"publicServer": ["news2.nemoweb.net"],
-	"serverVersion": "0.89b",
+	"serverVersion": "0.89e",
 	"protocolVersion": "0.19.2",
 	"administrator": "newsmaster@exemple.net",
 	"maxDataLength": 1000,

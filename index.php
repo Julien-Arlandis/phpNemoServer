@@ -23,9 +23,9 @@ This file is part of PhpNemoServer.
 
 require_once(__DIR__."/Applications/core/lib/class.jntp.php");
 
-if( file_exists( __DIR__ . '/install.php'))
+if( file_exists( __DIR__ . '/delete.txt'))
 {
-	die( '500 You must delete install.php file to continue' );
+	die( '500 You must remove delete.txt file to continue' );
 }
 
 $jntp = new JNTP();

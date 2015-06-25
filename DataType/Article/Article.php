@@ -60,8 +60,8 @@ function checkControl()
 	global $jntp;
 	if( $jntp->packet{'Data'}{'Control'}[0] === 'cancel' )
 	{
-		$jid = $jntp->packet{'Data'}{'Control'}[1];
-		$article = $jntp->getPacket( array('Jid'=>$jid) );
+		$dataid = $jntp->packet{'Data'}{'Control'}[1];
+		$article = $jntp->getPacket( array('Data.DataID'=>$dataid) );
 
 		if($article{'Data'}{'DataID'} === $article{'Jid'}) 
 		{
@@ -72,7 +72,6 @@ function checkControl()
 			$data{'Subject'} = $article{'Data'}{'Subject'};
 			$data{'References'} = $article{'Data'}{'References'};
 			$data{'Newsgroups'} = $article{'Data'}{'Newsgroups'};
-			$data{'UserAgent'} = $article{'Data'}{'UserAgent'};
 			$data{'Body'} = $article{'Data'}{'Body'};
 			$data{'Media'} = $article{'Data'}{'Media'};
 			$data{'FollowupTo'} = $article{'Data'}{'FollowupTo'};
@@ -82,20 +81,20 @@ function checkControl()
 
 			if( $hashClient === $article{'Data'}{'HashClient'} || $jntp->privilege == 'admin')
 			{
-				$jntp->deletePacket( array('Jid'=> $jid) );
+				$jntp->deletePacket( array('Data.DataID'=> $dataid) );
 				return true;
 			}
 			else
 			{
-				$jntp->reponse{'body'} = "Suppression impossible de ".$jid.", hash ".$hashClient." incorrect";
+				$jntp->reponse{'body'} = "Suppression impossible de ".$jid."\nhash ".$hashClient." incorrect";
 				return false;
 			}
 		}
 		else
 		{
-			if( ($jntp->param{'Data'} && $jntp->privilege == 'admin') || $jntp->param{'Packet'} )
+			if( ($jntp->param{'Data'} && $jntp->privilege == 'admin') )
 			{
-				$jntp->deletePacket( array('Jid'=> $jid) );
+				$jntp->deletePacket( array('Data.DataID'=> $dataid) );
 				return true;
 			}
 			else
@@ -128,7 +127,7 @@ class DataType
 
 		if( $jntp->packet{'Data'}{'ThreadID'} == '' )
 		{
-			$jntp->packet{'Data'}{'ThreadID'} = sha1(uniqid().DOMAIN);
+			$jntp->packet{'Data'}{'ThreadID'} = $jntp->hashString(sha1(uniqid().DOMAIN));
 		}
 
 		if ($jntp->userid)
@@ -290,12 +289,12 @@ class DataType
 				}
 
 				// Suppression de l'ancien article supersédé.
-				if($jid = $jntp->packet{'Data'}{'Supersedes'})
+				if($dataid = $jntp->packet{'Data'}{'Supersedes'})
 				{
-					$article = $jntp->getPacket( array('Jid'=>$jid) );
+					$article = $jntp->getPacket( array('Data.DataID'=>$dataid) );
 					if($article{'Data'}{'Protocol'} === 'JNTP-Transitional') 
 					{
-						$jntp->deletePacket( array('Jid'=> $jid) );
+						$jntp->deletePacket( array('Data.DataID'=>$dataid) );
 					}
 				}
 			}
@@ -316,7 +315,7 @@ class DataType
 		else
 		{
 			$jntp->reponse{'code'} = "500";
-			$jntp->reponse{'body'} =  $jntp->packet{'Jid'} . " : invalid control";
+			$jntp->reponse{'body'} =  $jntp->reponse{'body'}." ".$jntp->packet{'Jid'} . " : invalid control";
 			return false;
 		}
 	}

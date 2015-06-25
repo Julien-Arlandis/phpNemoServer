@@ -23,6 +23,7 @@ if($this->param{'Data'})
 				$this->datatype->afterInsertion($this->packet{'ID'});
 
 				$this->reponse{'code'} = "200";
+				$this->reponse{'body'}{'Data'}{'DataID'} = $this->packet{'Data'}{'DataID'};
 				$this->reponse{'body'}{'Jid'} = $this->packet{'Jid'};
 				$this->reponse{'body'}{'ID'} = $this->packet{'ID'};
 			}

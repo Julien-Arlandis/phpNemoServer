@@ -15,7 +15,7 @@ class DataType
 			$jntp->reponse{'body'} = 'Vous devez être connecté pour liker';
 			return false;
 		}
-		$this->total = $jntp->mongo->packet->find(array("Data.UserID"=>$jntp->userid, "Data.DataType" => "Like", "Data.JidLike" => $jntp->packet{'Data'}{'JidLike'}))->count();
+		$this->total = $jntp->mongo->packet->find(array("Data.UserID"=>$jntp->userid, "Data.DataType" => "Like", "Data.DataIDLike" => $jntp->packet{'Data'}{'DataIDLike'}))->count();
 		if($this->total > 0)
 		{
 			$jntp->reponse{'body'} = 'Vous avez déjà liké cet article';
@@ -51,7 +51,7 @@ class DataType
 	function afterInsertion()
 	{
 		global $jntp;
-		$jntp->mongo->packet->update(array("Jid"=>$jntp->packet{'Data'}{'JidLike'}), array( '$inc' => array("Meta.Like"=>1)) );
+		$jntp->mongo->packet->update( array("Data.DataID"=>$jntp->packet{'Data'}{'DataIDLike'}), array( '$inc' => array("Meta.Like"=>1)) );
 		// Diffuse le paquet sur le réseau
 		$jntp->superDiffuse();
 		return true;
