@@ -21,6 +21,11 @@ This file is part of PhpNemoServer.
     along with PhpNemoServer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+if( !file_exists( __DIR__ . '/delete.txt'))
+{
+	die( '500 You must create delete.txt file to continue installation' );
+}
+
 $server_version = '0.89d';
 $config = array(
     "private_key_bits" => 1024,
