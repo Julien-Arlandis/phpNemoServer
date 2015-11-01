@@ -2,7 +2,7 @@
 $this->setSession();
 
 $query = array();
-$tri = array('name' => 1);
+$sort = array('name' => 1);
 
 if($this->param{'name'})
 {
@@ -34,14 +34,14 @@ if($this->param{'type'})
 if($this->param{'category'})
 {
 	array_push($query, array('category' => array('$exists' => true) ));
-	$tri = array('tri' => 1, 'name' => 1);
+	$sort = array('sort' => 1, 'name' => 1);
 }
 
 if($this->param{'total'} && is_numeric($this->param{'total'}) )
 {
-	$cursor = $this->mongo->newsgroup->find( array('$and' => $query) )->sort($tri)->limit($this->param{'total'});
+	$cursor = $this->mongo->newsgroup->find( array('$and' => $query) )->sort($sort)->limit($this->param{'total'});
 }else{
-	$cursor = $this->mongo->newsgroup->find( array('$and' => $query) )->sort($tri);
+	$cursor = $this->mongo->newsgroup->find( array('$and' => $query) )->sort($sort);
 }
 
 $this->reponse{'code'} = "200";

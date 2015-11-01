@@ -265,7 +265,7 @@ $jntp->exec('["synchronizeNewsgroup"]');
 
 Installation de PHP Nemo Server (version <?=$server_version?>) terminée. La base <?=DB_NAME?> a bien été crée. 
 <p>
-Vous devez supprimer le fichier install.php pour continuer.
+Vous devez supprimer le fichier delete.txt pour continuer.
 <p>
 Vous pouvez désormais configurez les feeds dans le fichier conf/general.json.
 

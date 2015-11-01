@@ -1,7 +1,10 @@
 <?php
+
+$this->setSession();
+
 $projection = array('_id'=>0);
 $count = false;
-$listen = false;
+$listen = ($this->param{'listen'} && $this->param{'listen'} == 1 ) ? true : false;
 $delay = 1;
 $limit = 500;
 
@@ -29,16 +32,15 @@ elseif($this->param{'select'})
 {
 	foreach($this->param{'select'} as $field)
 	{
+		$projection['ID'] = 1;
+		$projection['Jid'] = 1;
+
 		if($field == '@2References') // Spécifique à Article
 		{
-			$projection['ID'] = 1;
-			$projection['Jid'] = 1;
 			$projection['Data.References'] = array('$slice'=>-2);
 		}
 		else
 		{
-			$projection['ID'] = 1;
-			$projection['Jid'] = 1;
 			$projection[$field] = 1;
 		}
 	}
@@ -54,14 +56,6 @@ if( $this->param{'filter'})
 	}
 
 	$query = array();
-	$order = -1;
-
-	if($this->param{'listen'} && $this->param{'listen'} == 1 )
-	{
-		$listen = true;
-	}else{
-		$listen = false;
-	}
 
 	foreach($this->param{'filter'} as $key => $value)
 	{
@@ -74,7 +68,6 @@ if( $this->param{'filter'})
 	
 		if( is_string($value) || is_numeric($value) )
 		{
-		
 			if($value != "" && $value != "*")
 			{
 				if($key === "Data.Newsgroups" && substr($value, -1) == "*")  // Spécifique à Article
@@ -96,7 +89,6 @@ if( $this->param{'filter'})
 			}
 			elseif( $value[1] == 'min' )
 			{
-				$order = 1;
 				array_push($query, array($key => array('$gt' => $value[0])));
 			}
 			elseif( $value[1] == 'max' )
@@ -121,7 +113,7 @@ if( $this->param{'filter'})
 	do {
 		if(!$count)
 		{
-			$cursor = $this->mongo->packet->find( array('$and'=>$query), $projection )->limit($limit)->sort(array('ID' => $order));
+			$cursor = $this->mongo->packet->find( array('$and'=>$query), $projection )->limit($limit)->sort(array('ID' => -1));
 		}
 		else
 		{
@@ -146,16 +138,14 @@ if(!$count)
 {
 	$this->reponse{'body'} = array();
 	$this->reponse{'code'} = "200";
+
 	foreach($cursor as $packet)
 	{
-		if($order == 1)
+		if( $this->privilege != 'admin')
 		{
-			array_push($this->reponse{'body'}, $this->replaceHash( $packet ) );
+			unset( $packet{'Meta'}{'ForAdmin'} );
 		}
-		else
-		{
-			array_unshift($this->reponse{'body'}, $this->replaceHash( $packet ) );
-		}
+		array_push($this->reponse{'body'}, $this->replaceHash( $packet ) );
 	}
 }
 else

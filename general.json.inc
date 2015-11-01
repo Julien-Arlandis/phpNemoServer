@@ -41,21 +41,31 @@
 	},
 	"feed": {
 		"news.exemple2.net": {
-			"actif":0,
-			"type": ["JNTP", "J2J.php"],
-			"match": {
-				"Data.DataType": ["*"],
-				"Data.Newsgroups": ["*"]
-			},
-			"mail":"newsmaster@exemple2.net"
+			"actif": 1,
+			"type": ["JNTP","J2J.php"],
+			"match": [
+				{
+					"Data.DataType": ["Article"],
+					"Data.Newsgroups": ["*"]
+				},
+				{
+					"Data.DataType": ["*"]
+				}
+			],
+			"mail": "mail":"newsmaster@exemple2.net"
 		},
 		"nntpserver.net": {
 			"actif":0,
 			"type": ["NNTP", "J2N.php"],
-			"match": {
-				"Data.DataType": ["Article"],
-				"Data.Newsgroups": ["fr.*","nemo.*"]
-			},
+			"match": [
+					{
+						"Data.DataType": ["Article"],
+						"Data.Newsgroups": ["*"]
+					},
+					{
+						"Data.DataType": ["*"]
+					}
+			],
 			"mail":"newsmaster@nntpserver.net"
 		}
 	}

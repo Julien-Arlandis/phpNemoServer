@@ -14,12 +14,17 @@
 			"rulesIfNotConnected": {
 			    "w": "1"
 			}
+		},
+		"#testNemoTagOnFreeAccess": {
+			"rulesIfNotConnected": {
+			    "w": "1"
+			}
 		}
 	},
 	"categories": {
-		"Groupes Nemo": {"tri":1,"Hierarchies":["nemo.*"]},
-		"Usenet francophone": {"tri":2,"Hierarchies":["fr.*","grisbi.*"]},
-		"Big8": {"tri":3,"Hierarchies":["comp.*","humanities.*","misc.*","news.*","rec.*","sci.*","soc.*","talk.*"]}
+		"Groupes Nemo": {"sort":1,"Hierarchies":["nemo.*"]},
+		"Usenet francophone": {"sort":2,"Hierarchies":["fr.*","grisbi.*"]},
+		"Big8": {"sort":3,"Hierarchies":["comp.*","humanities.*","misc.*","news.*","rec.*","sci.*","soc.*","talk.*"]}
 	},
 	"localNewsgroups": [
 		{

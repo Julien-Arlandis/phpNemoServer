@@ -31,12 +31,12 @@ if( file_exists( __DIR__ . '/delete.txt'))
 $jntp = new JNTP();
 
 // Permit local connection
-if(!isset($_SERVER['HTTP_REFERER']) || ($jntp->config['crossDomainAccept'] && 1 == 2)) 
+if(!isset($_SERVER['HTTP_REFERER']) || ($jntp->config['crossDomainAccept']))
 {
 	header("Access-Control-Allow-Headers: JNTP-Session");
 	header("Access-Control-Allow-Origin: *");
 	$headers = apache_request_headers();
-	if(isset( $headers['JNTP-Session'] )) 
+	if(isset( $headers['JNTP-Session'] ) && $headers['JNTP-Session'] != '') 
 	{
 		$_COOKIE['JNTP-Session'] = $headers['JNTP-Session'];
 	}

@@ -130,7 +130,7 @@ class JNTP
 
 	function createIndex()
 	{
-		$this->mongo->newsgroup->ensureIndex(array('name' => 1), array('unique' => true));
+		$this->mongo->newsgroup->ensureIndex(array('name' => 1), array('unique' => true)); // spécifique à Article
 		$this->mongo->user->ensureIndex(array('email' => 1), array('unique' => true));
 		$this->mongo->user->ensureIndex(array('UserID' => 1), array('unique' => true));
 		$this->mongo->packet->ensureIndex(array('ID' => 1), array('unique' => true));
@@ -188,14 +188,14 @@ class JNTP
 	function setSession()
 	{
 		$session = $_COOKIE["JNTP-Session"];
-
 		if(!$session)
 		{
 			$headers = getallheaders();
 			$session = $headers["JNTP-Session"];
+			if(!$session) return;
 		}
 
-		$obj = $this->mongo->user->findOne( array('Session' => $session) );
+		$obj = $this->mongo->user->findOne( array('Session' => ''.$session) );
 		if(count($obj) > 0)
 		{
 			$this->id = $obj{'UserID'};
@@ -302,8 +302,8 @@ class JNTP
 		return $bool;
 	}
 
-	// Retourne la ressource d'un packet requêtée au format URI ex : http://[server]/jntp/[Jid]/Data/FromName
-	function getResource($path)
+	// Retourne la ressource d'un packet requêtée au format URI ex : http://[server]/jntp/[Jid]/Data.FromName
+	function getResource($path) // à corriger.
 	{
 		$tab = split('/', $path);
 		$json = $this->getPacket( array('Jid'=>$tab[0]) );
@@ -424,7 +424,6 @@ class JNTP
 		$ip = array();
 		for($i=0; $i < count($record); $i++)
 		{
-
 			if($record[$i]['type'] == 'A') 
 			{
 				array_push($ip, $record[$i]['ip']);
@@ -504,6 +503,5 @@ class JNTP
 	{
 		return rtrim(strtr(base64_encode(sha1($str, true)), '+/', '-_'), '='); 
 	}
-
 }
 

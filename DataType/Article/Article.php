@@ -1,110 +1,6 @@
 <?php
 
-// Vérifie la validité d'un nemotag
-function isValidNemoTag($groupe)
-{
-	global $jntp;
-	if(strlen($groupe)>32)
-	{
-		$jntp->reponse{'body'} = "Le Nemotag [".$groupe."] est trop long, 32 caractères maxi";
-		return false;
-	}
-	if (!preg_match('/^#[a-zA-Z]*$/', $groupe)) 
-	{
-		$jntp->reponse{'body'} = "Le Nemotag [".$groupe."] contient des caractères non autorisés";
-		return false;
-	}
-	if($jntp->userid == false)
-	{
-		$jntp->reponse{'body'} = "Le Nemotag [".$groupe."] requiert une authentification";
-		return false;
-	}
-	return true;
-}
-
-// Retourne les hiérarchies et les sous hiérarchies qui contiennent les newsgroups déclarés dans Data/Newsgroups
-function getHierarchy()
-{
-	global $jntp;
-
-	$hierarchy = array();
-	foreach($jntp->packet{'Data'}{'Newsgroups'} as $oneGroup)
-	{
-		if(substr($oneGroup, 0, 1) == '#' && !in_array("#*", $hierarchy))
-		{
-			array_push($hierarchy, '#*');
-		}
-		else
-		{
-			$tab = explode(".", $oneGroup);
-			if(count($tab) >= 2)
-			{
-				$str = "";
-				for ($i=0; $i<count($tab)-1; $i++)
-				{
-					$str .= $tab[$i].".";
-					if( !in_array($str."*", $hierarchy) ) 
-					{
-						array_push($hierarchy, $str."*");
-					}
-				}
-			}
-		}
-	}
-	return $hierarchy;
-}
-
-// Effectue le traitement de Data/Control (suppression d'article).
-function checkControl()
-{
-	global $jntp;
-	if( $jntp->packet{'Data'}{'Control'}[0] === 'cancel' )
-	{
-		$dataid = $jntp->packet{'Data'}{'Control'}[1];
-		$article = $jntp->getPacket( array('Data.DataID'=>$dataid) );
-
-		if($article{'Data'}{'DataID'} === $article{'Jid'}) 
-		{
-			$data = null;
-			$data{'DataType'} = $article{'Data'}{'DataType'};
-			$data{'FromName'} = $article{'Data'}{'FromName'};
-			$data{'FromMail'} = $article{'Data'}{'FromMail'};
-			$data{'Subject'} = $article{'Data'}{'Subject'};
-			$data{'References'} = $article{'Data'}{'References'};
-			$data{'Newsgroups'} = $article{'Data'}{'Newsgroups'};
-			$data{'Body'} = $article{'Data'}{'Body'};
-			$data{'Media'} = $article{'Data'}{'Media'};
-			$data{'FollowupTo'} = $article{'Data'}{'FollowupTo'};
-			$data{'HashClient'} = $jntp->packet{'Data'}{'Control'}[2];
-
-			$hashClient = $jntp->hashString( $jntp->canonicFormat($data) );
-
-			if( $hashClient === $article{'Data'}{'HashClient'} || $jntp->privilege == 'admin')
-			{
-				$jntp->deletePacket( array('Data.DataID'=> $dataid) );
-				return true;
-			}
-			else
-			{
-				$jntp->reponse{'body'} = "Suppression impossible de ".$jid."\nhash ".$hashClient." incorrect";
-				return false;
-			}
-		}
-		else
-		{
-			if( ($jntp->param{'Data'} && $jntp->privilege == 'admin') )
-			{
-				$jntp->deletePacket( array('Data.DataID'=> $dataid) );
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-	}
-	return true;
-}
+require_once(__DIR__."/functions.php");
 
 class DataType
 {
@@ -120,11 +16,11 @@ class DataType
 		$jntp->packet{'Data'}{'OriginServer'} = $jntp->config{'domain'};
 		$jntp->packet{'Data'}{'Organization'} = $jntp->config{'organization'};
 		$jntp->packet{'Data'}{'Browser'} = $_SERVER['HTTP_USER_AGENT'];
-		$jntp->packet{'Data'}{'PostingHost'} = sha1($_SERVER['REMOTE_ADDR']);
+		$jntp->packet{'Data'}{'PostingHost'} = ($jntp->config{'cryptPostingHost'} == "connected" && !$jntp->userid) ? $_SERVER['REMOTE_ADDR'] : sha1($_SERVER['REMOTE_ADDR']);
 		$jntp->packet{'Data'}{'ComplaintsTo'} = $jntp->config{'administrator'};
 		$jntp->packet{'Data'}{'ProtocolVersion'} = $jntp->config{'protocolVersion'};
 		$jntp->packet{'Data'}{'Server'} = "PhpNemoServer/".$jntp->config{'serverVersion'};
-
+		$jntp->packet{'Meta'}{'ForAdmin'}{'IP'} = $_SERVER['REMOTE_ADDR'];
 		if( $jntp->packet{'Data'}{'ThreadID'} == '' )
 		{
 			$jntp->packet{'Data'}{'ThreadID'} = $jntp->hashString(sha1(uniqid().DOMAIN));
@@ -144,42 +40,41 @@ class DataType
 	function isValidData()
 	{
 		global $jntp;
-		if( $jntp->packet{'Data'}{'Control'}[0] != 'cancel' )
+
+		if(count($jntp->packet{'Data'}{'FollowupTo'}) <= $jntp->config{'application'}{'NemoNetwork'}{'maxFU2'})
 		{
-			if(count($jntp->packet{'Data'}{'FollowupTo'}) <= $jntp->config{'application'}{'NemoNetwork'}{'maxFU2'})
+			foreach($jntp->packet{'Data'}{'FollowupTo'} as $groupe)
 			{
-				foreach($jntp->packet{'Data'}{'FollowupTo'} as $groupe)
+				if($groupe[0] != '#')
 				{
-					if($groupe[0] != '#')
+					if(!$jntp->mongo->newsgroup->findOne(array('name' => $groupe), array('rules' => 1))) 
 					{
-						if(!$jntp->mongo->newsgroup->findOne(array('name' => $groupe), array('rules' => 1))) 
-						{
-							$jntp->reponse{'body'} = "Newsgroups [".$jntp->packet{'Data'}{'FollowupTo'}[0]."] inexistant";
-							return false;
-						}
-					}
-					else
-					{
-						isValidNemoTag($groupe);
+						$jntp->reponse{'body'} = "Newsgroups [".$jntp->packet{'Data'}{'FollowupTo'}[0]."] inexistant";
+						return false;
 					}
 				}
-			}
-			else
-			{
-				$jntp->reponse{'body'} = $jntp->config{'application'}{'NemoNetwork'}{'maxFU2'}." redirections autorisées au maximum";
-				return false;
-			}
-			if(count($jntp->packet{'Data'}{'FollowupTo'}) == 0 && count($jntp->packet{'Data'}{'Newsgroups'}) > $jntp->config{'application'}{'NemoNetwork'}{'maxCrosspostWithoutFU2'})
-			{
-				$jntp->reponse{'body'} = "Redirection requise";
-				return false;
-			}
-			if (count($jntp->packet{'Data'}{'Newsgroups'}) > $jntp->config{'application'}{'NemoNetwork'}{'maxCrosspost'})
-			{
-				$jntp->reponse{'body'} = $jntp->config{'application'}{'NemoNetwork'}{'maxCrosspost'}." newsgroups maximum";
-				return false;
+				else
+				{
+					isValidNemoTag($groupe);
+				}
 			}
 		}
+		else
+		{
+			$jntp->reponse{'body'} = $jntp->config{'application'}{'NemoNetwork'}{'maxFU2'}." redirections autorisées au maximum";
+			return false;
+		}
+		if(count($jntp->packet{'Data'}{'FollowupTo'}) == 0 && count($jntp->packet{'Data'}{'Newsgroups'}) > $jntp->config{'application'}{'NemoNetwork'}{'maxCrosspostWithoutFU2'})
+		{
+			$jntp->reponse{'body'} = "Redirection requise";
+			return false;
+		}
+		if (count($jntp->packet{'Data'}{'Newsgroups'}) > $jntp->config{'application'}{'NemoNetwork'}{'maxCrosspost'})
+		{
+			$jntp->reponse{'body'} = $jntp->config{'application'}{'NemoNetwork'}{'maxCrosspost'}." newsgroups maximum";
+			return false;
+		}
+
 		foreach($jntp->packet{'Data'}{'Newsgroups'} as $groupe)
 		{
 			if($groupe[0] != '#')
@@ -257,48 +152,6 @@ class DataType
 		global $jntp;
 		if(checkControl())
 		{
-			if($jntp->packet{'Data'}{'Protocol'} === 'JNTP-Transitional' )
-			{
-				$jntp->packet{'Data'}{'DataType'} = 'Article';
-				// Affectation de Data/ThreadID
-				if( !$jntp->packet{'Data'}{'ThreadID'} || !$jntp->packet{'Data'}{'ReferenceUserID'} )
-				{
-					$nb_ref = count($jntp->packet{'Data'}{'References'});
-					if($nb_ref == 0) 
-					{
-						if( !$jntp->packet{'Data'}{'ThreadID'})
-						{
-							$jntp->packet{'Data'}{'ThreadID'} = $jntp->packet{'Jid'};
-						}
-					}
-					else
-					{
-						// Affectation de Data/ReferenceUserID
-						$packet = $jntp->getPacket( array('Jid'=>$jntp->packet{'Data'}{'References'}[$nb_ref-1]) );
-						if(!$jntp->packet{'Data'}{'ReferenceUserID'} && $packet{'Data'}{'Protocol'} === "JNTP-Strict")
-						{
-							$jntp->packet{'Data'}{'ReferenceUserID'} = $packet{'Data'}{'UserID'};
-						}
-				
-						// Affectation du ThreadID
-						if($cursor = $jntp->mongo->article->findOne( array('Jid' => array('$in'=>$jntp->packet{'Data'}{'References'}) , 'Data.ThreadID'=>array('$exists'=>1)  ), array('Data.ThreadID'=>1) ))
-						{
-							$jntp->packet{'Data'}{'ThreadID'} = $cursor['Data']['ThreadID'];
-						}
-					}
-				}
-
-				// Suppression de l'ancien article supersédé.
-				if($dataid = $jntp->packet{'Data'}{'Supersedes'})
-				{
-					$article = $jntp->getPacket( array('Data.DataID'=>$dataid) );
-					if($article{'Data'}{'Protocol'} === 'JNTP-Transitional') 
-					{
-						$jntp->deletePacket( array('Data.DataID'=>$dataid) );
-					}
-				}
-			}
-
 			$jntp->packet{'Meta'}{'Size'} = array(strlen($jntp->packet{'Data'}{'Body'}));
 			$jntp->packet{'Meta'}{'Hierarchy'} = getHierarchy();
 			$jntp->packet{'Meta'}{'Like'} = 0;
@@ -312,25 +165,17 @@ class DataType
 			}
 			return true;
 		}
-		else
-		{
-			$jntp->reponse{'code'} = "500";
-			$jntp->reponse{'body'} =  $jntp->reponse{'body'}." ".$jntp->packet{'Jid'} . " : invalid control";
-			return false;
-		}
+		return false;
 	}
 
 	function afterInsertion()
 	{
 		global $jntp;
-
 		$jntp->superDiffuse();
-
 		if ($jntp->userid)
 		{
 			$jntp->updateUserConfig( array("FromName" => $jntp->packet{'Data'}{'FromName'}, "FromMail" => $jntp->packet{'Data'}{'FromMail'}, "ReplyTo" => $jntp->packet{'Data'}{'ReplyTo'}) );
 		}
-
 		return true;
 	}
 }

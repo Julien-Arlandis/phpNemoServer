@@ -5,25 +5,26 @@ if($this->param{'Data'})
 {
 	$this->packet{'Data'} = $this->param{'Data'};
 
-	// Check if /Data/DataType is valid
+	// Check if Data.DataType is valid
 	if ($this->loadDataType())
 	{
 		// Check if Data is conform to DataType declaration
 		if( $this->datatype->isValidData() )
 		{
-			// Effectue les actions déclarées dans le Data/Control.
+			// Traitment before insertion
 			if ( $this->datatype->beforeInsertion() )
 			{
-				// Complète la Data
+				// Complete Data
 				$this->datatype->forgeData();
-				// Fabrique le packet
+				// Forge packet
 				$this->forgePacket();
-				// Insère le packet dans la base de données.
+				// Insert packet in database
 				$this->insertPacket();
 				$this->datatype->afterInsertion($this->packet{'ID'});
 
 				$this->reponse{'code'} = "200";
 				$this->reponse{'body'}{'Data'}{'DataID'} = $this->packet{'Data'}{'DataID'};
+				$this->reponse{'body'}{'Data'}{'DataType'} = $this->packet{'Data'}{'DataType'};
 				$this->reponse{'body'}{'Jid'} = $this->packet{'Jid'};
 				$this->reponse{'body'}{'ID'} = $this->packet{'ID'};
 			}
@@ -46,11 +47,11 @@ elseif($this->param{'Packet'})
 	$this->packet = $this->param{'Packet'};
 	$this->loadDataType();
 
-	// Vérifie si le feed est autorisé
+	// Check feed autorisation
 	if( $this->config['feed'][$this->param{'From'}]['actif'] == 1 && in_array($_SERVER['REMOTE_ADDR'], $this->getIPs() ) )
 	{
 		$want = false;
-		// Vérifie si le paquet est déjà dans la base
+		// Check if packet exists
 		if( !isset($this->packet{'Data'}{'DataID'}) || $this->packet{'Jid'} == $this->packet{'Data'}{'DataID'} )
 		{
 			if( !$this->isStorePacket( array('Jid' => $this->packet{'Jid'}) ) )
@@ -80,10 +81,10 @@ elseif($this->param{'Packet'})
 		{
 			if( $this->isValidPacket() )
 			{
-				// Effectue les actions déclarées dans le Data/Control.
+				// Traitment before insertion
 				if ( $this->datatype->beforeInsertion() )
 				{
-					// Insère le packet dans la base de données.
+					// Insert packet in database
 					if($this->insertPacket())
 					{
 						$this->datatype->afterInsertion($this->packet{'ID'});
@@ -113,7 +114,7 @@ elseif($this->param{'Packet'})
 }
 elseif($this->param{'Propose'})
 {
-	// Vérifie si le feed est autorisé
+	// Check feed autorisation
 	if( $this->config['feed'][$this->param{'From'}]['actif'] == 1 && in_array($_SERVER['REMOTE_ADDR'], $this->getIPs() ) )
 	{
 		for($i=0; $i<count($this->param{'Propose'}); $i++)

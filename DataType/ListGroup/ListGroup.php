@@ -1,41 +1,5 @@
 <?php
 
-// Retourne les hiérarchies et les sous hiérarchies qui contiennent les newsgroups déclarés dans Data/Newsgroups
-function getHierarchy($newsgroups = false)
-{
-	global $jntp;
-
-	if(!$newsgroups)
-	{
-		$newsgroups = $jntp->packet{'Data'}{'Newsgroups'};
-	}
-	$hierarchy = array();
-	foreach($newsgroups as $oneGroup)
-	{
-		if(substr($oneGroup, 0, 1) == '#')
-		{
-			array_push($hierarchy, '#*');
-		}
-		else
-		{
-			$tab = explode(".", $oneGroup);
-			if(count($tab) >= 2)
-			{
-				$str = "";
-				for ($i=0; $i<count($tab)-1; $i++)
-				{
-					$str .= $tab[$i].".";
-					if( !in_array($str."*", $hierarchy) ) 
-					{
-						array_push($hierarchy, $str."*");
-					}
-				}
-			}
-		}
-	}
-	return $hierarchy;
-}
-
 class DataType
 {
 	function __construct() 
@@ -56,7 +20,6 @@ class DataType
 	function forgeData()
 	{
 		global $jntp;
-
 		$jntp->packet{'Data'}{'DataID'} = "";
 		$jntp->packet{'Data'}{'InjectionDate'} = date("Y-m-d")."T".date("H:i:s")."Z";
 		$jntp->packet{'Data'}{'OriginServer'} = $jntp->config{'domain'};
@@ -66,7 +29,6 @@ class DataType
 		$jntp->packet{'Data'}{'ComplaintsTo'} = $jntp->config{'administrator'};
 		$jntp->packet{'Data'}{'ProtocolVersion'} = $jntp->config{'protocolVersion'};
 		$jntp->packet{'Data'}{'Server'} = "PhpNemoServer/".$jntp->config{'serverVersion'};
-		$jntp->packet{'Meta'}{'ServerPublicKey'} = PUBLIC_KEY;
 
 		if ($jntp->userid)
 		{
@@ -80,17 +42,15 @@ class DataType
 
 		$cfg = json_decode(file_get_contents(__DIR__.'/../../conf/newsgroups.json'), true);
 
-		if( $jntp->packet{'Data'}{'Newsgroups'}[0] == '@newsgroups' && $jntp->packet{'Data'}{'DataType'} == 'ListGroup' && $jntp->packet{'Data'}{'ListGroup'} )
+		if( $jntp->packet{'Data'}{'DataType'} == 'ListGroup' && $jntp->packet{'Data'}{'ListGroup'} )
 		{
-			$value = str_replace(".","\.", $jntp->packet{'Data'}{'Hierarchy'});
-			$value = new MongoRegex("/^$value/");
+			$value = new MongoRegex("/^".preg_quote($jntp->packet{'Data'}{'Hierarchy'})."/");
 			$jntp->mongo->newsgroup->remove(array("name"=>$value));
-
 			foreach($jntp->packet{'Data'}{'ListGroup'} as $cle => $obj)
 			{
-				if($cfg->rules{$obj['name']})
+				if($cfg['rules'][$obj['name']])
 				{
-					$obj['rulesIfNotConnected'] = $cfg->rules{$obj['name']}{'rulesIfNotConnected'};
+					$obj['rulesIfNotConnected'] = $cfg['rules'][$obj['name']]['rulesIfNotConnected'];
 				}
 
 				$obj['type'] = 'N';
@@ -124,18 +84,9 @@ class DataType
 					} catch(MongoCursorException $e) { }
 				}
 			}
+			return true;
 		}
-
-		$jntp->packet{'Meta'}{'Size'} = array(strlen($jntp->packet{'Data'}{'Body'}));
-		$jntp->packet{'Meta'}{'Hierarchy'} = getHierarchy();
-		if($jntp->packet{'Data'}{'Media'})
-		{
-			foreach($jntp->packet{'Data'}{'Media'} as $cle => $value)
-			{
-				$size = strlen($jntp->packet{'Data'}{'Media'}[$cle]{'data'});
-				array_push($jntp->packet{'@Size'}, $size);
-			}
-		}
+		return false;
 	}
 
 	function afterInsertion($idPacket)
@@ -144,4 +95,36 @@ class DataType
 		$jntp->superDiffuse();
 		return $idPacket;
 	}
+}
+
+// Retourne les hiérarchies et les sous hiérarchies qui contiennent les newsgroups déclarés dans Data/Newsgroups
+function getHierarchy($newsgroups = false)
+{
+	global $jntp;
+
+	$hierarchy = array();
+	foreach($newsgroups as $oneGroup)
+	{
+		if(substr($oneGroup, 0, 1) == '#')
+		{
+			array_push($hierarchy, '#*');
+		}
+		else
+		{
+			$tab = explode(".", $oneGroup);
+			if(count($tab) >= 2)
+			{
+				$str = "";
+				for ($i=0; $i<count($tab)-1; $i++)
+				{
+					$str .= $tab[$i].".";
+					if( !in_array($str."*", $hierarchy) ) 
+					{
+						array_push($hierarchy, $str."*");
+					}
+				}
+			}
+		}
+	}
+	return $hierarchy;
 }
