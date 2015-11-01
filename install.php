@@ -26,7 +26,7 @@ if( !file_exists( __DIR__ . '/delete.txt'))
 	die( '500 You must create delete.txt file to continue installation' );
 }
 
-$server_version = '0.89e';
+$server_version = '0.89f';
 $config = array(
     "private_key_bits" => 1024,
     "private_key_type" => OPENSSL_KEYTYPE_RSA,
