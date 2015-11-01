@@ -293,7 +293,11 @@ class NNTP
 		$article = "Path: !from-jntp\r\n";
 		$article .= "Message-ID: <".$json{'Data'}{'DataID'}.">\r\n";
 		$article .= "JNTP-Route: ".implode("|", $json{'Route'})."\r\n";
-
+		$OriginServer = $json{'Data'}{'OriginServer'};
+		$PostingHost =  $json{'Data'}{'PostingHost'};
+		$identifiant_packet =$json{'ID'};
+		$UserID =  $json{'Data'}{'UserID'};
+		$ComplaintsTo =  $json{'Data'}{'ComplaintsTo'};
 		foreach ($json{'Data'} as $cle=>$value) 
 		{
 			if(empty($value)) continue;
@@ -359,6 +363,11 @@ class NNTP
 				{
 					$wordwrap = false;
 				}
+			}
+			elseif($cle === 'PostingHost')
+			{
+				// RFC 5536 <URL:https://tools.ietf.org/html/rfc5536> Header
+				$article .= "Injection-Info: " . $OriginServer . '; posting-host="'.$PostingHost. '"; logging-data="' . $identifiant_packet . '"; posting-account="' . $UserID . '"; mail-complaints-to="' . $ComplaintsTo.'"'."\r\n";
 			}
 			elseif($cle === 'Body')
 			{
