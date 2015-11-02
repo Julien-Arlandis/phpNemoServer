@@ -264,7 +264,7 @@ class NNTP
 
 	static function articleJ2N($json)
 	{
-		if(!is_array($json) || $json{'Data'}{'DataID'} == $json{'Jid'})
+		if(!is_array($json))
 		{
 			die();
 		}
@@ -290,7 +290,7 @@ class NNTP
 
 		mb_internal_encoding('UTF-8');
 
-		$article = "Path: !from-jntp\r\n";
+		$article = "Path: from-devjntp\r\n";
 		$article .= "Message-ID: <".$json{'Data'}{'DataID'}.">\r\n";
 		$article .= "JNTP-Route: ".implode("|", $json{'Route'})."\r\n";
 		$OriginServer = $json{'Data'}{'OriginServer'};

@@ -382,6 +382,7 @@ class JNTP
 			$startFeed = false;
 			foreach($this->config{'feed'}{$server}{'match'} as $key => $match)
 			{
+/*
 				if ($match === "*" || (is_array($match) && $match[0] === "*" ) ) 
 				{
 					$startFeed = true;
@@ -393,7 +394,6 @@ class JNTP
 				{
 					$val = $val{$oneKey};
 				}
-
 				if( 
 					( $val === $match ) || 
 					( is_array($match) && is_string($val) && (in_array($val, $match)) )   || 
@@ -407,14 +407,19 @@ class JNTP
 					$startFeed = false;
 					break;
 				}
-			}
-
+*/
+$startFeed = true;
 			if(!$startFeed || in_array($server, $this->packet{'Route'})) continue;
+
 			$jid = str_replace("'","\'",$this->packet{'Jid'});
 			$datatype = str_replace("'","\'",$this->packet{'Data'}{'DataType'});
 			$dataid = str_replace("'","\'",$this->packet{'Data'}{'DataID'});
 			$cmd = PHP_PATH.' '.__DIR__.'/../../../connector/'.$this->config{'feed'}{$server}{'type'}[1].' '.$server." '$jid' '$dataid' '$datatype'";
 			shell_exec($cmd. ' >> /dev/null &');
+
+
+
+			}
 		}
 	}
 
