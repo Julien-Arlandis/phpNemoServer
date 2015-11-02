@@ -91,6 +91,11 @@ elseif($this->param{'Packet'})
 						$this->reponse{'code'} = "200";
 						$this->reponse{'body'} = $this->packet{'Jid'} . " : inserted";
 					}
+					else
+					{
+						$this->reponse{'code'} = "300";
+						$this->reponse{'body'} = $this->packet{'Jid'} . " : not inserted";
+					}
 				}
 			}
 			else
