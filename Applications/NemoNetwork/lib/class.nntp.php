@@ -416,8 +416,10 @@ class NNTP
 			{
 				$value = str_replace('#Jid#', $json{'Jid'}, $value);
 				$value = str_replace("\r\n", "\n", $value);
-				if($cle !='UserID'){
+				if($cle =='UserID' || $cle == 'DataID'){
 					//UserID déjà dans Injection-Info
+					//DataID = Message-ID
+				}else{
 					$article .= "JNTP-".$cle.": ".str_replace("\n", "\r\n ", $value)."\r\n";
 				}
 			}
