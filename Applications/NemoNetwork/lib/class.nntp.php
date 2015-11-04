@@ -351,7 +351,7 @@ class NNTP
 			}
 			elseif($cle === 'ComplaintsTo')
 			{
-				$article .= "X-Complaints-To: ".$value."\r\n";
+				//voir Injection-Info
 			}
 			elseif($cle === 'ReplyTo')
 			{
@@ -416,7 +416,10 @@ class NNTP
 			{
 				$value = str_replace('#Jid#', $json{'Jid'}, $value);
 				$value = str_replace("\r\n", "\n", $value);
-				$article .= "JNTP-".$cle.": ".str_replace("\n", "\r\n ", $value)."\r\n";
+				if($cle !='UserID'){
+					//UserID déjà dans Injection-Info
+					$article .= "JNTP-".$cle.": ".str_replace("\n", "\r\n ", $value)."\r\n";
+				}
 			}
 			if(count($nemotags)!=0)
 			{
