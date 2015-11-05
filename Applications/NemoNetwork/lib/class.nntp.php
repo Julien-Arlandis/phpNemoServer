@@ -268,6 +268,8 @@ class NNTP
 		{
 			die();
 		}
+		$estCancel =false;
+		$notSupersedes=true;
 		$wordwrap = true;
 		$newsgroups = array();
 		$nemotags = array();
@@ -290,7 +292,7 @@ class NNTP
 
 		mb_internal_encoding('UTF-8');
 
-		$article = "Path: from-devjntp\r\n";
+		
 		$article .= "Message-ID: <".$json{'Data'}{'DataID'}.">\r\n";
 		$article .= "JNTP-Route: ".implode("|", $json{'Route'})."\r\n";
 		$OriginServer = $json{'Data'}{'OriginServer'};
@@ -305,6 +307,7 @@ class NNTP
 			if($cle === 'Control')
 			{
 				$article .= "Control: ".$value[0]." <".$value[1].">\r\n";
+				$estCancel=true;
 			}
 			elseif($cle === 'FromName')
 			{
@@ -348,6 +351,7 @@ class NNTP
 			elseif($cle === 'Supersedes')
 			{
 				$article .= "Supersedes: <".$value.">\r\n";
+				$notSupersedes=false;
 			}
 			elseif($cle === 'ComplaintsTo')
 			{
@@ -428,7 +432,11 @@ class NNTP
 				$article .= "JNTP-Nemotags: ".implode(",", $nemotags)."\r\n";
 			}
 		}
-	
+		if($estCancel && $notSupersedes){
+			$article = "Path: from-devjntp!cyberspam!usenet\r\n";
+		}else{
+			$article = "Path: from-devjntp\r\n";
+		}
 		$article .= "MIME-Version: 1.0\r\n";
 		$article .= "Content-Type: text/plain; charset=UTF-8; format=flowed\r\n";
 		$article .= "Content-Transfer-Encoding: 8bit\r\n";
