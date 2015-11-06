@@ -248,7 +248,7 @@ class JNTP
 	function forgePacket()
 	{
 		$this->packet{'Jid'} = $this->hashString( $this->canonicFormat($this->packet{'Data'}) );
-		if($this->packet{'Data'}{'DataID'} === "@".$this->config{'domain'})
+		if($this->packet{'Data'}{'DataID'} === "@jntp")
 		{
 			$this->packet{'Data'}{'DataID'} = $this->packet{'Jid'}.$this->packet{'Data'}{'DataID'};
 		}

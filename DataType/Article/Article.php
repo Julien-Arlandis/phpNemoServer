@@ -11,7 +11,7 @@ class DataType
 	function forgeData()
 	{
 		global $jntp;
-		$jntp->packet{'Data'}{'DataID'} = "@".$jntp->config{'domain'};
+		$jntp->packet{'Data'}{'DataID'} = "@jntp";
 		$jntp->packet{'Data'}{'InjectionDate'} = date("Y-m-d")."T".date("H:i:s")."Z";
 		$jntp->packet{'Data'}{'Organization'} = $jntp->config{'organization'};
 		$jntp->packet{'Data'}{'Browser'} = $_SERVER['HTTP_USER_AGENT'];
