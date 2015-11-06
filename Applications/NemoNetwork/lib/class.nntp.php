@@ -268,6 +268,8 @@ class NNTP
 		{
 			die();
 		}
+		$estCancel =false;
+		$notSupersedes=true;
 		$wordwrap = true;
 		$newsgroups = array();
 		$nemotags = array();
@@ -290,7 +292,7 @@ class NNTP
 
 		mb_internal_encoding('UTF-8');
 
-		$article = "Path: from-devjntp\r\n";
+		
 		$article .= "Message-ID: <".$json{'Data'}{'DataID'}.">\r\n";
 		$article .= "JNTP-Route: ".implode("|", $json{'Route'})."\r\n";
 		$PostingHost =  $json{'Data'}{'PostingHost'};
@@ -303,8 +305,13 @@ class NNTP
 
 			if($cle === 'Control')
 			{
+<<<<<<< HEAD
 				$control = 'cancel';
 				$article .= "Control: ".$control." <".$value[1].">\r\n";
+=======
+				$article .= "Control: ".$value[0]." <".$value[1].">\r\n";
+				$estCancel=true;
+>>>>>>> 583907ee1b0d400c75b7eab72cb2c404ffe1646c
 			}
 			elseif($cle === 'FromName')
 			{
@@ -348,10 +355,11 @@ class NNTP
 			elseif($cle === 'Supersedes')
 			{
 				$article .= "Supersedes: <".$value.">\r\n";
+				$notSupersedes=false;
 			}
 			elseif($cle === 'ComplaintsTo')
 			{
-				$article .= "X-Complaints-To: ".$value."\r\n";
+				//voir Injection-Info
 			}
 			elseif($cle === 'ReplyTo')
 			{
@@ -417,15 +425,28 @@ class NNTP
 			{
 				$value = str_replace('#Jid#', $json{'Jid'}, $value);
 				$value = str_replace("\r\n", "\n", $value);
-				$article .= "JNTP-".$cle.": ".str_replace("\n", "\r\n ", $value)."\r\n";
+				if($cle =='UserID' || $cle == 'DataID'){
+					//UserID déjà dans Injection-Info
+					//DataID = Message-ID
+				}else{
+					$article .= "JNTP-".$cle.": ".str_replace("\n", "\r\n ", $value)."\r\n";
+				}
 			}
 		}
+<<<<<<< HEAD
 
 		if(count($nemotags)!=0)
 		{
 			$article .= "JNTP-Nemotags: ".implode(",", $nemotags)."\r\n";
 		}
 
+=======
+		if($estCancel && $notSupersedes){
+			$article = "Path: from-devjntp!cyberspam!usenet\r\n";
+		}else{
+			$article = "Path: from-devjntp\r\n";
+		}
+>>>>>>> 583907ee1b0d400c75b7eab72cb2c404ffe1646c
 		$article .= "MIME-Version: 1.0\r\n";
 		$article .= "Content-Type: text/plain; charset=UTF-8; format=flowed\r\n";
 		$article .= "Content-Transfer-Encoding: 8bit\r\n";
