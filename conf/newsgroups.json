@@ -14,11 +14,6 @@
 			"rulesIfNotConnected": {
 			    "w": "1"
 			}
-		},
-		"#testNemoTagOnFreeAccess": {
-			"rulesIfNotConnected": {
-			    "w": "1"
-			}
 		}
 	},
 	"categories": {
@@ -33,6 +28,6 @@
 			"rules": { "w": "1" }
 		}
 	],
-	"hierarchy": ["fr.*","nemo.*","big8","grisbi.*"]
+	"hierarchy": ["fr.*","nemo.*","big8"]
 }
 

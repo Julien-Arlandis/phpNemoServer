@@ -293,7 +293,6 @@ class NNTP
 		$article = "Path: from-devjntp\r\n";
 		$article .= "Message-ID: <".$json{'Data'}{'DataID'}.">\r\n";
 		$article .= "JNTP-Route: ".implode("|", $json{'Route'})."\r\n";
-		$OriginServer = $json{'Data'}{'OriginServer'};
 		$PostingHost =  $json{'Data'}{'PostingHost'};
 		$identifiant_packet =$json{'ID'};
 		$UserID =  $json{'Data'}{'UserID'};
@@ -304,7 +303,8 @@ class NNTP
 
 			if($cle === 'Control')
 			{
-				$article .= "Control: ".$value[0]." <".$value[1].">\r\n";
+				$control = 'cancel';
+				$article .= "Control: ".$control." <".$value[1].">\r\n";
 			}
 			elseif($cle === 'FromName')
 			{
@@ -367,7 +367,7 @@ class NNTP
 			elseif($cle === 'PostingHost')
 			{
 				// RFC 5536 <URL:https://tools.ietf.org/html/rfc5536> Header
-				$article .= "Injection-Info: " . $OriginServer . '; posting-host="'.$PostingHost. '"; logging-data="' . $identifiant_packet . '"; posting-account="' . $UserID . '"; mail-complaints-to="' . $ComplaintsTo.'"'."\r\n";
+				$article .= "Injection-Info: " . DOMAIN . '; posting-host="'.$PostingHost. '"; logging-data="' . $identifiant_packet . '"; posting-account="' . $UserID . '"; mail-complaints-to="' . $ComplaintsTo.'"'."\r\n";
 			}
 			elseif($cle === 'Body')
 			{
@@ -403,6 +403,7 @@ class NNTP
 
 				$body = str_replace('#Uri#', $json{'Data'}{'Uri'}, $body);
 				$body = str_replace('#Jid#', $json{'Jid'}, $body);
+				$body = str_replace('#DataID#', $json{'Data'}{'DataID'}, $body);
 				$body = str_replace('#ThreadID#', $json{'Data'}{'ThreadID'}, $body);
 
 				$body = preg_replace('/jntp:([a-f0-9]+@[.A-Za-z0-9\/\_\-\:]+)/', '<http://'.DOMAIN.'/jntp/$1>', $body);
@@ -418,12 +419,13 @@ class NNTP
 				$value = str_replace("\r\n", "\n", $value);
 				$article .= "JNTP-".$cle.": ".str_replace("\n", "\r\n ", $value)."\r\n";
 			}
-			if(count($nemotags)!=0)
-			{
-				$article .= "JNTP-Nemotags: ".implode(",", $nemotags)."\r\n";
-			}
 		}
-	
+
+		if(count($nemotags)!=0)
+		{
+			$article .= "JNTP-Nemotags: ".implode(",", $nemotags)."\r\n";
+		}
+
 		$article .= "MIME-Version: 1.0\r\n";
 		$article .= "Content-Type: text/plain; charset=UTF-8; format=flowed\r\n";
 		$article .= "Content-Transfer-Encoding: 8bit\r\n";

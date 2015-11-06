@@ -247,12 +247,12 @@ class JNTP
 	// Fabrique le paquet JNTP qui encapsule la Data
 	function forgePacket()
 	{
-		$this->packet{'Jid'} = $this->hashString( $this->canonicFormat($this->packet{'Data'}) ).'@'.$this->config{'domain'};
-		if($this->packet{'Data'}{'DataID'} === "")
+		$this->packet{'Jid'} = $this->hashString( $this->canonicFormat($this->packet{'Data'}) );
+		if($this->packet{'Data'}{'DataID'} === "@".$this->config{'domain'})
 		{
-			$this->packet{'Data'}{'DataID'} = $this->packet{'Jid'};
+			$this->packet{'Data'}{'DataID'} = $this->packet{'Jid'}.$this->packet{'Data'}{'DataID'};
 		}
-		$this->packet{'Route'} = array();
+		if(!$this->packet{'Route'}) $this->packet{'Route'} = array();
 		if(!$this->packet{'Meta'}) $this->packet{'Meta'} = array();
 
 		if (!$privateKey = openssl_pkey_get_private(PRIVATE_KEY)) die('Loading Private Key failed');
@@ -380,8 +380,8 @@ class JNTP
 		{
 			if(!$this->config{'feed'}{$server}{'actif'}) continue;
 			$startFeed = false;
-			foreach($this->config{'feed'}{$server}{'match'} as $key => $match)
-			{
+//			foreach($this->config{'feed'}{$server}{'match'} as $key => $match)
+//			{
 /*
 				if ($match === "*" || (is_array($match) && $match[0] === "*" ) ) 
 				{
@@ -417,9 +417,7 @@ $startFeed = true;
 			$cmd = PHP_PATH.' '.__DIR__.'/../../../connector/'.$this->config{'feed'}{$server}{'type'}[1].' '.$server." '$jid' '$dataid' '$datatype'";
 			shell_exec($cmd. ' >> /dev/null &');
 
-
-
-			}
+			//}
 		}
 	}
 

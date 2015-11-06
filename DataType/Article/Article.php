@@ -11,9 +11,8 @@ class DataType
 	function forgeData()
 	{
 		global $jntp;
-		$jntp->packet{'Data'}{'DataID'} = "";
+		$jntp->packet{'Data'}{'DataID'} = "@".$jntp->config{'domain'};
 		$jntp->packet{'Data'}{'InjectionDate'} = date("Y-m-d")."T".date("H:i:s")."Z";
-		$jntp->packet{'Data'}{'OriginServer'} = $jntp->config{'domain'};
 		$jntp->packet{'Data'}{'Organization'} = $jntp->config{'organization'};
 		$jntp->packet{'Data'}{'Browser'} = $_SERVER['HTTP_USER_AGENT'];
 		$jntp->packet{'Data'}{'PostingHost'} = ($jntp->config{'cryptPostingHost'} == "connected" && !$jntp->userid) ? $_SERVER['REMOTE_ADDR'] : sha1($_SERVER['REMOTE_ADDR']);
@@ -162,6 +161,11 @@ class DataType
 					$size = strlen($jntp->packet{'Data'}{'Media'}[$cle]{'data'});
 					array_push($jntp->packet{'Meta'}{'Size'}, $size);
 				}
+			}
+			if(!$jntp->packet{'Data'}{'ThreadID'}) 
+			{
+				$jntp->packet{'Data'}{'ThreadID'} = getThreadID();
+				$jntp->forgePacket();
 			}
 			return true;
 		}
