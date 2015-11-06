@@ -21,7 +21,7 @@ This file is part of PhpNemoServer.
     along with PhpNemoServer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-define('GATEWAY_VERSION', '0.95');
+define('GATEWAY_VERSION', '0.96');
 
 class NNTP
 {
@@ -268,8 +268,8 @@ class NNTP
 		{
 			die();
 		}
-		$estCancel =false;
-		$notSupersedes=true;
+		$isCancel = false;
+		$notSupersedes = true;
 		$wordwrap = true;
 		$newsgroups = array();
 		$nemotags = array();
@@ -303,9 +303,7 @@ class NNTP
 			{
 				$control = 'cancel';
 				$article .= "Control: ".$control." <".$value[1].">\r\n";
-
-				$article .= "Control: ".$value[0]." <".$value[1].">\r\n";
-				$estCancel=true;
+				$isCancel = true;
 
 			}
 			elseif($cle === 'FromName')
@@ -425,13 +423,6 @@ class NNTP
 			$article .= "JNTP-Nemotags: ".implode(",", $nemotags)."\r\n";
 		}
 
-
-		if($estCancel && $notSupersedes){
-			$article = "Path: from-devjntp!cyberspam!usenet\r\n";
-		}else{
-			$article = "Path: from-devjntp\r\n";
-		}
-
 		$article .= "MIME-Version: 1.0\r\n";
 		$article .= "Content-Type: text/plain; charset=UTF-8; format=flowed\r\n";
 		$article .= "Content-Transfer-Encoding: 8bit\r\n";
@@ -439,7 +430,15 @@ class NNTP
 		$article .= "From: ".$fromName." <".$fromMail.">\r\n";
 		$article .= "\r\n";
 		$article .= $body;
-		return $article;
+
+		if($isCancel && $notSupersedes)
+		{
+			return "Path: from-devjntp!cyberspam!usenet\r\n".$article;
+		}
+		else
+		{
+			return "Path: from-devjntp\r\n".$article;
+		}
 	}
 
 	static function logGateway($post, $server, $direct = '<')
