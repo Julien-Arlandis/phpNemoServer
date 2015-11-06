@@ -12,6 +12,7 @@ class DataType
 	{
 		global $jntp;
 		$jntp->packet{'Data'}{'DataID'} = "@jntp";
+		$jntp->packet{'Data'}{'OriginServer'} = $jntp->config{'domain'};
 		$jntp->packet{'Data'}{'InjectionDate'} = date("Y-m-d")."T".date("H:i:s")."Z";
 		$jntp->packet{'Data'}{'Organization'} = $jntp->config{'organization'};
 		$jntp->packet{'Data'}{'Browser'} = $_SERVER['HTTP_USER_AGENT'];
@@ -22,7 +23,7 @@ class DataType
 		$jntp->packet{'Meta'}{'ForAdmin'}{'IP'} = $_SERVER['REMOTE_ADDR'];
 		if( $jntp->packet{'Data'}{'ThreadID'} == '' )
 		{
-			$jntp->packet{'Data'}{'ThreadID'} = $jntp->hashString(sha1(uniqid().DOMAIN));
+			$jntp->packet{'Data'}{'ThreadID'} = $jntp->hashString(sha1(uniqid().$jntp->config{'domain'}));
 		}
 
 		if ($jntp->userid)

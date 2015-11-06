@@ -364,7 +364,7 @@ class NNTP
 			elseif($cle === 'PostingHost')
 			{
 				// RFC 5536 <URL:https://tools.ietf.org/html/rfc5536> Header
-				$article .= "Injection-Info: " . DOMAIN . '; posting-host="'.$json{'Data'}{'PostingHost'}. '"; logging-data="' . $json{'ID'} . '"; posting-account="' . $json{'Data'}{'UserID'} . '"; mail-complaints-to="' . $json{'Data'}{'ComplaintsTo'}.'"'."\r\n";
+				$article .= "Injection-Info: " . $json{'Data'}{'OriginServer'} . '; posting-host="'.$json{'Data'}{'PostingHost'}. '"; logging-data="' . $json{'ID'} . '"; posting-account="' . $json{'Data'}{'UserID'} . '"; mail-complaints-to="' . $json{'Data'}{'ComplaintsTo'}.'"'."\r\n";
 			}
 			elseif($cle === 'Body')
 			{
@@ -403,7 +403,7 @@ class NNTP
 				$body = str_replace('#DataID#', $json{'Data'}{'DataID'}, $body);
 				$body = str_replace('#ThreadID#', $json{'Data'}{'ThreadID'}, $body);
 
-				$body = preg_replace('/jntp:([a-f0-9]+@[.A-Za-z0-9\/\_\-\:]+)/', '<http://'.DOMAIN.'/jntp/$1>', $body);
+				$body = preg_replace('/jntp:([a-f0-9]+@[.A-Za-z0-9\/\_\-\:]+)/', '<http://'.$json{'Data'}{'OriginServer'}.'/jntp/$1>', $body);
 				$body = str_replace("\r\n.\r\n", "\r\n..\r\n", $body);
 			}
 			elseif($cle === 'Media' || $cle === 'UserID' || $cle === 'DataID' || $cle === 'ComplaintsTo')
@@ -413,6 +413,7 @@ class NNTP
 			else
 			{
 				$value = str_replace('#Jid#', $json{'Jid'}, $value);
+				$value = str_replace('#DataID#', $json{'Data'}{'DataID'}, $value);
 				$value = str_replace("\r\n", "\n", $value);
 				$article .= "JNTP-".$cle.": ".str_replace("\n", "\r\n ", $value)."\r\n";
 			}
