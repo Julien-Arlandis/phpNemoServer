@@ -292,26 +292,21 @@ class NNTP
 
 		mb_internal_encoding('UTF-8');
 
-		
 		$article .= "Message-ID: <".$json{'Data'}{'DataID'}.">\r\n";
 		$article .= "JNTP-Route: ".implode("|", $json{'Route'})."\r\n";
-		$PostingHost =  $json{'Data'}{'PostingHost'};
-		$identifiant_packet =$json{'ID'};
-		$UserID =  $json{'Data'}{'UserID'};
-		$ComplaintsTo =  $json{'Data'}{'ComplaintsTo'};
+
 		foreach ($json{'Data'} as $cle=>$value) 
 		{
 			if(empty($value)) continue;
 
 			if($cle === 'Control')
 			{
-<<<<<<< HEAD
 				$control = 'cancel';
 				$article .= "Control: ".$control." <".$value[1].">\r\n";
-=======
+
 				$article .= "Control: ".$value[0]." <".$value[1].">\r\n";
 				$estCancel=true;
->>>>>>> 583907ee1b0d400c75b7eab72cb2c404ffe1646c
+
 			}
 			elseif($cle === 'FromName')
 			{
@@ -357,10 +352,6 @@ class NNTP
 				$article .= "Supersedes: <".$value.">\r\n";
 				$notSupersedes=false;
 			}
-			elseif($cle === 'ComplaintsTo')
-			{
-				//voir Injection-Info
-			}
 			elseif($cle === 'ReplyTo')
 			{
 				$article .= "Reply-To: ".$value."\r\n";
@@ -375,7 +366,7 @@ class NNTP
 			elseif($cle === 'PostingHost')
 			{
 				// RFC 5536 <URL:https://tools.ietf.org/html/rfc5536> Header
-				$article .= "Injection-Info: " . DOMAIN . '; posting-host="'.$PostingHost. '"; logging-data="' . $identifiant_packet . '"; posting-account="' . $UserID . '"; mail-complaints-to="' . $ComplaintsTo.'"'."\r\n";
+				$article .= "Injection-Info: " . DOMAIN . '; posting-host="'.$json{'Data'}{'PostingHost'}. '"; logging-data="' . $json{'ID'} . '"; posting-account="' . $json{'Data'}{'UserID'} . '"; mail-complaints-to="' . $json{'Data'}{'ComplaintsTo'}.'"'."\r\n";
 			}
 			elseif($cle === 'Body')
 			{
@@ -417,7 +408,7 @@ class NNTP
 				$body = preg_replace('/jntp:([a-f0-9]+@[.A-Za-z0-9\/\_\-\:]+)/', '<http://'.DOMAIN.'/jntp/$1>', $body);
 				$body = str_replace("\r\n.\r\n", "\r\n..\r\n", $body);
 			}
-			elseif($cle === 'Media')
+			elseif($cle === 'Media' || $cle === 'UserID' || $cle === 'DataID' || $cle === 'ComplaintsTo')
 			{
 				// Nothing
 			}
@@ -425,28 +416,22 @@ class NNTP
 			{
 				$value = str_replace('#Jid#', $json{'Jid'}, $value);
 				$value = str_replace("\r\n", "\n", $value);
-				if($cle =='UserID' || $cle == 'DataID'){
-					//UserID déjà dans Injection-Info
-					//DataID = Message-ID
-				}else{
-					$article .= "JNTP-".$cle.": ".str_replace("\n", "\r\n ", $value)."\r\n";
-				}
+				$article .= "JNTP-".$cle.": ".str_replace("\n", "\r\n ", $value)."\r\n";
 			}
 		}
-<<<<<<< HEAD
 
 		if(count($nemotags)!=0)
 		{
 			$article .= "JNTP-Nemotags: ".implode(",", $nemotags)."\r\n";
 		}
 
-=======
+
 		if($estCancel && $notSupersedes){
 			$article = "Path: from-devjntp!cyberspam!usenet\r\n";
 		}else{
 			$article = "Path: from-devjntp\r\n";
 		}
->>>>>>> 583907ee1b0d400c75b7eab72cb2c404ffe1646c
+
 		$article .= "MIME-Version: 1.0\r\n";
 		$article .= "Content-Type: text/plain; charset=UTF-8; format=flowed\r\n";
 		$article .= "Content-Transfer-Encoding: 8bit\r\n";
