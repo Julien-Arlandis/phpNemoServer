@@ -98,7 +98,7 @@ if($this->userid)
 			$this->reponse{'body'} = "ReplyTo modifié";
 		}
 	}
-	if(isset($this->param{'HashKey'}))
+	if(isset($this->param{'hashkey'}))
 	{
 		if(strlen($this->param{'HashKey'}) > 30) 
 		{
@@ -107,9 +107,9 @@ if($this->userid)
 		}
 		else
 		{
-			$this->updateUserConfig( array("HashKey" => $this->param{'HashKey'}) );
+			$this->updateUserConfig( array("hashkey" => $this->param{'hashkey'}) );
 			$this->reponse{'code'} = "200";
-			$this->reponse{'body'} = "HashKey modifié";
+			$this->reponse{'body'} = "hashkey modifié";
 		}
 	}
 }
