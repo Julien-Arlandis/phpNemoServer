@@ -1,10 +1,8 @@
 phpNemoServer/Nemo Readme
 ===================
 
-Version 0.89f
-
-phpNemoServer is a set of PHP-scripts to manage JNTP Server.
-
+Version 0.89f  
+phpNemoServer is a set of PHP-scripts to manage JNTP Server.  
 http://news.nemoweb.net/
 
 Copyright
@@ -36,10 +34,10 @@ Installation
 ------
 
 Copy phpNemoServer.tar.gz in your website.  
-tar xzvf phpNemoServer.tar.gz
+    tar xzvf phpNemoServer.tar.gz
 
 With github :  
-git clone https://github.com/Julien-Arlandis/phpNemoServer.git webSiteDirectory
+    git clone https://github.com/Julien-Arlandis/phpNemoServer.git webSiteDirectory
 
 Go to http://yourserver/NemoServer/install.php.  
 Delete install.php file.  
@@ -50,17 +48,17 @@ Greats :)
 Procedure to export users to user.json file
 -------
 
-mongoexport --db <database> --collection user --out user.json
+    mongoexport --db <database> --collection user --out user.json
 
 Procedure to import users from user.json file
 -------
 
-    mongoimport --db <database> --collection user --file user.json  
-    mongo <<EOF  
-    use <database>  
-    db.counters.findAndModify({  
-        query: {"_id":"UserID"},  
-        update: {"seq":db.user.find().sort({"UserID":-1}).limit(1).next().UserID},  
-        upsert: true  
-    });  
-    EOF  
+    mongoimport --db <database> --collection user --file user.json
+    mongo <<EOF
+    use <database>
+    db.counters.findAndModify({
+        query: {"_id":"UserID"},
+        update: {"seq":db.user.find().sort({"UserID":-1}).limit(1).next().UserID},
+        upsert: true
+    });
+    EOF
