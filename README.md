@@ -37,9 +37,9 @@ Copy phpNemoServer.tar.gz in your website.
 
     tar xzvf phpNemoServer.tar.gz
 
-With github :  
+Or using git in your website root directory :  
 
-    git clone https://github.com/Julien-Arlandis/phpNemoServer.git webSiteDirectory
+    git clone https://github.com/Julien-Arlandis/phpNemoServer.git NemoServer
 
 Go to http://yourserver/NemoServer/install.php.  
 Delete install.php file.  
