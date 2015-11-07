@@ -38,7 +38,7 @@ function isValidNemoTag($groupe)
 	return true;
 }
 
-// Retourne les hiérarchies et les sous hiérarchies qui contiennent les newsgroups déclarés dans Data/Newsgroups
+// Retourne les hiérarchies et les sous hiérarchies qui contiennent les newsgroups déclarés dans Data.Newsgroups
 function getHierarchy()
 {
 	global $jntp;
