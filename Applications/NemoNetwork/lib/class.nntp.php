@@ -104,6 +104,7 @@ class NNTP
 			elseif($champ === "supersedes") 
 			{
 				$article{'Data'}{'Supersedes'} = substr($value, 1, strlen($value)-2);
+				$notSupersedes = false;
 			}
 			elseif($champ === "message-id") 
 			{
