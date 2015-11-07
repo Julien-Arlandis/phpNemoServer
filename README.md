@@ -35,9 +35,9 @@ Installation
 
 In your website root directory :  
 
-    git clone https://github.com/Julien-Arlandis/phpNemoServer.git NemoServer
+    git clone https://github.com/Julien-Arlandis/phpNemoServer.git jntp
 
-Go to http://yourserver/NemoServer/  
+Go to http://yourserver/jntp/  
 Create sleep.txt file and follow the instructions.  
 Configure your feed in Applications/core/conf/description.json, do not forget to set actif=1 for active feeds.  
 Greats :)

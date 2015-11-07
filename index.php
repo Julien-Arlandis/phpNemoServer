@@ -48,10 +48,10 @@ if(!isset($_SERVER['HTTP_REFERER']) || ($jntp->config['crossDomainAccept']))
 }
 
 $post = file_get_contents("php://input");
-
-if($resource = isset($_GET['resource']) ? $_GET['resource'] : false) 
+$queryString = $_SERVER['QUERY_STRING'];
+if($queryString = $_SERVER['QUERY_STRING']) 
 {
-	die( $jntp->getResource($resource) );
+	die( $jntp->getResource($queryString) );
 }
 
 if($post === '') 

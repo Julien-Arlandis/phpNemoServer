@@ -306,7 +306,7 @@ class JNTP
 	function getResource($path) // à corriger.
 	{
 		$tab = split('/', $path);
-		$json = $this->getPacket( array('Jid'=>$tab[0]) );
+		$json = $this->getPacket( array('Data.DataID'=>$tab[0]) );
 		$tab = preg_split("/([:\.\/]+)/", $tab[1], -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY );
 
 		if(!$json) {
