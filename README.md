@@ -27,16 +27,18 @@ Requirements
 Support
 -------
 
-See reference about server support forums under <news:nemo.dev.serveur>
+See reference about server support forums under <news:nemo.dev.serveur>  
 See reference about client support forums under <news:nemo.dev.client>
 
 Installation
 ------
 
 Copy phpNemoServer.tar.gz in your website.  
+
     tar xzvf phpNemoServer.tar.gz
 
 With github :  
+
     git clone https://github.com/Julien-Arlandis/phpNemoServer.git webSiteDirectory
 
 Go to http://yourserver/NemoServer/install.php.  
