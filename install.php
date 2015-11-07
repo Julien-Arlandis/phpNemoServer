@@ -23,10 +23,10 @@ This file is part of PhpNemoServer.
 
 if( !file_exists( __DIR__ . '/delete.txt'))
 {
-	die( '500 You must create delete.txt file to continue installation' );
+	die( '500 You must create '.__DIR__ . '/sleep.txt file to continue installation' );
 }
 
-$server_version = '0.89f';
+$server_version = '0.90a';
 $config = array(
     "private_key_bits" => 1024,
     "private_key_type" => OPENSSL_KEYTYPE_RSA,
