@@ -404,7 +404,7 @@ class NNTP
 				$body = str_replace('#DataID#', $json{'Data'}{'DataID'}, $body);
 				$body = str_replace('#ThreadID#', $json{'Data'}{'ThreadID'}, $body);
 
-				$body = preg_replace('/jntp:([a-f0-9]+@[.A-Za-z0-9\/\_\-\:]+)/', '<http://'.$json{'Data'}{'OriginServer'}.'/jntp/$1>', $body);
+				$body = preg_replace('/jntp:([A-Za-z0-9@.\/\_\-\:]+)/', '<http://'.$json{'Data'}{'OriginServer'}.'/jntp?$1>', $body);
 				$body = str_replace("\r\n.\r\n", "\r\n..\r\n", $body);
 			}
 			elseif($cle === 'Media' || $cle === 'UserID' || $cle === 'DataID' || $cle === 'ComplaintsTo')
