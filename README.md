@@ -55,12 +55,12 @@ mongoexport --db <database> --collection user --out user.json
 Procedure to import users from user.json file
 -------
 
-mongoimport --db <database> --collection user --file user.json  
-mongo <<EOF  
-use <database>  
-db.counters.findAndModify({  
-    query: {"_id":"UserID"},  
-    update: {"seq":db.user.find().sort({"UserID":-1}).limit(1).next().UserID},  
-    upsert: true  
-});  
-EOF  
+    mongoimport --db <database> --collection user --file user.json  
+    mongo <<EOF  
+    use <database>  
+    db.counters.findAndModify({  
+        query: {"_id":"UserID"},  
+        update: {"seq":db.user.find().sort({"UserID":-1}).limit(1).next().UserID},  
+        upsert: true  
+    });  
+    EOF  
