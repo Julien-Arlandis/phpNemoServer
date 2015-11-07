@@ -35,16 +35,16 @@ See reference about client support forums under <news:nemo.dev.client>
 Installation
 ------
 
-Copy phpNemoServer.tar.gz in your website.<br>
+Copy phpNemoServer.tar.gz in your website.  
 tar xzvf phpNemoServer.tar.gz
 
-With github :<br>
+With github :  
 git clone https://github.com/Julien-Arlandis/phpNemoServer.git webSiteDirectory
 
-Go to http://yourserver/NemoServer/install.php.<br>
-Delete install.php file.<br>
-Copy .htaccess at the root folder of the site.<br>
-Configure your feed in Applications/core/conf/description.json, do not forget to set actif=1 for active feeds.<br>
+Go to http://yourserver/NemoServer/install.php.  
+Delete install.php file.  
+Copy .htaccess at the root folder of the site.  
+Configure your feed in Applications/core/conf/description.json, do not forget to set actif=1 for active feeds.  
 Greats :)
 
 Procedure to export users to user.json file
@@ -55,12 +55,12 @@ mongoexport --db <database> --collection user --out user.json
 Procedure to import users from user.json file
 -------
 
-mongoimport --db <database> --collection user --file user.json<br>
-mongo <<EOF<br>
-use <database><br>
-db.counters.findAndModify({
-    query: {"_id":"UserID"},
-    update: {"seq":db.user.find().sort({"UserID":-1}).limit(1).next().UserID},
-    upsert: true
-});
-EOF
+mongoimport --db <database> --collection user --file user.json  
+mongo <<EOF  
+use <database>  
+db.counters.findAndModify({  
+    query: {"_id":"UserID"},  
+    update: {"seq":db.user.find().sort({"UserID":-1}).limit(1).next().UserID},  
+    upsert: true  
+});  
+EOF  
