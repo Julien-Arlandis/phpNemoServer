@@ -36,6 +36,7 @@ class JNTP
 	var $listCommand;
 	var $config;
 	var $maxDataLength;
+	var $stopSuperDiffuse = false;
 
 	// Constructeur
 	function __construct()

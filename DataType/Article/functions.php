@@ -181,6 +181,7 @@ function checkControl()
 					return false;
 
 				}
+				$jntp->stopSuperDiffuse = true;
 			}
 		}
 		else

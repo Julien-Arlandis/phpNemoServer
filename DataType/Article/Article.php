@@ -176,7 +176,10 @@ class DataType
 	function afterInsertion()
 	{
 		global $jntp;
-		$jntp->superDiffuse();
+		if(!$jntp->stopSuperDiffuse) 
+		{
+			$jntp->superDiffuse();
+		}
 		if ($jntp->userid)
 		{
 			$jntp->updateUserConfig( array("FromName" => $jntp->packet{'Data'}{'FromName'}, "FromMail" => $jntp->packet{'Data'}{'FromMail'}, "ReplyTo" => $jntp->packet{'Data'}{'ReplyTo'}) );
