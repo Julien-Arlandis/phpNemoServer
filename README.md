@@ -38,7 +38,7 @@ In your website root directory :
     git clone https://github.com/Julien-Arlandis/phpNemoServer.git NemoServer
 
 Go to http://yourserver/NemoServer/  
-Create sleep.txt file and follow the instructions.
+Create sleep.txt file and follow the instructions.  
 Configure your feed in Applications/core/conf/description.json, do not forget to set actif=1 for active feeds.  
 Greats :)
 
