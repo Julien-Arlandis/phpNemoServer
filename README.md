@@ -27,7 +27,7 @@ Requirements
 Support
 -------
 
-See reference about server support forums under <news:nemo.dev.serveur>  
+See reference about server support forums under \<news:nemo.dev.serveur\>  
 See reference about client support forums under <news:nemo.dev.client>
 
 Installation
