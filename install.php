@@ -26,6 +26,14 @@ if( !file_exists( __DIR__ . '/sleep.txt'))
 	die( '500 You must create '.__DIR__ . '/sleep.txt file to continue installation' );
 }
 
+if( !is_writable( __DIR__ . '/conf'))
+{
+	echo '500 '.__DIR__ . "/conf/ is not writable<br>";
+	echo "chgrp www-data conf<br>";
+	echo "chmod g+w conf<br>";
+	die();
+}
+
 $server_version = '0.90a';
 $config = array(
     "private_key_bits" => 1024,
@@ -265,9 +273,12 @@ $jntp->exec('["synchronizeNewsgroup"]');
 
 Installation de PHP Nemo Server (version <?=$server_version?>) terminée. La base <?=DB_NAME?> a bien été crée. 
 <p>
-Vous devez supprimer le fichier delete.txt pour continuer.
+Vous devez supprimer le fichier sleep.txt pour continuer.
 <p>
 Vous pouvez désormais configurez les feeds dans le fichier conf/general.json.
-
+<p>
 </body>
 </html>
+<?php
+
+die();

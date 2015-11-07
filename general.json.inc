@@ -52,7 +52,7 @@
 					"Data.DataType": ["*"]
 				}
 			],
-			"mail": "mail":"newsmaster@exemple2.net"
+			"mail": "newsmaster@exemple2.net"
 		},
 		"nntpserver.net": {
 			"actif":0,
