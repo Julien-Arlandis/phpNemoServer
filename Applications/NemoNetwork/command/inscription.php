@@ -55,7 +55,7 @@ function mailInscription($email, $password, $userid, $check)
 	require_once(__DIR__.'/../../core/lib/class.phpmailer.php');
 	$ObjMail = new PHPMailer();
 
-	$url = "http://".$jntp->config{'domain'}."/NemoServer/Applications/NemoNetwork/account.php?action=inscription&amp;userid=".$userid."&amp;check=".$check;
+	$url = "http://".$jntp->config{'domain'}."/jntp/Applications/NemoNetwork/account.php?action=inscription&amp;userid=".$userid."&amp;check=".$check;
 	$message = "
 Bonjour, bienvenue sur <a href=\"http://".$jntp->config{'domain'}."\">".$jntp->config{'organization'}."</a>.
 <br><br>
@@ -92,5 +92,5 @@ if($this->config{'activeInscription'} || $this->privilege == 'admin')
 else
 {
 	$this->reponse{'code'} = "500";
-	$this->reponse{'body'} = "L'inscription en ligne est désactivée sur ce serveur, veuillez adresser un mail à ".NEWSMASTER_MAIL." en spécifiant le mot de passe souhaité, votre compte sera ouvert dans les plus brefs délais.";
+	$this->reponse{'body'} = "L'inscription en ligne est désactivée sur ce serveur, veuillez adresser un mail à ".$this->config{'administrator'}." en spécifiant le mot de passe souhaité, votre compte sera ouvert dans les plus brefs délais.";
 }
