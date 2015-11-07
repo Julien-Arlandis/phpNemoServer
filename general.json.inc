@@ -3,7 +3,7 @@
 	"organization": "Nemoweb",
 	"publicServer": ["news2.nemoweb.net"],
 	"adminServer": ["news2.nemoweb.net"],
-	"serverVersion": "0.90c",
+	"serverVersion": "0.90d",
 	"protocolVersion": "0.21.1",
 	"administrator": "newsmaster@exemple.net",
 	"maxDataLength": 1000,
