@@ -8,6 +8,8 @@
 	"maxDataLength": 1000,
 	"crossDomainAccept": true,
 	"activeInscription": true,
+	"cryptPostingHost": "connected",
+	"commentCryptPostingHost": "all | connected",
 	"application": {
 		"core": {
 			"description": "JNTP Server core",
