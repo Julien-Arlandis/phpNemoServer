@@ -23,9 +23,14 @@ This file is part of PhpNemoServer.
 
 require_once(__DIR__."/Applications/core/lib/class.jntp.php");
 
-if( file_exists( __DIR__ . '/delete.txt'))
+if( file_exists( __DIR__ . '/sleep.txt'))
 {
-	die( '500 You must remove delete.txt file to continue' );
+	die( '500 You must remove sleep.txt file to continue' );
+}
+
+if( !file_exists( __DIR__ . '/conf/config.php'))
+{
+	require_once(__DIR__."/install.php");
 }
 
 $jntp = new JNTP();

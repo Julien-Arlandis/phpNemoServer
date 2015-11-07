@@ -21,7 +21,7 @@ This file is part of PhpNemoServer.
     along with PhpNemoServer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-if( !file_exists( __DIR__ . '/delete.txt'))
+if( !file_exists( __DIR__ . '/sleep.txt'))
 {
 	die( '500 You must create '.__DIR__ . '/sleep.txt file to continue installation' );
 }
