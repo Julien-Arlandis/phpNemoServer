@@ -8,7 +8,7 @@ http://news.nemoweb.net/
 Copyright
 ---------
 
-Copyright (C) 2013-2014
+Copyright (C) 2013-2015
     Julien Arlandis <julien.arlandis_at_gmail.com>
 
 License
