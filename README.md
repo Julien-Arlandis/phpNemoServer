@@ -33,11 +33,7 @@ See reference about client support forums under \<news:nemo.dev.client\>
 Installation
 ------
 
-Copy phpNemoServer.tar.gz in your website.  
-
-    tar xzvf phpNemoServer.tar.gz
-
-Or using git in your website root directory :  
+In your website root directory :  
 
     git clone https://github.com/Julien-Arlandis/phpNemoServer.git NemoServer
 
