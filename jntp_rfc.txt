@@ -811,4 +811,3 @@ Ecma-404.htm>.
 [Err3607] RFC Errata, Errata ID 3607, RFC 3607,
 <http://www.rfc-editor.org>.
 
-[signature]Ce message a été posté avec Nemo : <#Uri#>[/signature]
