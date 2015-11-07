@@ -84,7 +84,8 @@ class NNTP
 				$args = explode(" ", trim($value));
 
 				if ($args[0] === 'cancel')
-				{
+				{		
+					$args[0] = 'cancelUser';
 					$args[1] = substr($args[1], 1, strlen($args[1])-2);
 					$article{'Data'}{'Control'} = $args;
 				}

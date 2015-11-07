@@ -2,6 +2,7 @@
 	"domain": "news.exemple.net",
 	"organization": "Nemoweb",
 	"publicServer": ["news2.nemoweb.net"],
+	"adminServer": ["news2.nemoweb.net"],
 	"serverVersion": "0.90c",
 	"protocolVersion": "0.21.1",
 	"administrator": "newsmaster@exemple.net",

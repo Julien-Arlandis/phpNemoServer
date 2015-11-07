@@ -76,45 +76,115 @@ function checkControl()
 	global $jntp;
 	if( $jntp->packet{'Data'}{'Control'} )
 	{
-		if( $jntp->packet{'Data'}{'Control'}[0] === 'cancelUser' || $jntp->packet{'Data'}{'Control'}[0] === 'cancel') //provisoire
+		$typeCancel = $jntp->packet{'Data'}{'Control'}[0];
+		if( $typeCancel === 'cancelUser' || $typeCancel === 'cancelServer' || $typeCancel === 'cancelLocal')
 		{
 			$dataid = $jntp->packet{'Data'}{'Control'}[1];
-			$article = $jntp->getPacket( array('Data.DataID'=>$dataid) );
 
-			if($article{'Data'}{'DataID'} === $article{'Jid'}) 
+			if( $typeCancel === 'cancelUser' )
 			{
-				$data = null;
-				$data{'DataType'} = $article{'Data'}{'DataType'};
-				$data{'FromName'} = $article{'Data'}{'FromName'};
-				$data{'FromMail'} = $article{'Data'}{'FromMail'};
-				$data{'Subject'} = $article{'Data'}{'Subject'};
-				$data{'References'} = $article{'Data'}{'References'};
-				$data{'Newsgroups'} = $article{'Data'}{'Newsgroups'};
-				$data{'Body'} = $article{'Data'}{'Body'};
-				$data{'Media'} = $article{'Data'}{'Media'};
-				$data{'FollowupTo'} = $article{'Data'}{'FollowupTo'};
-				$data{'HashClient'} = $jntp->packet{'Data'}{'Control'}[2];
+				if(substr($article{'Data'}{'DataID'},0,27) === $article{'Jid'}) 
+				{
+					$article = $jntp->getPacket( array('Data.DataID'=>$dataid) );
+					$data = null;
+					$data{'DataType'} = $article{'Data'}{'DataType'};
+					$data{'FromName'} = $article{'Data'}{'FromName'};
+					$data{'FromMail'} = $article{'Data'}{'FromMail'};
+					$data{'Subject'} = $article{'Data'}{'Subject'};
+					$data{'References'} = $article{'Data'}{'References'};
+					$data{'Newsgroups'} = $article{'Data'}{'Newsgroups'};
+					$data{'Body'} = $article{'Data'}{'Body'};
+					$data{'Media'} = $article{'Data'}{'Media'};
+					$data{'FollowupTo'} = $article{'Data'}{'FollowupTo'};
+					$data{'HashClient'} = $jntp->packet{'Data'}{'Control'}[2];
 
-				$hashClient = $jntp->hashString( $jntp->canonicFormat($data) );
+					$hashClient = $jntp->hashString( $jntp->canonicFormat($data) );
 
-				if( $hashClient === $article{'Data'}{'HashClient'} )
+					if( $hashClient === $article{'Data'}{'HashClient'} )
+					{
+						$jntp->deletePacket( array('Data.DataID'=> $dataid) );
+						return true;
+					}
+					else
+					{
+						$jntp->reponse{'code'} = "500";
+						$jntp->reponse{'body'} = "Suppression impossible de ".$jid."\nhash ".$hashClient." incorrect";
+						return false;
+					}
+				}
+				else
 				{
 					$jntp->deletePacket( array('Data.DataID'=> $dataid) );
 					return true;
 				}
+			}
+			elseif( $typeCancel === 'cancelServer' )
+			{
+				if($jntp->param{'Data'})
+				{
+					if($jntp->privilege == "admin")
+					{
+						$jntp->deletePacket( array('Data.DataID'=> $dataid) );
+						return true;
+					}
+					else
+					{
+						$jntp->reponse{'code'} = "500";
+						$jntp->reponse{'body'} = "User not autorised to cancel";
+						return false;
+					}
+				}
+				else
+				{
+					$article = $jntp->getPacket( array('Data.DataID'=>$dataid) );
+					if($article{'Data'}{'OriginServer'} == $jntp->param{'From'} )
+					{
+						$jntp->deletePacket( array('Data.DataID'=> $dataid) );
+						return true;
+					}
+					else
+					{
+						if( in_array($jntp->param{'From'}, $jntp->config{'adminServer'} ) )
+						{
+							$jntp->deletePacket( array('Data.DataID'=> $dataid) );
+							return true;
+						}
+						else
+						{
+							$jntp->reponse{'code'} = "500";
+							$jntp->reponse{'body'} = "Server not autorised to cancel";
+							return false;
+						}
+					}
+				}
+			}
+			elseif( $typeCancel === 'cancelLocal' )
+			{
+				if($jntp->param{'Data'})
+				{
+					if($jntp->privilege == "admin")
+					{
+						$jntp->deletePacket( array('Data.DataID'=> $dataid) );
+						return true;
+					}
+					else
+					{
+						$jntp->reponse{'code'} = "500";
+						$jntp->reponse{'body'} = "User not autorised to make a local cancel";
+						return false;
+					}
+				}
 				else
 				{
 					$jntp->reponse{'code'} = "500";
-					$jntp->reponse{'body'} = "Suppression impossible de ".$jid."\nhash ".$hashClient." incorrect";
+					$jntp->reponse{'body'} = "Server not autorised to make a local cancel";
 					return false;
+
 				}
 			}
-			else
-			{
-				$jntp->deletePacket( array('Data.DataID'=> $dataid) );
-				return true;
-			}
-		}else{
+		}
+		else
+		{
 			$jntp->reponse{'code'} = "500";
 			$jntp->reponse{'body'} = "Invalid operation : ".$jntp->packet{'Data'}{'Control'}[0];
 			return false;
