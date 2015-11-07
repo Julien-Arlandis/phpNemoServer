@@ -22,7 +22,6 @@ Requirements
 * PHP 5.2 or later
 * MongoDB 2.4 or later
 * libcurl
-* mod_rewrite
 
 Support
 -------
