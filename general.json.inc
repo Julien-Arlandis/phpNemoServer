@@ -25,7 +25,7 @@
 		},
 		"NemoAdmin": {
 			"description": "Administration of Nemo network",
-			"commands": ["delete","ban","synchronizeNewsgroup"]
+			"commands": ["ban","synchronizeNewsgroup","reloadIndex"]
 		}
 	},
 	"DataType": {
@@ -33,7 +33,7 @@
 			"filter": ["Jid", "ID", "Data.DataType", "Data.DataID", "Data.InjectionDate", "Data.Protocol"]
 		},
 		"Article": {
-			"filter": ["Jid", "ID", "Data.Newsgroups", "Data.UserAgent", "Data.FromName", "Data.FromMail", "Data.Subject", "Data.ThreadID", "Data.UserID", "Data.ReferenceUserID"]
+			"filter": ["Jid", "ID", "Data.Newsgroups", "Data.UserAgent", "Data.FromName", "Data.FromMail", "Data.Subject", "Data.ThreadID", "Data.UserID", "Data.ReferenceUserID", "Data.Control"]
 		},
 		"ListGroup": {
 			"filter": ["Jid", "ID", "Data.Newsgroups", "Data.Hierarchy"]

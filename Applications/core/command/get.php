@@ -59,13 +59,21 @@ if( $this->param{'filter'})
 
 	foreach($this->param{'filter'} as $key => $value)
 	{
+		$key = explode(":", $key);
+		$ind = (isset($key[1]) && is_numeric($key[1])) ? $key[1] : 0;
+		$key = $key[0];
 		if( !in_array($key, $this->config['DataType']['ProtoData']['filter']) && !in_array($key, $this->config['DataType'][$this->param{'filter'}{'Data.DataType'}]['filter'] ) )
 		{
 			$this->reponse{'body'} = "filtre [".$key."] non autorisé";
 			$this->reponse{'code'} = "500";
 			$this->send();
 		}
-	
+
+		if($ind) 
+		{
+			$key = $key.".".($ind-1);
+		}
+
 		if( is_string($value) || is_numeric($value) )
 		{
 			if($value != "" && $value != "*")

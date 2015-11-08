@@ -122,7 +122,7 @@ function checkControl()
 			{
 				if($jntp->param{'Data'})
 				{
-					if($jntp->privilege == "admin")
+					if($jntp->privilege == "admin" || $jntp->privilege == "moderator")
 					{
 						$jntp->deletePacket( array('Data.DataID'=> $dataid) );
 						return true;
@@ -162,7 +162,7 @@ function checkControl()
 			{
 				if($jntp->param{'Data'})
 				{
-					if($jntp->privilege == "admin")
+					if($jntp->privilege == "admin" || $jntp->privilege == "moderator" )
 					{
 						$jntp->deletePacket( array('Data.DataID'=> $dataid) );
 						return true;
