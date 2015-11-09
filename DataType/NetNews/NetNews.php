@@ -1,4 +1,7 @@
 <?php
+
+require_once(__DIR__."../Article/functions.php");
+
 class DataType
 {
 	function __construct() 
@@ -236,12 +239,36 @@ class DataType
 	function beforeInsertion()
 	{
 		global $jntp;
-		return true;
+		if(checkControl())
+		{
+			$jntp->packet{'Meta'}{'Size'} = array(strlen($jntp->packet{'Data'}{'Body'}));
+			$jntp->packet{'Meta'}{'Hierarchy'} = getHierarchy();
+			$jntp->packet{'Meta'}{'Like'} = 0;
+			if($jntp->packet{'Data'}{'Media'})
+			{
+				foreach($jntp->packet{'Data'}{'Media'} as $cle => $value)
+				{
+					$size = strlen($jntp->packet{'Data'}{'Media'}[$cle]{'data'});
+					array_push($jntp->packet{'Meta'}{'Size'}, $size);
+				}
+			}
+			if(!$jntp->packet{'Data'}{'ThreadID'}) 
+			{
+				$jntp->packet{'Data'}{'ThreadID'} = getThreadID();
+				$jntp->forgePacket();
+			}
+			return true;
+		}
+		return false;
 	}
 
 	function afterInsertion()
 	{
 		global $jntp;
+		if(!$jntp->stopSuperDiffuse) 
+		{
+			$jntp->superDiffuse();
+		}
 		return true;
 	}
 }
