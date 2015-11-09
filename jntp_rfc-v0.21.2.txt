@@ -1,8 +1,6 @@
 Différences par rapport à la version 0.21.1 :
 
-*) URL = "http://" host "/jntp/?" Data.DataID "/" chemin
-remplace
-URL = "http://" host "/jntp/" Jid "/" chemin
+*) Spécifie la clé From pour la diffusion d'une Data
 
 Statut du présent mémoire
 
@@ -666,7 +664,7 @@ Récupère un ou plusieurs paquets.
 
 
 select contient dans un tableau la liste des champs à retourner dans la requête.
-filterest un objet qui permet d'effectuer des filtres sélectifs dans l'ensemble des paquets.
+filter est un objet qui permet d'effectuer des filtres sélectifs dans l'ensemble des paquets.
 limit indique le nombre maximal de résultats à retourner.
 
 Exemple :
@@ -704,12 +702,14 @@ pas en mesure de forger eux même un paquet complet, ils transmettent
 à leur serveur les champs obligatoires de la Data requis par le
 DataType mentionné :
 
-["diffuse", {"Data": ObjectJson}]
+["diffuse", {"Data": ObjectJson, "From": from}]
 
 où ObjectJson = {
    "DataType": datatype,
    (...)
 }
+
+from est une clé facultative qui désigne le FQDN de l'émetteur.
 
 5.2.2. Diffusion d'un paquet.
 
