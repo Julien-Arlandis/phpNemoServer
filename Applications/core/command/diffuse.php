@@ -8,30 +8,38 @@ if($this->param{'Data'})
 	// Check if Data.DataType is valid
 	if ($this->loadDataType())
 	{
-		// Check if Data is conform to DataType declaration
-		if( $this->datatype->isValidData() )
+		if( isset($this->param{'From'}) && (!$this->config['feed'][$this->param{'From'}]['actif'] == 1 || !in_array($_SERVER['REMOTE_ADDR'], $this->getIPs() )) )
 		{
-			// Traitment before insertion
-			if ( $this->datatype->beforeInsertion() )
-			{
-				// Complete Data
-				$this->datatype->forgeData();
-				// Forge packet
-				$this->forgePacket();
-				// Insert packet in database
-				$this->insertPacket();
-				$this->datatype->afterInsertion($this->packet{'ID'});
-
-				$this->reponse{'code'} = "200";
-				$this->reponse{'body'}{'Data'}{'DataID'} = $this->packet{'Data'}{'DataID'};
-				$this->reponse{'body'}{'Data'}{'DataType'} = $this->packet{'Data'}{'DataType'};
-				$this->reponse{'body'}{'Jid'} = $this->packet{'Jid'};
-				$this->reponse{'body'}{'ID'} = $this->packet{'ID'};
-			}
+			$this->reponse{'code'} = "500";
+			$this->reponse{'body'} = $_SERVER['REMOTE_ADDR']." not autorised to feed for ".$this->param{'From'};
 		}
 		else
 		{
-			$this->reponse{'code'} = "500";
+			// Check if Data is conform to DataType declaration
+			if( $this->datatype->isValidData() )
+			{
+				// Traitment before insertion
+				if ( $this->datatype->beforeInsertion() )
+				{
+					// Complete Data
+					$this->datatype->forgeData();
+					// Forge packet
+					$this->forgePacket();
+					// Insert packet in database
+					$this->insertPacket();
+					$this->datatype->afterInsertion($this->packet{'ID'});
+
+					$this->reponse{'code'} = "200";
+					$this->reponse{'body'}{'Data'}{'DataID'} = $this->packet{'Data'}{'DataID'};
+					$this->reponse{'body'}{'Data'}{'DataType'} = $this->packet{'Data'}{'DataType'};
+					$this->reponse{'body'}{'Jid'} = $this->packet{'Jid'};
+					$this->reponse{'body'}{'ID'} = $this->packet{'ID'};
+				}
+			}
+			else
+			{
+				$this->reponse{'code'} = "500";
+			}
 		}
 	}
 	else
