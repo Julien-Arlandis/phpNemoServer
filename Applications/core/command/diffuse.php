@@ -11,7 +11,7 @@ if($this->param{'Data'})
 		if( isset($this->param{'From'}) && (!$this->config['feed'][$this->param{'From'}]['actif'] == 1 || !in_array($_SERVER['REMOTE_ADDR'], $this->getIPs() )) )
 		{
 			$this->reponse{'code'} = "500";
-			$this->reponse{'body'} = $_SERVER['REMOTE_ADDR']." not autorised to feed for ".$this->param{'From'};
+			$this->reponse{'body'} = $_SERVER['REMOTE_ADDR']." not autorised to diffuse Data for ".$this->param{'From'};
 		}
 		else
 		{
