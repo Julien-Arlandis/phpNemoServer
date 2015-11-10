@@ -60,6 +60,7 @@ foreach ($cursor as $obj)
 		$data{'category'} = $obj['category'];
 	}
 	$data{'rules'}{'w'} = $obj['rules']['w'];
+	if($obj['rules']['m']) $data{'rules'}{'m'} = $obj['rules']['m'];
 	if(!$this->userid) $data{'rules'}{'w'} = 0;
 	if(!$this->userid && $obj['rulesIfNotConnected']) $data{'rules'}{'w'} = $obj['rulesIfNotConnected']['w'];
 	if($obj['rules']['m'] == '1') $data{'rules'}{'w'} = '0';

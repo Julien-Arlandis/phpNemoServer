@@ -145,7 +145,7 @@ elseif($this->param{'Propose'})
 			{
 				if( !$this->isStorePacket( array('Data.DataID'=>$pack{'Data'}{'DataID'}, 'Data.DataType'=>$pack{'Data'}{'DataType'} ) ) )
 				{
-					array_push($res, $pack{'Jid'});
+					array_push($res, $pack{'Data'}{'DataID'});
 				}
 			}
 		}
