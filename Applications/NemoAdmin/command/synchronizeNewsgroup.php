@@ -6,14 +6,14 @@ $this->setSession();
 if($this->privilege == 'admin')
 {
 	$this->mongo->newsgroup->remove();
-	$this->mongo->newsgroup->save(array('name'=>'@newsgroups','description'=>'Newsgroup system', 'rules' => array("w" => "0", "m" => "1")));
+	$this->mongo->newsgroup->save(array('description'=>'Newsgroup system', 'rules' => array("w" => "0", "m" => "1")));
 	$body = array();
 	for($i=0; $i<count($cfg->hierarchy); $i++)
 	{
 		for($j=0; $j<count($this->config{'publicServer'}); $j++)
 		{
 			// Mettre à jour la requête : Penser à remplacer les / par des ., total => limit
-			$query = '["get", {"filter":{"Data.Newsgroups":"@newsgroups","Data.DataType":"ListGroup","Data.Hierarchy":"'.$cfg->hierarchy[$i].'"},"limit":"1" } ]';
+			$query = '["get", {"filter":{"Data.DataType":"ListGroup","Data.Hierarchy":"'.$cfg->hierarchy[$i].'"},"limit":1 } ]';
 			$this->exec($query, $this->config{'publicServer'}[$j]);
 			$this->packet = $this->reponse{'body'}[0];
 			$this->loadDataType();
