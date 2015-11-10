@@ -20,7 +20,7 @@ class DataType
 	function forgeData()
 	{
 		global $jntp;
-		$jntp->packet{'Data'}{'DataID'} = "";
+		$jntp->packet{'Data'}{'DataID'} = "@jntp";
 		$jntp->packet{'Data'}{'InjectionDate'} = date("Y-m-d")."T".date("H:i:s")."Z";
 		$jntp->packet{'Data'}{'OriginServer'} = $jntp->config{'domain'};
 		$jntp->packet{'Data'}{'Organization'} = $jntp->config{'organization'};
