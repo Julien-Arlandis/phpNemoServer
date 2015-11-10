@@ -19,7 +19,6 @@ class DataType
 		global $jntp;
 		if( !$this->isStorePacket( array('Data.DataID' => $jntp->packet{'Data'}{'DataID'}) ) )
 		{
-
 			$article = array();
 			$article{'Data'}{'DataID'} = $jntp->packet{'Data'}{'DataID'};
 			$article{'Data'}{'DataType'} = "Article";

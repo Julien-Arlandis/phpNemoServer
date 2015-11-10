@@ -44,7 +44,7 @@ class DataType
 
 		if( $jntp->packet{'Data'}{'DataType'} == 'ListGroup' && $jntp->packet{'Data'}{'ListGroup'} )
 		{
-			$value = new MongoRegex("/^".preg_quote($jntp->packet{'Data'}{'Hierarchy'})."/");
+			$value = new MongoRegex("/^".preg_quote(substr($jntp->packet{'Data'}{'Hierarchy'},0,-1))."/");
 			$jntp->mongo->newsgroup->remove(array("name"=>$value));
 			foreach($jntp->packet{'Data'}{'ListGroup'} as $cle => $obj)
 			{
