@@ -19,7 +19,7 @@ function insertUser($email, $password, $privilege = 1)
 		$code = "500";
 	}
 
-	$total = $jntp->mongo->user->find(array('email' => $email))->count();
+	$total = $jntp->mongo->user->find(array('email' => strtolower($email)))->count();
 	$total = ($total > 0 ) ? $total : 0;
 
 	if ( $total > 0)
