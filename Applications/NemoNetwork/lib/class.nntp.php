@@ -50,6 +50,7 @@ class NNTP
 			die();
 		}
 		$isCancel = false;
+		$isSubjectCancel =false;
 		$notSupersedes = true;
 		$wordwrap = true;
 		$newsgroups = array();
@@ -98,6 +99,12 @@ class NNTP
 			elseif($cle === 'Subject')
 			{
 				$article .= "Subject: ".mb_encode_mimeheader($value, mb_internal_encoding(), "Q", " \r\n")."\r\n";
+				$pos = strpos($value, "cmsg ");
+				if ($pos !== false) { 
+					$isSubjectCancel = true;
+				}else{
+					$isSubjectCancel = false;
+				}
 			}
 			elseif($cle === 'Newsgroups')
 			{
@@ -213,7 +220,7 @@ class NNTP
 		$article .= "\r\n";
 		$article .= $body;
 
-		if($isCancel && $notSupersedes)
+		if($isCancel && $notSupersedes && $isSubjectCancel)
 		{
 			return "Path: from-devjntp!cyberspam!usenet\r\n".$article;
 		}
