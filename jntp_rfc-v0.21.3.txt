@@ -1,6 +1,6 @@
-Différences par rapport à la version 0.21.1 :
+Différences par rapport à la version 0.21.2 :
 
-*) Spécifie la clé From pour la diffusion d'une Data
+*) Spécification des codes de statut
 
 Statut du présent mémoire
 
@@ -652,6 +652,28 @@ commande = [name, query]
 name = chaîne de caractère qui désigne le nom de la commande.
 query = objet JSON.
 
+Syntaxe générale d'une réponse JNTP :
+reponse = {
+   "code" : statusCode,
+   "info" : infoTxt,
+   "error": errorTxt,
+   "body" : reponse
+}
+
+statusCode (obligatoire) est une chaine de caractères contenant 
+3 digits :
+
+"2xx" - Commande exécutée avec succès.
+"3xx" - Command exécutée correctement jusqu'à présent, continuer.
+"4xx" - Commande syntaxiquement correcte mais erreur de traitement.
+"5xx" - Commande incorrecte, non supportée, erreur de syntaxe.
+
+infoTxt (facultatif) est une chaîne de caractères visant à 
+fournir un texte informatif sur le résultat de la requête.
+errorTxt (facultatif) est une chaîne de caractères visant à
+fournir un texte informatif sur une éventuelle erreur de la requête.
+reponse (facultatif) est un objet qui contient le résultat de la requête.
+
 5.1. La commande get
 
 Récupère un ou plusieurs paquets.
@@ -665,7 +687,7 @@ Récupère un ou plusieurs paquets.
 
 select contient dans un tableau la liste des champs à retourner dans la requête.
 filter est un objet qui permet d'effectuer des filtres sélectifs dans l'ensemble des paquets.
-limit indique le nombre maximal de résultats à retourner.
+limit est un nombre qui indique le nombre maximal de résultats à retourner.
 
 Exemple :
 
