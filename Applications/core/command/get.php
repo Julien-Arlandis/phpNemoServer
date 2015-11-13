@@ -157,6 +157,7 @@ if(!$count)
 		array_push($this->reponse{'body'}, $this->replaceHash( $packet ) );
 	}
 	$this->reponse{'info'} = "Get ".$count_packet." packet(s)";
+	if ($this->param{'select'}) $this->reponse{'info'} .= " with projection";
 }
 else
 {
