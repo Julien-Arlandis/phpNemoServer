@@ -43,9 +43,9 @@ function J2J($server, $jid, $dataid, $datatype)
 	$jntp->logFeed($post, $server, '>');
 	$jntp->logFeed($jntp->reponse, $server, '<');
 
-	if($jntp->reponse[0] == 'iwant') 
+	if($jntp->reponse{'code'} == '200') 
 	{
-		foreach($jntp->reponse[1]{'Jid'} as $jid)
+		foreach($jntp->reponse{'body'}{'Jid'} as $jid)
 		{
 			$post = array();
 			$post[0] = "diffuse";
