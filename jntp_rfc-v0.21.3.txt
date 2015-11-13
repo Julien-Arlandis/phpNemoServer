@@ -666,7 +666,7 @@ statusCode (obligatoire) est une chaine de caractères contenant
 "4xx" - Commande syntaxiquement correcte mais erreur de traitement.
 "5xx" - Commande incorrecte, non supportée, erreur de syntaxe.
 
-infoTxt (facultatif) est une chaîne de caractères visant à 
+infoTxt (facultatif) est une chaîne de caractères (ou un tableau) visant à 
 fournir un texte informatif sur le résultat de la requête.
 
 reponse (facultatif) est un objet qui contient le résultat de la requête.
