@@ -150,7 +150,7 @@ if(!$count)
 	foreach($cursor as $packet)
 	{
 		$count_packet++;
-		if( $this->privilege != 'admin')
+		if( $this->privilege != 'admin' && $this->privilege != 'moderator')
 		{
 			unset( $packet{'Meta'}{'ForAdmin'} );
 		}
