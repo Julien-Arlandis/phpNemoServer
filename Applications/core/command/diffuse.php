@@ -1,5 +1,6 @@
 <?php
 $this->setSession();
+
 // Query from Client
 if($this->param{'Data'})
 {
@@ -10,8 +11,8 @@ if($this->param{'Data'})
 	{
 		if( isset($this->param{'From'}) && (!$this->config['feed'][$this->param{'From'}]['actif'] == 1 || !in_array($_SERVER['REMOTE_ADDR'], $this->getIPs() )) )
 		{
-			$this->reponse{'code'} = "500";
-			$this->reponse{'body'} = $_SERVER['REMOTE_ADDR']." not autorised to diffuse Data for ".$this->param{'From'};
+			$this->reponse{'code'} = "400";
+			$this->reponse{'info'} = $_SERVER['REMOTE_ADDR']." not autorised to diffuse Data for ".$this->param{'From'};
 		}
 		else
 		{
@@ -38,14 +39,14 @@ if($this->param{'Data'})
 			}
 			else
 			{
-				$this->reponse{'code'} = "500";
+				$this->reponse{'code'} = "400";
 			}
 		}
 	}
 	else
 	{
-		$this->reponse{'code'} = "500";
-		$this->reponse{'body'} = "DataType ".$this->packet{'Data'}{'DataType'}." non pris en charge";
+		$this->reponse{'code'} = "400";
+		$this->reponse{'info'} = "DataType ".$this->packet{'Data'}{'DataType'}." non pris en charge";
 	}
 }
 
@@ -60,7 +61,7 @@ elseif($this->param{'Packet'})
 	{
 		$want = false;
 		// Check if packet exists
-		if( !isset($this->packet{'Data'}{'DataID'}) || $this->packet{'Jid'} == $this->packet{'Data'}{'DataID'} )
+		if( !isset($this->packet{'Data'}{'DataID'}) || $this->packet{'Jid'} == substr($this->packet{'Data'}{'DataID'},0,27) )
 		{
 			if( !$this->isStorePacket( array('Jid' => $this->packet{'Jid'}) ) )
 			{
@@ -68,8 +69,8 @@ elseif($this->param{'Packet'})
 			}
 			else
 			{
-				$this->reponse{'code'} = "300";
-				$this->reponse{'body'} = 'Jid ' . $this->packet{'Jid'} . " already inserted";
+				$this->reponse{'code'} = "400";
+				$this->reponse{'info'} = 'Jid ' . $this->packet{'Jid'} . " already inserted";
 			}
 		}
 		else
@@ -80,8 +81,8 @@ elseif($this->param{'Packet'})
 			}
 			else
 			{
-				$this->reponse{'code'} = "300";
-				$this->reponse{'body'} = $this->packet{'Data'}{'DataType'} .':'. $this->packet{'Data'}{'DataID'} . " already inserted";
+				$this->reponse{'code'} = "400";
+				$this->reponse{'info'} = $this->packet{'Data'}{'DataType'} .':'. $this->packet{'Data'}{'DataID'} . " already inserted";
 			}
 		}
 
@@ -97,31 +98,31 @@ elseif($this->param{'Packet'})
 					{
 						$this->datatype->afterInsertion($this->packet{'ID'});
 						$this->reponse{'code'} = "200";
-						$this->reponse{'body'} = $this->packet{'Jid'} . " : inserted";
+						$this->reponse{'info'} = $this->packet{'Jid'} . " : inserted";
 					}
 					else
 					{
-						$this->reponse{'code'} = "300";
-						$this->reponse{'body'} = $this->packet{'Jid'} . " : not inserted";
+						$this->reponse{'code'} = "400";
+						$this->reponse{'info'} = $this->packet{'Jid'} . " : not inserted";
 					}
 				}
 			}
 			else
 			{
-				$this->reponse{'code'} = "500";
-				$this->reponse{'body'} = "invalid packet";
+				$this->reponse{'code'} = "400";
+				$this->reponse{'info'} = "invalid packet";
 			}
 		}
 		else
 		{
-			$this->reponse{'code'} = "300";
-			$this->reponse{'body'} = $this->packet{'Jid'} . " already inserted";
+			$this->reponse{'code'} = "400";
+			$this->reponse{'info'} = $this->packet{'Jid'} . " already inserted";
 		}
 	}
 	else
 	{
-		$this->reponse{'code'} = "500";
-		$this->reponse{'body'} = $_SERVER['REMOTE_ADDR']." not autorised to feed for ".$this->param{'From'};
+		$this->reponse{'code'} = "400";
+		$this->reponse{'info'} = $_SERVER['REMOTE_ADDR']." not autorised to feed for ".$this->param{'From'};
 		break;
 	}
 }
@@ -133,31 +134,32 @@ elseif($this->param{'Propose'})
 		for($i=0; $i<count($this->param{'Propose'}); $i++)
 		{
 			$pack = $this->param{'Propose'}[$i];
-			$res = array();
-			if( !isset($pack{'Data'}{'DataID'}) || $pack{'Jid'} == $pack{'Data'}{'DataID'} )
+			$jid = array();
+			$dataid = array();
+			if( !isset($pack{'Data'}{'DataID'}) || $pack{'Jid'} == substr($pack{'Data'}{'DataID'},0,27) )
 			{
 				if( !$this->isStorePacket( array('Jid' => $pack{'Jid'}) ) )
 				{
-					array_push($res, $pack{'Jid'});
+					array_push($jid, $pack{'Jid'});
 				}
 			}
 			else
 			{
 				if( !$this->isStorePacket( array('Data.DataID'=>$pack{'Data'}{'DataID'}, 'Data.DataType'=>$pack{'Data'}{'DataType'} ) ) )
 				{
-					array_push($res, $pack{'Data'}{'DataID'});
+					array_push($dataid, $pack{'Data'}{'DataID'});
 				}
 			}
 		}
 
 		$commande = array();
-		$commande[0] = "iwant";
-		$commande[1]{'Jid'} = $res;
-		die(json_encode($commande));
+		$this->reponse{'code'} = "200";
+		$this->reponse{'body'}{'Jid'} = $jid;
+		$this->reponse{'body'}{'Data.DataID'} = $dataid;
 	}
 	else
 	{
-		$this->reponse{'code'} = "500";
-		$this->reponse{'body'} = $_SERVER['REMOTE_ADDR']." not autorised to propose for ".$this->param{'From'};
+		$this->reponse{'code'} = "400";
+		$this->reponse{'info'} = $_SERVER['REMOTE_ADDR']." not autorised to propose for ".$this->param{'From'};
 	}
 }

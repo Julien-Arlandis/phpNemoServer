@@ -1,10 +1,10 @@
 <?php
 
-require_once(__DIR__."../Article/functions.php");
+require_once(__DIR__."/../Article/functions.php");
 
 class DataType
 {
-	function __construct() 
+	function __construct()
 	{
 	}
 
@@ -17,7 +17,7 @@ class DataType
 	function forgeData()
 	{
 		global $jntp;
-		if( !$this->isStorePacket( array('Data.DataID' => $jntp->packet{'Data'}{'DataID'}) ) )
+		if( !$jntp->isStorePacket( array('Data.DataID' => $jntp->packet{'Data'}{'DataID'}) ) )
 		{
 			$article = array();
 			$article{'Data'}{'DataID'} = $jntp->packet{'Data'}{'DataID'};
@@ -26,10 +26,10 @@ class DataType
 			$article{'Data'}{'FollowupTo'} = array();
 			$article{'Data'}{'NNTPHeaders'} = null;
 			$article{'Data'}{'Origin'} = "NNTP";
-		
-			$pos =  strpos($jntp->packet{'Data'}, "\n\n");
-			$head = substr($jntp->packet{'Data'}, 0, $pos);
-			$body = substr($jntp->packet{'Data'}, $pos+2);
+			$pos =  strpos($jntp->packet{'Data'}{'Body'}, "\n\n");
+
+			$head = substr($jntp->packet{'Data'}{'Body'}, 0, $pos);
+			$body = substr($jntp->packet{'Data'}{'Body'}, $pos+2);
 			$lignes = preg_split("/\n(?![ \t])/", $head);
 			$isContentType = false;
 			$isInjectionDate = false;
@@ -231,13 +231,13 @@ class DataType
 			$article{'Data'}{'InjectionDate'} = $injection_date->format("Y-m-d\TH:i:s\Z");
 			$body = preg_replace('/\n-- \n((.|\n)*|$)/', "\n["."signature]$1[/signature"."]", $body);
 			$article{'Data'}{'Body'} = mb_convert_encoding($body, "UTF-8", $charset);
-			$jntp{'Data'} = $article{'Data'};
+			$jntp->packet{'Data'} = $article{'Data'};
 			return true;
 		}
 		else
 		{
-			$this->reponse{'code'} = "300";
-			$this->reponse{'body'} = 'DataID ' . $jntp->packet{'Data'}{'DataID'} . " already inserted";
+			$this->reponse{'code'} = "400";
+			$this->reponse{'info'} = 'DataID ' . $jntp->packet{'Data'}{'DataID'} . " already inserted";
 		}
 	}
 
@@ -247,7 +247,7 @@ class DataType
 		if(checkControl())
 		{
 			$jntp->packet{'Meta'}{'Size'} = array(strlen($jntp->packet{'Data'}{'Body'}));
-			$jntp->packet{'Meta'}{'Hierarchy'} = getHierarchy();
+			//$jntp->packet{'Meta'}{'Hierarchy'} = getHierarchy();
 			$jntp->packet{'Meta'}{'Like'} = 0;
 			if(!$jntp->packet{'Data'}{'ThreadID'}) 
 			{

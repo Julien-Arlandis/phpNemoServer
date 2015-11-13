@@ -22,17 +22,17 @@ function isValidNemoTag($groupe)
 	global $jntp;
 	if(strlen($groupe)>32)
 	{
-		$jntp->reponse{'body'} = "Le Nemotag [".$groupe."] est trop long, 32 caractères maxi";
+		$jntp->reponse{'info'} = "Le Nemotag [".$groupe."] est trop long, 32 caractères maxi";
 		return false;
 	}
 	if (!preg_match('/^#[a-zA-Z]*$/', $groupe)) 
 	{
-		$jntp->reponse{'body'} = "Le Nemotag [".$groupe."] contient des caractères non autorisés";
+		$jntp->reponse{'info'} = "Le Nemotag [".$groupe."] contient des caractères non autorisés";
 		return false;
 	}
 	if($jntp->userid == false)
 	{
-		$jntp->reponse{'body'} = "Le Nemotag [".$groupe."] requiert une authentification";
+		$jntp->reponse{'info'} = "Le Nemotag [".$groupe."] requiert une authentification";
 		return false;
 	}
 	return true;
@@ -107,8 +107,8 @@ function checkControl()
 					}
 					else
 					{
-						$jntp->reponse{'code'} = "500";
-						$jntp->reponse{'body'} = "Suppression impossible de ".$jid."\nhash ".$hashClient." incorrect";
+						$jntp->reponse{'code'} = "400";
+						$jntp->reponse{'info'} = "Suppression impossible de ".$jid."\nhash ".$hashClient." incorrect";
 						return false;
 					}
 				}
@@ -129,8 +129,8 @@ function checkControl()
 					}
 					else
 					{
-						$jntp->reponse{'code'} = "500";
-						$jntp->reponse{'body'} = "User not autorised to cancel";
+						$jntp->reponse{'code'} = "400";
+						$jntp->reponse{'info'} = "User not autorised to cancel";
 						return false;
 					}
 				}
@@ -151,8 +151,8 @@ function checkControl()
 						}
 						else
 						{
-							$jntp->reponse{'code'} = "500";
-							$jntp->reponse{'body'} = "Server not autorised to cancel";
+							$jntp->reponse{'code'} = "400";
+							$jntp->reponse{'info'} = "Server not autorised to cancel";
 							return false;
 						}
 					}
@@ -169,15 +169,15 @@ function checkControl()
 					}
 					else
 					{
-						$jntp->reponse{'code'} = "500";
-						$jntp->reponse{'body'} = "User not autorised to make a local cancel";
+						$jntp->reponse{'code'} = "400";
+						$jntp->reponse{'info'} = "User not autorised to make a local cancel";
 						return false;
 					}
 				}
 				else
 				{
-					$jntp->reponse{'code'} = "500";
-					$jntp->reponse{'body'} = "Server not autorised to make a local cancel";
+					$jntp->reponse{'code'} = "400";
+					$jntp->reponse{'info'} = "Server not autorised to make a local cancel";
 					return false;
 
 				}
@@ -186,8 +186,8 @@ function checkControl()
 		}
 		else
 		{
-			$jntp->reponse{'code'} = "500";
-			$jntp->reponse{'body'} = "Invalid operation : ".$jntp->packet{'Data'}{'Control'}[0];
+			$jntp->reponse{'code'} = "400";
+			$jntp->reponse{'info'} = "Invalid operation : ".$jntp->packet{'Data'}{'Control'}[0];
 			return false;
 		}
 	}

@@ -29,8 +29,8 @@ if(isset($this->param{'email'}))
 
 	if ( $total == 0)
 	{
-		$this->reponse{'code'} = "500";
-		$this->reponse{'body'} = "Cet email n'est pas enregistré dans la base";
+		$this->reponse{'code'} = "400";
+		$this->reponse{'info'} = "Cet email n'est pas enregistré dans la base";
 	}
 	else
 	{
@@ -39,11 +39,11 @@ if(isset($this->param{'email'}))
 		$this->mongo->user->update(array('UserID' => $obj['UserID']), array('$set' => array('checkpassword' => $check) ));
 		mailRecupPassword($obj['email'], $obj['UserID'], $check, $this->config{'organization'}, $this->config{'administrator'}, $this->config{'domain'});
 		$this->reponse{'code'} = "200";
-		$this->reponse{'body'} = "Un courriel a été envoyé à l'adresse ".$obj['email'];
+		$this->reponse{'info'} = "Un courriel a été envoyé à l'adresse ".$obj['email'];
 	}
 }
 else
 {
-	$this->reponse{'code'} = "500";
-	$this->reponse{'body'} = "Not connected";
+	$this->reponse{'code'} = "400";
+	$this->reponse{'info'} = "Not connected";
 }

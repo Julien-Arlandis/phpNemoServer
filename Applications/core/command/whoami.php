@@ -9,6 +9,7 @@ if( $this->id )
 }
 else
 {
-	$this->reponse{'code'} = "500";
+	$this->reponse{'code'} = "400";
+	$this->reponse{'info'} = "User not connected";
 	$this->reponse{'body'} = array();
 }

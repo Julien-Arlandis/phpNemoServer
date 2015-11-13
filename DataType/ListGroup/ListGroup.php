@@ -11,7 +11,7 @@ class DataType
 		global $jntp;
 		if($jntp->privilege != "admin")
 		{
-			$jntp->reponse{'body'} = "Cette action requiert une authentification";
+			$jntp->reponse{'info'} = "Cette action requiert une authentification";
 			return false;
 		}
 		return true;

@@ -8,8 +8,8 @@ if($this->param{'name'})
 {
 	if(!preg_match('/^#?[a-zA-Z0-9*.-]+$/', $this->param{'name'}))
 	{
-		$this->reponse{'body'} = "char not allowed";
-		$this->reponse{'code'} = "500";
+		$this->reponse{'info'} = "char not allowed";
+		$this->reponse{'code'} = "400";
 		$this->send();
 	}
 	else

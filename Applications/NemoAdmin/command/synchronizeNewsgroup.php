@@ -32,10 +32,11 @@ if($this->privilege == 'admin')
 			break;
 		}
 	}
+	$this->reponse{'info'} = "Synchronisation done";
 	$this->reponse{'body'} = $body;
 }
 else
 {
-	$this->reponse{'code'} = "500";
-	$this->reponse{'body'} = array("Not autorised to synchronize");
+	$this->reponse{'code'} = "400";
+	$this->reponse{'info'} = "Not autorised to synchronize";
 }

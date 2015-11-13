@@ -64,8 +64,8 @@ if( $this->param{'filter'})
 		$key = $key[0];
 		if( !in_array($key, $this->config['DataType']['ProtoData']['filter']) && !in_array($key, $this->config['DataType'][$this->param{'filter'}{'Data.DataType'}]['filter'] ) )
 		{
-			$this->reponse{'body'} = "filtre [".$key."] non autorisé";
-			$this->reponse{'code'} = "500";
+			$this->reponse{'info'} = "filtre [".$key."] non autorisé";
+			$this->reponse{'code'} = "400";
 			$this->send();
 		}
 

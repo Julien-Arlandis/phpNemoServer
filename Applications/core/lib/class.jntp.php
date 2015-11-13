@@ -84,7 +84,7 @@ class JNTP
 			else
 			{
 				$this->reponse{'code'} = "500";
-				$this->reponse{'body'} = "Connection failed";
+				$this->reponse{'info'} = "Connection failed";
 			}
 			return;
 		}
@@ -97,7 +97,7 @@ class JNTP
 		if (!is_array($json)) 
 		{
 			$this->reponse{'code'} = "500";
-			$this->reponse{'body'} = "Bad Syntax, type help command";
+			$this->reponse{'info'} = "Bad Syntax, type help command";
 			$this->send();
 		}
 		$application = $this->listCommand[$this->command];
@@ -108,7 +108,7 @@ class JNTP
 		else
 		{
 			$this->reponse{'code'} = "500";
-			$this->reponse{'body'} = "Command not found, [".$this->command."]";
+			$this->reponse{'info'} = "Command not found, [".$this->command."]";
 		}
 	}
 

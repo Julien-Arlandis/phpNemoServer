@@ -3,7 +3,7 @@
 if(strlen($this->param{'user'}) < 1)
 {
 	$this->reponse{'code'} = "500";
-	$this->reponse{'body'}{'error'} = "Bad parameters";
+	$this->reponse{'info'} = "Bad parameters";
 	$this->send();
 }
 
@@ -14,15 +14,15 @@ if(count($obj) > 0)
 {
 	if(sha1($obj{'checksum'}.$this->param{'password'}) != $obj{'password'}) 
 	{
-		$this->reponse{'code'} = "500";
-		$this->reponse{'body'}{'error'} = "Bad authentification";
+		$this->reponse{'code'} = "400";
+		$this->reponse{'info'} = "Bad authentification";
 		$this->send();
 	}
 
 	if($obj{'check'})
 	{
 		$this->reponse{'code'} = "400";
-		$this->reponse{'body'}{'error'} = "Le compte n'a pas encore été validé";
+		$this->reponse{'info'} = "Le compte n'a pas encore été validé";
 		$this->send();
 	}
 
@@ -33,6 +33,6 @@ if(count($obj) > 0)
 }
 else
 {
-	$this->reponse{'code'} = "500";
-	$this->reponse{'body'}{'error'} = "Bad user";
+	$this->reponse{'code'} = "400";
+	$this->reponse{'info'} = "Bad user";
 }

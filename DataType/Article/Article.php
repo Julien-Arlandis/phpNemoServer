@@ -49,7 +49,7 @@ class DataType
 				{
 					if(!$jntp->mongo->newsgroup->findOne(array('name' => $groupe), array('rules' => 1))) 
 					{
-						$jntp->reponse{'body'} = "Newsgroups [".$jntp->packet{'Data'}{'FollowupTo'}[0]."] inexistant";
+						$jntp->reponse{'info'} = "Newsgroups [".$jntp->packet{'Data'}{'FollowupTo'}[0]."] inexistant";
 						return false;
 					}
 				}
@@ -61,17 +61,17 @@ class DataType
 		}
 		else
 		{
-			$jntp->reponse{'body'} = $jntp->config{'application'}{'NemoNetwork'}{'maxFU2'}." redirections autorisées au maximum";
+			$jntp->reponse{'info'} = $jntp->config{'application'}{'NemoNetwork'}{'maxFU2'}." redirections autorisées au maximum";
 			return false;
 		}
 		if(count($jntp->packet{'Data'}{'FollowupTo'}) == 0 && count($jntp->packet{'Data'}{'Newsgroups'}) > $jntp->config{'application'}{'NemoNetwork'}{'maxCrosspostWithoutFU2'})
 		{
-			$jntp->reponse{'body'} = "Redirection requise";
+			$jntp->reponse{'info'} = "Redirection requise";
 			return false;
 		}
 		if (count($jntp->packet{'Data'}{'Newsgroups'}) > $jntp->config{'application'}{'NemoNetwork'}{'maxCrosspost'})
 		{
-			$jntp->reponse{'body'} = $jntp->config{'application'}{'NemoNetwork'}{'maxCrosspost'}." newsgroups maximum";
+			$jntp->reponse{'info'} = $jntp->config{'application'}{'NemoNetwork'}{'maxCrosspost'}." newsgroups maximum";
 			return false;
 		}
 
@@ -81,26 +81,26 @@ class DataType
 			{
 				if($groupe != strtolower($groupe)) 
 				{
-					$jntp->reponse{'body'} = "Pas de majuscules dans le nom des groupes";
+					$jntp->reponse{'info'} = "Pas de majuscules dans le nom des groupes";
 					return false;
 				}
 				$tab = $jntp->mongo->newsgroup->findOne(array('name' => $groupe), array('rules' => 1, 'rulesIfNotConnected'=>1));
 
 				if(!$tab) 
 				{ 
-					$jntp->reponse{'body'} = "Newsgroups [".$groupe."] inexistant";
+					$jntp->reponse{'info'} = "Newsgroups [".$groupe."] inexistant";
 					return false;
 				}
 				if($tab['rules']['m'] == "1" && $jntp->privilege != "admin") 
 				{
-					$jntp->reponse{'body'} = "Le newsgroup [".$groupe."] est modéré";
+					$jntp->reponse{'info'} = "Le newsgroup [".$groupe."] est modéré";
 					return false;
 				}
 				if(!$jntp->userid)
 				{
 					if(!$tab['rulesIfNotConnected']['w']=='1')
 					{
-						$jntp->reponse{'body'} = "Le newsgroup [".$groupe."] requiert une authentification";
+						$jntp->reponse{'info'} = "Le newsgroup [".$groupe."] requiert une authentification";
 						return false;
 					}
 				}
@@ -113,12 +113,12 @@ class DataType
 
 		if( strlen($jntp->packet{'Data'}{'FromName'}) < 1 )
 		{
-			$jntp->reponse{'body'} = "Expéditeur absent";
+			$jntp->reponse{'info'} = "Expéditeur absent";
 			return false;
 		}
 		if( strlen($jntp->packet{'Data'}{'FromMail'}) < 1 )
 		{
-			$jntp->reponse{'body'} = "Email absent";
+			$jntp->reponse{'info'} = "Email absent";
 			return false;
 		}
 		$jntp->packet{'Data'}{'Subject'}; // String
@@ -129,17 +129,17 @@ class DataType
 		$jntp->packet{'Data'}{'HashClient'}; // String
 		if( strlen($jntp->packet{'Data'}{'Subject'}) < 1 )
 		{
-			$jntp->reponse{'body'} = "Sujet manquant";
+			$jntp->reponse{'info'} = "Sujet manquant";
 			return false;
 		}
 		if( strlen($jntp->packet{'Data'}{'Body'}) < 1 )
 		{
-			$jntp->reponse{'body'} = "Article vide";
+			$jntp->reponse{'info'} = "Article vide";
 			return false;
 		}
 		if( !isset($jntp->packet{'Data'}{'ThreadID'}) )
 		{
-			$jntp->reponse{'body'} = "ThreadID manquant";
+			$jntp->reponse{'info'} = "ThreadID manquant";
 			return false;
 		}
 		$jntp->packet{'Data'}{'Media'}; // Tableau

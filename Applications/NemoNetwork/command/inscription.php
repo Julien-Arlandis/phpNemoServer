@@ -11,12 +11,12 @@ function insertUser($email, $password, $privilege = 1)
 	if(strlen($password) < 4) 
 	{
 		$error .= "Password trop court\n";
-		$code = "500";
+		$code = "400";
 	}
 	if (!preg_match('#^[\w.-]+@[\w.-]+\.[a-z]{2,6}$#i', $email))
 	{
 		$error .= "Email invalide\n";
-		$code = "500";
+		$code = "400";
 	}
 
 	$total = $jntp->mongo->user->find(array('email' => strtolower($email)))->count();
@@ -25,7 +25,7 @@ function insertUser($email, $password, $privilege = 1)
 	if ( $total > 0)
 	{
 		$error .= "Email déjà pris\n";
-		$code = "500";
+		$code = "400";
 	}
 	if($code == 200) 
 	{
@@ -74,7 +74,7 @@ ou en le recopiant dans votre barre d'adresse.";
 	$ObjMail->CharSet = "UTF-8";
 	if(!$ObjMail->Send())
 	{
-		return array("code" =>"500", "error" => "L'email n'a pas pu être envoyé\n" );
+		return array("code" =>"400", "error" => "L'email n'a pas pu être envoyé\n" );
 	}
 	return true;
 }
@@ -87,10 +87,10 @@ if($this->config{'activeInscription'} || $this->privilege == 'admin')
 		mailInscription($this->param{'email'}, $this->param{'password'}, $res['userid'], $res['check']);
 	}
 	$this->reponse{'code'} = $res['code'];
-	$this->reponse{'body'} = array($res['error']);
+	$this->reponse{'info'} = array($res['error']);
 }
 else
 {
-	$this->reponse{'code'} = "500";
-	$this->reponse{'body'} = "L'inscription en ligne est désactivée sur ce serveur, veuillez adresser un mail à ".$this->config{'administrator'}." en spécifiant le mot de passe souhaité, votre compte sera ouvert dans les plus brefs délais.";
+	$this->reponse{'code'} = "400";
+	$this->reponse{'info'} = "L'inscription en ligne est désactivée sur ce serveur, veuillez adresser un mail à ".$this->config{'administrator'}." en spécifiant le mot de passe souhaité, votre compte sera ouvert dans les plus brefs délais.";
 }
