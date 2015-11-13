@@ -8,8 +8,8 @@ if($this->param{'name'})
 {
 	if(!preg_match('/^#?[a-zA-Z0-9*.-]+$/', $this->param{'name'}))
 	{
-		$this->reponse{'info'} = "char not allowed";
 		$this->reponse{'code'} = "400";
+		$this->reponse{'info'} = "char not allowed";
 		$this->send();
 	}
 	else
@@ -66,3 +66,4 @@ foreach ($cursor as $obj)
 	if($obj['rules']['m'] == '1') $data{'rules'}{'w'} = '0';
 	array_push($this->reponse{'body'}, $data);
 }
+$this->reponse{'info'} = "Get ".count($this->reponse{'body'})." Newsgroups";

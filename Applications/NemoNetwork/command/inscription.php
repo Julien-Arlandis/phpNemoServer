@@ -46,7 +46,7 @@ function insertUser($email, $password, $privilege = 1)
 
 		$jntp->mongo->user->save($user);
 	}
-	return(array("code" => $code, "error" => $error, "userid" => $userid, "check" => $check));
+	return(array("code" => $code, "info" => $error, "userid" => $userid, "check" => $check));
 }
 
 function mailInscription($email, $password, $userid, $check)
@@ -74,7 +74,7 @@ ou en le recopiant dans votre barre d'adresse.";
 	$ObjMail->CharSet = "UTF-8";
 	if(!$ObjMail->Send())
 	{
-		return array("code" =>"400", "error" => "L'email n'a pas pu être envoyé\n" );
+		return array("code" =>"400", "info" => "L'email n'a pas pu être envoyé\n" );
 	}
 	return true;
 }

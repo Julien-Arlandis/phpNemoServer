@@ -12,13 +12,13 @@ class DataType
 	{
 		global $jntp;
 		if(!$jntp->userid) {
-			$jntp->reponse{'body'} = 'Vous devez être connecté pour liker';
+			$jntp->reponse{'info'} = 'Vous devez être connecté pour liker';
 			return false;
 		}
 		$this->total = $jntp->mongo->packet->find(array("Data.UserID"=>$jntp->userid, "Data.DataType" => "Like", "Data.DataIDLike" => $jntp->packet{'Data'}{'DataIDLike'}))->count();
 		if($this->total > 0)
 		{
-			$jntp->reponse{'body'} = 'Vous avez déjà liké cet article';
+			$jntp->reponse{'info'} = 'Vous avez déjà liké cet article';
 			return false;
 		}
 		else

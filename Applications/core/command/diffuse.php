@@ -35,18 +35,20 @@ if($this->param{'Data'})
 					$this->reponse{'body'}{'Data'}{'DataType'} = $this->packet{'Data'}{'DataType'};
 					$this->reponse{'body'}{'Jid'} = $this->packet{'Jid'};
 					$this->reponse{'body'}{'ID'} = $this->packet{'ID'};
+					$this->reponse{'info'} = 'Diffuse '.$this->packet{'Data'}{'DataID'}.' OK';
 				}
 			}
 			else
 			{
 				$this->reponse{'code'} = "400";
+				$this->reponse{'info'} = 'Invalid Data';
 			}
 		}
 	}
 	else
 	{
 		$this->reponse{'code'} = "400";
-		$this->reponse{'info'} = "DataType ".$this->packet{'Data'}{'DataType'}." non pris en charge";
+		$this->reponse{'info'} = "DataType ".$this->packet{'Data'}{'DataType'}." unsupported";
 	}
 }
 
@@ -156,6 +158,7 @@ elseif($this->param{'Propose'})
 		$this->reponse{'code'} = "200";
 		$this->reponse{'body'}{'Jid'} = $jid;
 		$this->reponse{'body'}{'Data.DataID'} = $dataid;
+		$this->reponse{'info'} = 'Proposition processed';
 	}
 	else
 	{

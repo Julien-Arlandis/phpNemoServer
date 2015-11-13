@@ -9,8 +9,8 @@ if($this->userid)
 	
 		if (!preg_match('#^[\w.-]+@[\w.-]+\.[a-z]{2,6}$#i', $this->param{'email'}))
 		{
-			$this->reponse{'info'} = "Email invalide";
 			$this->reponse{'code'} = "400";
+			$this->reponse{'info'} = "Email invalide";
 		}
 
 		$total = $this->mongo->user->find(array('email' => $this->param{'email'}))->count();
@@ -18,8 +18,8 @@ if($this->userid)
 
 		if ( $total > 0)
 		{
-			$this->reponse{'info'} = "Email déjà pris";
 			$this->reponse{'code'} = "400";
+			$this->reponse{'info'} = "Email déjà pris";
 		}
 
 		if($this->reponse{'code'} == "200") 
@@ -34,8 +34,8 @@ if($this->userid)
 
 		if(strlen($this->param{'password'}) < 4) 
 		{
-			$this->reponse{'info'} = "Password trop court";
 			$this->reponse{'code'} = "400";
+			$this->reponse{'info'} = "Password trop court";
 		}
 		else
 		{
@@ -74,8 +74,8 @@ if($this->userid)
 	{
 		if(strlen($this->param{'FromMail'}) > 50) 
 		{
-			$this->reponse{'info'} = "Trop long";
 			$this->reponse{'code'} = "400";
+			$this->reponse{'info'} = "Trop long";
 		}
 		else
 		{
@@ -88,8 +88,8 @@ if($this->userid)
 	{
 		if(strlen($this->param{'ReplyTo'}) > 50) 
 		{
-			$this->reponse{'info'} = "Trop long";
 			$this->reponse{'code'} = "400";
+			$this->reponse{'info'} = "Trop long";
 		}
 		else
 		{
@@ -102,8 +102,8 @@ if($this->userid)
 	{
 		if(strlen($this->param{'HashKey'}) > 30) 
 		{
-			$this->reponse{'info'} = "Trop long";
 			$this->reponse{'code'} = "400";
+			$this->reponse{'info'} = "Trop long";
 		}
 		else
 		{

@@ -7,6 +7,7 @@ $count = false;
 $listen = ($this->param{'listen'} && $this->param{'listen'} == 1 ) ? true : false;
 $delay = 1;
 $limit = 500;
+$count_packet = 0;
 
 if($this->param{'limit'} && is_numeric($this->param{'limit'}) )
 {
@@ -50,8 +51,8 @@ if( $this->param{'filter'})
 {
 	if( !$this->param{'filter'}{'Data.DataType'} || !$this->config['DataType'][$this->param{'filter'}{'Data.DataType'}])
 	{
-		$this->reponse{'body'} = "DataType not found";
 		$this->reponse{'code'} = "500";
+		$this->reponse{'info'} = "DataType not found";
 		$this->send();
 	}
 
@@ -64,8 +65,8 @@ if( $this->param{'filter'})
 		$key = $key[0];
 		if( !in_array($key, $this->config['DataType']['ProtoData']['filter']) && !in_array($key, $this->config['DataType'][$this->param{'filter'}{'Data.DataType'}]['filter'] ) )
 		{
-			$this->reponse{'info'} = "filtre [".$key."] non autorisé";
 			$this->reponse{'code'} = "400";
+			$this->reponse{'info'} = "Filter [".$key."] not allowed";
 			$this->send();
 		}
 
@@ -135,8 +136,8 @@ if( $this->param{'filter'})
 		$time_execution += $delay;
 		if($time_execution >= $time_execution_max) 
 		{
-			$this->reponse{'body'} = array();
 			$this->reponse{'code'} = "200";
+			$this->reponse{'body'} = array();
 			$this->send();
 		}
 	} while($listen && $cursor->count()==0);
@@ -144,21 +145,23 @@ if( $this->param{'filter'})
 
 if(!$count)
 {
-	$this->reponse{'body'} = array();
 	$this->reponse{'code'} = "200";
-
+	$this->reponse{'body'} = array();
 	foreach($cursor as $packet)
 	{
+		$count_packet++;
 		if( $this->privilege != 'admin')
 		{
 			unset( $packet{'Meta'}{'ForAdmin'} );
 		}
 		array_push($this->reponse{'body'}, $this->replaceHash( $packet ) );
 	}
+	$this->reponse{'info'} = "Get ".$count_packet." packet(s)";
 }
 else
 {
-	$this->reponse{'body'} = array("count"=>$cursor);
 	$this->reponse{'code'} = "200";
+	$this->reponse{'body'} = array("count"=>$cursor);
+	$this->reponse{'info'} = "Count ".$cursor->count()." packet(s)";
 }
 

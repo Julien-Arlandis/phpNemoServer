@@ -18,7 +18,7 @@ ou en le recopiant dans votre barre d'adresse.";
 	$ObjMail->CharSet = "UTF-8";
 	if(!$ObjMail->Send())
 	{
-		return array("code" =>"500", "error" => "L'email n'a pas pu être envoyé\n" );
+		return array("code" =>"400", "info" => "L'email n'a pas pu être envoyé\n" );
 	}
 	return true;
 }

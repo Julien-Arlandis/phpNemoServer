@@ -32,8 +32,8 @@ if($this->privilege == 'admin')
 			break;
 		}
 	}
-	$this->reponse{'info'} = "Synchronisation done";
 	$this->reponse{'body'} = $body;
+	$this->reponse{'info'} = "Synchronisation done";
 }
 else
 {

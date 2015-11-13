@@ -6,7 +6,7 @@ if($this->privilege == 'admin')
 {
 	$this->createIndex();
 	$this->reponse{'code'} = "200";
-	$this->reponse{'info'} = "reload index, done";
+	$this->reponse{'info'} = "Reload index, done";
 }
 else
 {

@@ -22,7 +22,7 @@ if(count($obj) > 0)
 	if($obj{'check'})
 	{
 		$this->reponse{'code'} = "400";
-		$this->reponse{'info'} = "Le compte n'a pas encore été validé";
+		$this->reponse{'info'} = "The account has not yet been validated";
 		$this->send();
 	}
 
@@ -30,6 +30,7 @@ if(count($obj) > 0)
 
 	$this->reponse{'code'} = "200";
 	$this->reponse{'body'} = array("FromName"=>$obj{'FromName'}, "FromMail"=>$obj{'FromMail'}, "ReplyTo"=>$obj{'ReplyTo'}, "UserID"=>$this->userid, "email"=>$obj{'email'}, "privilege"=>$this->privilege, "Session"=>$this->session, "HashKey"=>$obj{'hashkey'});
+	$this->reponse{'info'} = $this->userid." connected";
 }
 else
 {

@@ -1,4 +1,5 @@
 <?php
+$this->reponse{'code'} = "200";
 
 switch($this->param)
 {
@@ -57,5 +58,3 @@ Pour obtenir de l'aide sur la commande get, taper ["help","get"]
 EOF;
 	break;
 }
-
-$this->reponse{'code'} = "200";
