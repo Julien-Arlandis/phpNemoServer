@@ -21,7 +21,7 @@ if(count($obj) > 0)
 
 	if($obj{'check'})
 	{
-		$this->reponse{'code'} = "400";
+		$this->reponse{'code'} = "401";
 		$this->reponse{'info'} = "The account has not yet been validated";
 		$this->send();
 	}
@@ -34,6 +34,6 @@ if(count($obj) > 0)
 }
 else
 {
-	$this->reponse{'code'} = "400";
+	$this->reponse{'code'} = "402";
 	$this->reponse{'info'} = "Bad user";
 }
