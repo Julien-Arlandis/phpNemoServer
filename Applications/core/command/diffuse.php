@@ -41,7 +41,6 @@ if($this->param{'Data'})
 			else
 			{
 				$this->reponse{'code'} = "400";
-				$this->reponse{'info'} = 'Invalid Data';
 			}
 		}
 	}

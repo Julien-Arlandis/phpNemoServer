@@ -78,7 +78,6 @@ class DataType
 					$obj2['name'] = $oneHierarchy;
 					$obj2['type'] = 'H';
 					$obj2['level'] = substr_count($oneHierarchy,'.');
-
 					try {
 					$jntp->mongo->newsgroup->save($obj2);
 					} catch(MongoCursorException $e) { }

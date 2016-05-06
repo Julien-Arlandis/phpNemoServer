@@ -37,6 +37,8 @@ class JNTP
 	var $config;
 	var $maxDataLength;
 	var $stopSuperDiffuse = false;
+	var $moderationArticle = false;
+	var $publicKeyForModeration = false;
 
 	// Constructeur
 	function __construct()
@@ -506,6 +508,27 @@ $startFeed = true;
 	static function hashString($str)
 	{
 		return rtrim(strtr(base64_encode(sha1($str, true)), '+/', '-_'), '='); 
+	}
+
+	static function randomKeyIv()
+	{
+		//$key = key(64 hexa in base64) + iv(32 hexa in base64);
+		return substr(sha1(uniqid(rand(), true)).sha1(uniqid(rand(), true)).sha1(uniqid(rand(), true)),0,96);
+	}
+
+	static function encryptAES256($str, $key_iv)
+	{
+		$key = pack('H*', substr($key_iv, 0, 64));
+		$iv = pack('H*', substr($key_iv, 65));
+		return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $key, $str, MCRYPT_MODE_CFB, $iv));
+	}
+
+	static function decryptAES256($str, $key_iv)
+	{
+		$key = pack('H*', substr($key_iv, 0, 64));
+		$iv = pack('H*', substr($key_iv, 65));
+		$str = base64_decode($str);
+		return substr(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $iv.$str, MCRYPT_MODE_CFB, $iv), 16);
 	}
 }
 

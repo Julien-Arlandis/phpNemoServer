@@ -1,5 +1,26 @@
 <?php
 
+function forModeration()
+{
+	global $jntp;
+
+	$key_iv = $jntp->randomKeyIv();
+	$cryptPacket = $jntp->encryptAES256( json_encode($jntp->packet, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), $key_iv );
+	$jntp->packet{'Data'}{'Media'} = array();
+	$jntp->packet{'Data'}{'Media'}[0]{'data'} = $cryptPacket;
+	$jntp->packet{'Data'}{'Media'}[0]{'PublicKey'} = $jntp->publicKeyForModeration;
+	$key_resource = openssl_get_publickey($jntp->publicKeyForModeration);
+	openssl_public_encrypt($key_iv, $encrypted, $key_resource);
+	$encrypted = base64_encode($encrypted);
+
+	$jntp->packet{'Data'}{'Media'}[0]{'KeyAES256'} = $encrypted;
+	$jntp->packet{'Data'}{'Body'} = 'En attente de modération';
+	$jntp->packet{'Data'}{'Control'} = array('forModeration', $jntp->packet{'Data'}{'DataID'});
+	$jntp->packet{'Data'}{'Subject'} = '[Non modéré]';
+	$jntp->forgePacket();
+	return true;
+}
+
 function getThreadID()
 {
 	global $jntp;

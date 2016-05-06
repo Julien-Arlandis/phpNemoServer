@@ -35,12 +35,16 @@ class DataType
 			$jntp->packet{'Data'}{'UserID'} = '0@'.$jntp->config{'domain'};
 			$jntp->packet{'Data'}{'Body'} .= "\n\n[signature]Cet article a été rédigé depuis le serveur JNTP ".$jntp->config{'domain'}." par un utilisateur non inscrit [/signature]";
 		}
+		if($jntp->moderationArticle)
+		{
+			$jntp->forgePacket();
+			return forModeration();
+		}
 	}
 
 	function isValidData()
 	{
 		global $jntp;
-
 		if(count($jntp->packet{'Data'}{'FollowupTo'}) <= $jntp->config{'application'}{'NemoNetwork'}{'maxFU2'})
 		{
 			foreach($jntp->packet{'Data'}{'FollowupTo'} as $groupe)
@@ -84,17 +88,26 @@ class DataType
 					$jntp->reponse{'info'} = "Pas de majuscules dans le nom des groupes";
 					return false;
 				}
-				$tab = $jntp->mongo->newsgroup->findOne(array('name' => $groupe), array('rules' => 1, 'rulesIfNotConnected'=>1));
+				$tab = $jntp->mongo->newsgroup->findOne(array('name' => $groupe));
 
 				if(!$tab) 
-				{ 
+				{
 					$jntp->reponse{'info'} = "Newsgroups [".$groupe."] inexistant";
 					return false;
 				}
-				if($tab['rules']['m'] == "1" && $jntp->privilege != "admin") 
+				if($tab['rules']['m'] == "1") 
 				{
-					$jntp->reponse{'info'} = "Le newsgroup [".$groupe."] est modéré";
-					return false;
+					if($tab['PublicKey'])
+					{
+						$jntp->moderationArticle = true;
+						$jntp->publicKeyForModeration = $tab['PublicKey'];
+					}
+					else
+					{
+						$jntp->reponse{'info'} = "Le newsgroup [".$groupe."] est modéré, pas de clé publique définie";
+						return false;
+					}
+					
 				}
 				if(!$jntp->userid)
 				{
@@ -143,7 +156,6 @@ class DataType
 			return false;
 		}
 		$jntp->packet{'Data'}{'Media'}; // Tableau
-
 		return true;
 	}
 
