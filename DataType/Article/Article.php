@@ -4,6 +4,8 @@ require_once(__DIR__."/functions.php");
 
 class DataType
 {
+	var $moderationArticle;
+
 	function __construct() 
 	{
 	}
@@ -35,7 +37,7 @@ class DataType
 			$jntp->packet{'Data'}{'UserID'} = '0@'.$jntp->config{'domain'};
 			$jntp->packet{'Data'}{'Body'} .= "\n\n[signature]Cet article a été rédigé depuis le serveur JNTP ".$jntp->config{'domain'}." par un utilisateur non inscrit [/signature]";
 		}
-		if($jntp->moderationArticle)
+		if($this->moderationArticle)
 		{
 			$jntp->forgePacket();
 			return forModeration();
@@ -99,7 +101,7 @@ class DataType
 				{
 					if($tab['PublicKey'])
 					{
-						$jntp->moderationArticle = true;
+						$this->moderationArticle = true;
 						$jntp->publicKeyForModeration = $tab['PublicKey'];
 					}
 					else

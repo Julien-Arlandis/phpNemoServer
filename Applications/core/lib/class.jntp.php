@@ -37,7 +37,6 @@ class JNTP
 	var $config;
 	var $maxDataLength;
 	var $stopSuperDiffuse = false;
-	var $moderationArticle = false;
 	var $publicKeyForModeration = false;
 
 	// Constructeur
