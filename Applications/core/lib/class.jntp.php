@@ -307,7 +307,7 @@ class JNTP
 	// Retourne la ressource d'un packet requêtée au format URI ex : http://[server]/jntp/[Jid]/Data.FromName
 	function getResource($path) // à corriger.
 	{
-		$tab = split('/', $path);
+		$tab = preg_split('/\//', $path);
 		$json = $this->getPacket( array('Data.DataID'=>$tab[0]) );
 		$tab = preg_split("/([:\.\/]+)/", $tab[1], -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY );
 
