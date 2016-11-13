@@ -34,7 +34,7 @@ if( !is_writable( __DIR__ . '/conf'))
 	die();
 }
 
-$server_version = '0.92a';
+$server_version = '0.92b';
 $config = array(
     "private_key_bits" => 1024,
     "private_key_type" => OPENSSL_KEYTYPE_RSA,
