@@ -153,7 +153,7 @@ exit();
 <span class="champ">Email: </span>
 <input name="EMAIL" type="text" value="<?='newsmaster@'.$_SERVER['SERVER_NAME']?>">
 <br><br>
-Le fichier /NemoServer/conf/config.php va être crée, vous devrez le modifier ultérieurement pour paramétrer les feeds et pour activer les logs.
+Le fichier /jntp/conf/config.php va être crée, vous devrez le modifier ultérieurement pour paramétrer les feeds et pour activer les logs.
 <br>
 <input name="action" type="submit" value="Installer">
 </form>
@@ -162,7 +162,7 @@ Le fichier /NemoServer/conf/config.php va être crée, vous devrez le modifier u
 <script>
 $(document).ready(function() {
 	$('#check_php_path').click(function() {
-		window.open('/NemoServer/install.php?php_path='+$('#PHP_PATH').val());
+		window.open('/jntp/install.php?php_path='+$('#PHP_PATH').val());
 	});
 })
 </script>
