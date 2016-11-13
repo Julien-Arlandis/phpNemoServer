@@ -29,7 +29,6 @@ if( !file_exists( __DIR__ . '/sleep.txt'))
 if( !is_writable( __DIR__ . '/conf'))
 {
 	echo '500 '.__DIR__ . "/conf/ is not writable<br>";
-	echo "chown www-data jntp/conf<br>";
 	echo "chmod o+w jntp/conf";
 	die();
 }
