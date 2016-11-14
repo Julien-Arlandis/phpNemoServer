@@ -21,15 +21,17 @@ This file is part of PhpNemoServer.
     along with PhpNemoServer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-if( !file_exists( __DIR__ . '/sleep.txt'))
+if( !file_exists( __DIR__ . '/sleep'))
 {
-	die( '500 You must create '.__DIR__ . '/sleep.txt file to continue installation' );
+	echo '500 You must create '.__DIR__ . '/sleep file to continue installation<br>';
+	echo '<strong>touch jntp/sleep<strong>';
+	die();
 }
 
 if( !is_writable( __DIR__ . '/conf'))
 {
 	echo '500 '.__DIR__ . "/conf/ is not writable<br>";
-	echo "chmod o+w jntp/conf";
+	echo "<strong>chmod o+w jntp/conf<strong>";
 	die();
 }
 
@@ -289,10 +291,11 @@ La base <?=DB_NAME?> a bien été crée.
 <p>
 <?=$jntp->reponse{'info'};?>
 <p>
-Vous devez supprimer le fichier sleep.txt pour continuer.
-<p>
 Vous pouvez désormais configurez les feeds dans le fichier conf/general.json.
 <p>
+Vous devez supprimer le fichier sleep.txt pour continuer.
+<p>
+<strong>rm jntp/sleep";
 </body>
 </html>
 <?php
