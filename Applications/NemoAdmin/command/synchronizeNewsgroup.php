@@ -2,7 +2,6 @@
 $cfg = json_decode(file_get_contents(__DIR__.'/../../../conf/newsgroups.json'));
 
 $this->setSession();
-
 if($this->privilege == 'admin')
 {
 	$this->mongo->newsgroup->remove();
@@ -16,24 +15,27 @@ if($this->privilege == 'admin')
 			$query = '["get", {"filter":{"Data.DataType":"ListGroup","Data.Hierarchy":"'.$cfg->hierarchy[$i].'"},"limit":1 } ]';
 			$this->exec($query, $this->config{'publicServer'}[$j]);
 			$this->packet = $this->reponse{'body'}[0];
-			$this->loadDataType();
-
-			if ( $this->datatype->beforeInsertion() )
+			
+			if(is_array($this->packet))
 			{
-				// Insère le packet dans la base de données.
-				if($this->insertPacket())
-				{
-					$this->datatype->afterInsertion($this->packet{'ID'});
-				}
+  			$this->loadDataType();
+  
+  			if ( $this->datatype->beforeInsertion() )
+  			{
+  				// Insère le packet dans la base de données.
+  				if($this->insertPacket())
+  				{
+  					$this->datatype->afterInsertion($this->packet{'ID'});
+  				}
+  			}
+  			$this->insertPacket();
+			  array_push($body, $cfg->hierarchy[$i]);
+			  break;
 			}
-
-			$this->insertPacket();
-			array_push($body, $cfg->hierarchy[$i]);
-			break;
 		}
 	}
 	$this->reponse{'body'} = $body;
-	$this->reponse{'info'} = "Synchronisation done";
+	$this->reponse{'info'} = "Synchronisation done : ".count($body)." newsgroups";
 }
 else
 {

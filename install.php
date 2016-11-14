@@ -62,17 +62,17 @@ function checkModules()
 <?php
 }
 
-if(isset($_GET['php_path'])) 
+if(isset($_GET['php_path']))
 {
 	$php_path = $_GET['php_path'];
 	$fp = popen($php_path.' '.__DIR__.'/install.php phpcli', 'r');
 
-	while(!feof($fp)) 
-	{ 
-		print fread($fp, 1024); 
-		flush(); 
-	} 
-	fclose($fp); 
+	while(!feof($fp))
+	{
+		print fread($fp, 1024);
+		flush();
+	}
+	fclose($fp);
 	exit();
 }
 
@@ -176,7 +176,7 @@ die();
 else
 {
 
-/* 
+/*
 * Création du fichier de config.php
 */
 
@@ -200,7 +200,7 @@ $file = fopen($file_config_final, 'w');
 fputs($file, $buffer);
 fclose($file);
 
-/* 
+/*
 * Création du fichier general.json
 */
 
@@ -258,7 +258,6 @@ if(isset($_POST['ADD_ADMIN']))
 */
 $jntp->privilege = 'admin';
 $jntp->exec('["synchronizeNewsgroup"]');
-
 }
 ?>
 
@@ -270,7 +269,10 @@ $jntp->exec('["synchronizeNewsgroup"]');
 </head>
 <body>
 
-Installation de PHP Nemo Server (version <?=$server_version?>) terminée. La base <?=DB_NAME?> a bien été crée. 
+<p>
+Installation de PHP Nemo Server (version <?=$server_version?>) terminée. La base <?=DB_NAME?> a bien été crée.
+<p>
+<?=$jntp->reponse{'info'};?>
 <p>
 Vous devez supprimer le fichier sleep.txt pour continuer.
 <p>
