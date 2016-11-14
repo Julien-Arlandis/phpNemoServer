@@ -295,7 +295,7 @@ Vous pouvez désormais configurez les feeds dans le fichier conf/general.json.
 <p>
 Vous devez supprimer le fichier sleep.txt pour continuer.
 <p>
-<strong>rm jntp/sleep";
+<strong>rm jntp/sleep</strong>
 </body>
 </html>
 <?php
