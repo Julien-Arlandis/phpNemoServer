@@ -144,14 +144,14 @@ exit();
 
 <h2> Compte administrateur</h2>
 <span class="champ">User : </span>
-<input name="USER" type="text" value="<?='admin'?>">
-<input name="ADD_ADMIN" type="checkbox"> Ajouter l'utilisateur dans la base.
+<input disabled id="user_checked" name="USER" type="text" value="<?='admin'?>">
+<input id="check_add_user" name="ADD_ADMIN" type="checkbox"> Ajouter l'utilisateur dans la base.
 <br>
 <span class="champ">Password : </span>
-<input name="PASSWORD" type="text" value="<?=substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),0,8);?>">
+<input disabled id="PASSWORD" name="PASSWORD" type="text" value="<?=substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),0,8);?>">
 <br>
 <span class="champ">Email: </span>
-<input name="EMAIL" type="text" value="<?='newsmaster@'.$_SERVER['SERVER_NAME']?>">
+<input disabled id="EMAIL" name="EMAIL" type="text" value="<?='newsmaster@'.$_SERVER['SERVER_NAME']?>">
 <br><br>
 Le fichier /jntp/conf/config.php va être crée, vous devrez le modifier ultérieurement pour paramétrer les feeds et pour activer les logs.
 <br>
@@ -161,9 +161,21 @@ Le fichier /jntp/conf/config.php va être crée, vous devrez le modifier ultéri
 <br><br>
 <script>
 $(document).ready(function() {
+  
 	$('#check_php_path').click(function() {
 		window.open('/jntp/install.php?php_path='+$('#PHP_PATH').val());
 	});
+	
+	$('#check_add_user').change(function() {
+	  
+	  if( this.checked ) {
+		  $( "#user_checked, #PASSWORD, #EMAIL" ).prop( "disabled", false );
+	  }else{
+	    $( "#user_checked, #PASSWORD, #EMAIL" ).prop( "disabled", true );
+	  }
+	  
+	});
+	
 })
 </script>
 
@@ -258,6 +270,7 @@ if(isset($_POST['ADD_ADMIN']))
 */
 $jntp->privilege = 'admin';
 $jntp->exec('["synchronizeNewsgroup"]');
+
 }
 ?>
 
@@ -270,7 +283,9 @@ $jntp->exec('["synchronizeNewsgroup"]');
 <body>
 
 <p>
-Installation de PHP Nemo Server (version <?=$server_version?>) terminée. La base <?=DB_NAME?> a bien été crée.
+Installation de PHP Nemo Server (version <?=$server_version?>) terminée.
+<p>
+La base <?=DB_NAME?> a bien été crée.
 <p>
 <?=$jntp->reponse{'info'};?>
 <p>
