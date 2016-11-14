@@ -35,7 +35,7 @@ if($this->privilege == 'admin')
 		}
 	}
 	$this->reponse{'body'} = $body;
-	$this->reponse{'info'} = "Synchronisation done : ".count($body)." newsgroups";
+	$this->reponse{'info'} = "Synchronisation done : ".count($body)." hiérarchies";
 }
 else
 {
