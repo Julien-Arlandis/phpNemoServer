@@ -32,8 +32,7 @@ See reference about client support forums under \<news:nemo.dev.client\>
 Installation
 ------
 
-Go to your website root directory.
-
+* Go to your website root directory.
 * Install the most popular JNTP client (Nemo) :
 
     ```git clone https://github.com/Julien-Arlandis/NemoClient.git .```
@@ -48,17 +47,17 @@ Greats :)
 Upgrade Server
 -------
 
-    git pull
+    ```git pull```
 
 Export users to user.json file
 -------
 
-    mongoexport --db <database> --collection user --out user.json
+    ```mongoexport --db <database> --collection user --out user.json```
 
 Import users from user.json file
 -------
 
-    mongoimport --db <database> --collection user --file user.json
+    ```mongoimport --db <database> --collection user --file user.json
     mongo <<EOF
     use <database>
     db.counters.findAndModify({
@@ -66,4 +65,4 @@ Import users from user.json file
         update: {"seq":db.user.find().sort({"UserID":-1}).limit(1).next().UserID},
         upsert: true
     });
-    EOF
+    EOF```
