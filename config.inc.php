@@ -31,8 +31,8 @@ define('LOG_PATH', '');
 define('LOG_FEED_PATH', '');
 
 define('SMTP_HOST', 'localhost');
-define('SMTP_PORT', '25');
-define('SMTP_SECURE', ''); // TLS | SSL | ''
+define('SMTP_PORT', 25); // 25 | 465 | 587
+define('SMTP_SECURE', ''); // '' | 'SSL' | 'TLS'
 define('SMTP_AUTH', 0);
 define('SMTP_LOGIN', '');
 define('SMTP_PASSWORD','');
