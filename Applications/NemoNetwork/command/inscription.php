@@ -65,18 +65,18 @@ Merci de valider votre adresse mail en cliquant sur ce lien : <br>
 <a href=\"".$url."\">".$url."</a><br>
 ou en le recopiant dans votre barre d'adresse.";
 	
-	$mail = new PHPMailer();
+  $mail = new PHPMailer();
   $mail->isSMTP();
   $mail->Host = SMTP_HOST;
   $mail->SMTPAuth = SMTP_AUTH;
   $mail->SMTPSecure = SMTP_SECURE;
   $mail->Port = SMTP_PORT;
-	$mail->setFrom($jntp->config{'administrator'}, $jntp->config{'organization'});
-	$mail->AddAddress($email);
-	$mail->Subject = "Bienvenue sur ".$jntp->config{'organization'};
-	$mail->isHTML(true);
-	$mail->Body = $message;
-	$mail->CharSet = "UTF-8";
+  $mail->setFrom($jntp->config{'administrator'}, $jntp->config{'organization'});
+  $mail->AddAddress($email);
+  $mail->Subject = "Bienvenue sur ".$jntp->config{'organization'};
+  $mail->isHTML(true);
+  $mail->Body = $message;
+  $mail->CharSet = "UTF-8";
 	
 	if(!$mail->Send())
 	{
