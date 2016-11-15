@@ -4,18 +4,18 @@
 function insertUser($email, $password, $privilege = 1)
 {
 	global $jntp;
-	$error = "";
+	$error = array();
 	$code = "200";
 	$userid = "";
 	$check = "";
-	if(strlen($password) < 4) 
+	if(strlen($password) < 4)
 	{
-		$error .= "Password trop court\n";
+		array_push($error, "Password trop court");
 		$code = "400";
 	}
 	if (!preg_match('#^[\w.-]+@[\w.-]+\.[a-z]{2,6}$#i', $email))
 	{
-		$error .= "Email invalide\n";
+		array_push($error, "Email invalide");
 		$code = "400";
 	}
 
@@ -24,10 +24,10 @@ function insertUser($email, $password, $privilege = 1)
 
 	if ( $total > 0)
 	{
-		$error .= "Email déjà pris\n";
+		array_push($error, "Email déjà pris");
 		$code = "400";
 	}
-	if($code == 200) 
+	if($code == 200)
 	{
 		$check = (string)rand(100000000000, 99999999999999);
 		$hashkey = sha1(rand(0, 9e16).uniqid());
@@ -53,8 +53,7 @@ function mailInscription($email, $password, $userid, $check)
 {
 	global $jntp;
 	require_once(__DIR__.'/../../core/lib/class.phpmailer.php');
-	$ObjMail = new PHPMailer();
-
+	
 	$url = "http://".$jntp->config{'domain'}."/jntp/Applications/NemoNetwork/account.php?action=inscription&amp;userid=".$userid."&amp;check=".$check;
 	$message = "
 Bonjour, bienvenue sur <a href=\"http://".$jntp->config{'domain'}."\">".$jntp->config{'organization'}."</a>.
@@ -65,14 +64,21 @@ Votre mot de passe est : <strong>".$password."</strong>
 Merci de valider votre adresse mail en cliquant sur ce lien : <br>
 <a href=\"".$url."\">".$url."</a><br>
 ou en le recopiant dans votre barre d'adresse.";
-
-	$ObjMail->MsgHTML($message);
-	$ObjMail->setFrom($jntp->config{'administrator'});
-	$ObjMail->FromName   = $jntp->config{'organization'};
-	$ObjMail->Subject    = "Bienvenue sur ".$jntp->config{'organization'};
-	$ObjMail->AddAddress($email);
-	$ObjMail->CharSet = "UTF-8";
-	if(!$ObjMail->Send())
+	
+	$mail = new PHPMailer();
+  $mail->isSMTP();
+  $mail->Host = SMTP_HOST;
+  $mail->SMTPAuth = SMTP_AUTH;
+  $mail->SMTPSecure = SMTP_SECURE;
+  $mail->Port = SMTP_PORT;
+	$mail->setFrom($jntp->config{'administrator'}, $jntp->config{'organization'});
+	$mail->AddAddress($email);
+	$mail->Subject = "Bienvenue sur ".$jntp->config{'organization'};
+	$mail->isHTML(true);
+	$mail->Body = $message;
+	$mail->CharSet = "UTF-8";
+	
+	if(!$mail->Send())
 	{
 		return array("code" =>"400", "info" => "L'email n'a pas pu être envoyé\n" );
 	}
@@ -87,7 +93,7 @@ if($this->config{'activeInscription'} || $this->privilege == 'admin')
 		mailInscription($this->param{'email'}, $this->param{'password'}, $res['userid'], $res['check']);
 	}
 	$this->reponse{'code'} = $res['code'];
-	$this->reponse{'info'} = array($res['error']);
+	$this->reponse{'info'} = $res['info'];
 }
 else
 {
