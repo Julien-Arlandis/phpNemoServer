@@ -34,7 +34,7 @@ Installation
 
 In your website root directory :  
 
-First install the most popular JNTP client (Nemo) :
+First, install the most popular JNTP client (Nemo) :
 
     git clone https://github.com/Julien-Arlandis/NemoClient.git .
 
