@@ -34,6 +34,7 @@ Installation
 
 * Go to your website root directory.
 * Install the most popular JNTP client (Nemo) :
+
 ```git clone https://github.com/Julien-Arlandis/NemoClient.git .```
 
 * Install JNTP server :
@@ -64,4 +65,5 @@ db.counters.findAndModify({
     update: {"seq":db.user.find().sort({"UserID":-1}).limit(1).next().UserID},
     upsert: true
 });
-EOF```
+EOF
+```
