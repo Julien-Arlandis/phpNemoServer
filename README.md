@@ -34,15 +34,15 @@ Installation
 
 Go to your website root directory.
 
-install the most popular JNTP client (Nemo) :
+* Install the most popular JNTP client (Nemo) :
 
-    git clone https://github.com/Julien-Arlandis/NemoClient.git .
+    ```git clone https://github.com/Julien-Arlandis/NemoClient.git .```
 
-install JNTP server :
+* Install JNTP server :
 
-    git clone https://github.com/Julien-Arlandis/phpNemoServer.git jntp
+    ```git clone https://github.com/Julien-Arlandis/phpNemoServer.git jntp```
 
-Go to http://yourserver/jntp/ and follow the instructions.  
+* Go to http://yourserver/jntp/ and follow the instructions.  
 Greats :)
 
 Upgrade Server
