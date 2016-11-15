@@ -75,7 +75,7 @@ class JNTP
 			);
 
 			$CURL = curl_init();
-			if(!empty($CURL)) 
+			if(!empty($CURL))
 			{
 				curl_setopt_array($CURL, $options);
 				$reponse = curl_exec($CURL);
@@ -95,7 +95,7 @@ class JNTP
 		$this->command = $json[0];
 		$this->param = (count($json)> 1) ? $json[1] : null;
 
-		if (!is_array($json)) 
+		if (!is_array($json))
 		{
 			$this->reponse{'code'} = "500";
 			$this->reponse{'info'} = "Bad Syntax, type help command";
@@ -235,7 +235,7 @@ class JNTP
 			{
 				foreach($packet{'Data'}{'Media'}[$ind] as $key => $value)
 				{
-					if($this->maxDataLength!=0 && is_string($packet{'Data'}{'Media'}[$ind][$key]) && strlen($packet{'Data'}{'Media'}[$ind][$key]) > $this->maxDataLength) 
+					if($this->maxDataLength!=0 && is_string($packet{'Data'}{'Media'}[$ind][$key]) && strlen($packet{'Data'}{'Media'}[$ind][$key]) > $this->maxDataLength)
 					{
 						$packet{'Data'}{'Media'}[$ind]['#'.$key] = $this->hashString($packet{'Data'}{'Media'}[$ind][$key]);
 						unset ( $packet{'Data'}{'Media'}[$ind][$key] );
@@ -270,7 +270,7 @@ class JNTP
 		array_push($this->packet{'Route'}, $this->config{'domain'});
 		$res = $this->mongo->counters->findAndModify(
 			array("_id"=>"packetID"),
-			array('$inc'=>array("seq"=>1)),     
+			array('$inc'=>array("seq"=>1)),
 			null,
 			array("new" => true, "upsert"=>true)
 		);
@@ -340,7 +340,7 @@ class JNTP
 				if(is_array($json))
 				{
 					$data = explode(",", $json{'data'});
-					if($filename = $json{'filename'}) 
+					if($filename = $json{'filename'})
 					{
 						header('Content-Disposition: attachment; filename="'.$filename.'"');
 					}
@@ -378,48 +378,16 @@ class JNTP
 	// Contacte les feeds pour distribuer $this->packet
 	function superDiffuse()
 	{
-		foreach($this->config{'feed'} as $server => $value)
+		foreach($this->config{'outFeeds'} as $server => $value)
 		{
-			if(!$this->config{'feed'}{$server}{'actif'}) continue;
-			$startFeed = false;
-//			foreach($this->config{'feed'}{$server}{'match'} as $key => $match)
-//			{
-/*
-				if ($match === "*" || (is_array($match) && $match[0] === "*" ) ) 
-				{
-					$startFeed = true;
-					continue;
-				}
-				$keys = explode(".", $key);
-				$val = $this->packet;
-				foreach($keys as $oneKey)
-				{
-					$val = $val{$oneKey};
-				}
-				if( 
-					( $val === $match ) || 
-					( is_array($match) && is_string($val) && (in_array($val, $match)) )   || 
-					( is_array($match) && is_array($val) && count(array_diff($val, $match)) < count($val) )   
-				)
-				{
-					$startFeed = true;
-				}
-				else
-				{
-					$startFeed = false;
-					break;
-				}
-*/
-$startFeed = true;
-			if(!$startFeed || in_array($server, $this->packet{'Route'})) continue;
+			if(!$this->config{'outFeeds'}{$server}{'actif'}) continue;
+			if(in_array($server, $this->packet{'Route'})) continue;
 
 			$jid = str_replace("'","\'",$this->packet{'Jid'});
 			$datatype = str_replace("'","\'",$this->packet{'Data'}{'DataType'});
 			$dataid = str_replace("'","\'",$this->packet{'Data'}{'DataID'});
 			$cmd = PHP_PATH.' '.__DIR__.'/../../../connector/'.$this->config{'feed'}{$server}{'type'}[1].' '.$server." '$jid' '$dataid' '$datatype'";
 			shell_exec($cmd. ' >> /dev/null &');
-
-			//}
 		}
 	}
 
@@ -429,11 +397,11 @@ $startFeed = true;
 		$ip = array();
 		for($i=0; $i < count($record); $i++)
 		{
-			if($record[$i]['type'] == 'A') 
+			if($record[$i]['type'] == 'A')
 			{
 				array_push($ip, $record[$i]['ip']);
 			}
-			else if($record[$i]['type'] == 'AAAA') 
+			else if($record[$i]['type'] == 'AAAA')
 			{
 				array_push($ip, $record[$i]['ipv6']);
 			}
@@ -466,9 +434,9 @@ $startFeed = true;
 
 	static function canonicFormat($json, $firstRecursivLevel = true)
 	{
-		if (is_array($json) ) 
+		if (is_array($json) )
 		{
-			foreach ($json as $key => $value) 
+			foreach ($json as $key => $value)
 			{
 				if(is_array($value) || is_int($key) )
 				{
@@ -490,10 +458,10 @@ $startFeed = true;
 
 	static function sortJSON($json)
 	{
-		if (is_array($json) ) 
+		if (is_array($json) )
 		{
 			ksort($json);
-			foreach ($json as $key => $value) 
+			foreach ($json as $key => $value)
 			{
 				if(is_array($value) || is_int($key) )
 				{
@@ -506,7 +474,7 @@ $startFeed = true;
 
 	static function hashString($str)
 	{
-		return rtrim(strtr(base64_encode(sha1($str, true)), '+/', '-_'), '='); 
+		return rtrim(strtr(base64_encode(sha1($str, true)), '+/', '-_'), '=');
 	}
 
 	static function randomKeyIv()
