@@ -35,11 +35,13 @@ Installation
 * Go to your website root directory.
 * Install the most popular JNTP client (Nemo) :
 
-```git clone https://github.com/Julien-Arlandis/NemoClient.git .```
+```sh
+git clone https://github.com/Julien-Arlandis/NemoClient.git .```
 
 * Install JNTP server :
 
-```git clone https://github.com/Julien-Arlandis/phpNemoServer.git jntp```
+```sh
+git clone https://github.com/Julien-Arlandis/phpNemoServer.git jntp```
 
 * Go to http://yourserver/jntp/ and follow the instructions.  
 Greats :)
@@ -47,7 +49,8 @@ Greats :)
 Upgrade Server
 -------
 
-```git pull```
+```sh
+git pull```
 
 Export users to user.json file
 -------
@@ -57,7 +60,7 @@ Export users to user.json file
 Import users from user.json file
 -------
 
-```
+```sh
 mongoimport --db <database> --collection user --file user.json
 mongo <<EOF
 use <database>
