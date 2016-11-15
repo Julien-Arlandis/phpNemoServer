@@ -26,14 +26,14 @@ if( !file_exists( __DIR__ . '/sleep'))
 {
 	$die = true;
 	echo 'You must create '.__DIR__ . '/sleep file to continue installation : <br>';
-	echo '<strong>touch jntp/sleep<strong><p>';
+	echo '<strong>touch jntp/sleep</strong><p>';
 }
 
 if( !is_writable( __DIR__ . '/conf'))
 {
 	$die = true;
 	echo __DIR__ . "/conf/ is not writable : <br>";
-	echo "<strong>chmod o+w jntp/conf<strong><p>";
+	echo "<strong>chmod o+w jntp/conf</strong><p>";
 }
 
 if($die) die();
