@@ -57,7 +57,8 @@ Export users to user.json file
 Import users from user.json file
 -------
 
-```mongoimport --db <database> --collection user --file user.json
+```
+mongoimport --db <database> --collection user --file user.json
 mongo <<EOF
 use <database>
 db.counters.findAndModify({
