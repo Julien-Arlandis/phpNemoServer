@@ -42,7 +42,7 @@
 		}
 	},
 	"outFeeds": {
-		"news.exemple2.net": {
+		"news2.nemoweb.net": {
 			"actif": 1,
 			"type": ["JNTP","J2J.php"],
 			"match": [
