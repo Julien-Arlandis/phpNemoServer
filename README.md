@@ -33,15 +33,16 @@ Installation
 ------
 
 Go to your website root directory.
-1- install the most popular JNTP client (Nemo) :
+
+* install the most popular JNTP client (Nemo) :
 
     git clone https://github.com/Julien-Arlandis/NemoClient.git .
 
-2- install JNTP server :
+* install JNTP server :
 
     git clone https://github.com/Julien-Arlandis/phpNemoServer.git jntp
 
-3- Go to http://yourserver/jntp/ and follow the instructions.  
+* Go to http://yourserver/jntp/ and follow the instructions.  
 Greats :)
 
 Upgrade Server
