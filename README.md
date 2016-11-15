@@ -34,6 +34,12 @@ Installation
 
 In your website root directory :  
 
+First install the most popular JNTP client (Nemo) :
+
+    git clone https://github.com/Julien-Arlandis/NemoClient.git .
+
+then you can install server :
+
     git clone https://github.com/Julien-Arlandis/phpNemoServer.git jntp
 
 Go to http://yourserver/jntp/  
