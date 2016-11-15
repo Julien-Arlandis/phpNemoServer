@@ -66,6 +66,8 @@ Import users from user.json file
 
 ```sh
 mongoimport --db <database> --collection user --file user.json
+```
+```sh
 mongo <<EOF
 use <database>
 db.counters.findAndModify({
