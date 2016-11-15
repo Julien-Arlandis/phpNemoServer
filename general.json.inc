@@ -3,14 +3,13 @@
 	"organization": "Nemoweb",
 	"publicServer": ["news2.nemoweb.net"],
 	"adminServer": ["news2.nemoweb.net"],
-	"serverVersion": "0.92b",
+	"serverVersion": "0.92c",
 	"protocolVersion": "0.21.1",
 	"administrator": "newsmaster@exemple.net",
 	"maxDataLength": 1000,
 	"crossDomainAccept": true,
 	"activeInscription": true,
-	"cryptPostingHost": "connected",
-	"commentCryptPostingHost": "all | connected",
+	"cryptPostingHost": "ifconnected",
 	"application": {
 		"core": {
 			"description": "JNTP Server core",
@@ -42,7 +41,7 @@
 			"filter": ["Jid", "ID", "Data.Newsgroups", "Data.JidLike"]
 		}
 	},
-	"feed": {
+	"outFeeds": {
 		"news.exemple2.net": {
 			"actif": 1,
 			"type": ["JNTP","J2J.php"],

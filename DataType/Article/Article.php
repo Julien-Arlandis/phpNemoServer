@@ -6,7 +6,7 @@ class DataType
 {
 	var $moderationArticle;
 
-	function __construct() 
+	function __construct()
 	{
 	}
 
@@ -18,7 +18,7 @@ class DataType
 		$jntp->packet{'Data'}{'InjectionDate'} = date("Y-m-d")."T".date("H:i:s")."Z";
 		$jntp->packet{'Data'}{'Organization'} = $jntp->config{'organization'};
 		$jntp->packet{'Data'}{'Browser'} = $_SERVER['HTTP_USER_AGENT'];
-		$jntp->packet{'Data'}{'PostingHost'} = ($jntp->config{'cryptPostingHost'} == "connected" && !$jntp->userid) ? $_SERVER['REMOTE_ADDR'] : sha1($_SERVER['REMOTE_ADDR']);
+		$jntp->packet{'Data'}{'PostingHost'} = ($jntp->config{'cryptPostingHost'} == "ifconnected" && !$jntp->userid) ? $_SERVER['REMOTE_ADDR'] : sha1($_SERVER['REMOTE_ADDR']);
 		$jntp->packet{'Data'}{'ComplaintsTo'} = $jntp->config{'administrator'};
 		$jntp->packet{'Data'}{'ProtocolVersion'} = $jntp->config{'protocolVersion'};
 		$jntp->packet{'Data'}{'Server'} = "PhpNemoServer/".$jntp->config{'serverVersion'};
@@ -53,7 +53,7 @@ class DataType
 			{
 				if($groupe[0] != '#')
 				{
-					if(!$jntp->mongo->newsgroup->findOne(array('name' => $groupe), array('rules' => 1))) 
+					if(!$jntp->mongo->newsgroup->findOne(array('name' => $groupe), array('rules' => 1)))
 					{
 						$jntp->reponse{'info'} = "Newsgroups [".$jntp->packet{'Data'}{'FollowupTo'}[0]."] inexistant";
 						return false;
@@ -85,19 +85,19 @@ class DataType
 		{
 			if($groupe[0] != '#')
 			{
-				if($groupe != strtolower($groupe)) 
+				if($groupe != strtolower($groupe))
 				{
 					$jntp->reponse{'info'} = "Pas de majuscules dans le nom des groupes";
 					return false;
 				}
 				$tab = $jntp->mongo->newsgroup->findOne(array('name' => $groupe));
 
-				if(!$tab) 
+				if(!$tab)
 				{
 					$jntp->reponse{'info'} = "Newsgroups [".$groupe."] inexistant";
 					return false;
 				}
-				if($tab['rules']['m'] == "1") 
+				if($tab['rules']['m'] == "1")
 				{
 					if($tab['PublicKey'])
 					{
@@ -177,7 +177,7 @@ class DataType
 					array_push($jntp->packet{'Meta'}{'Size'}, $size);
 				}
 			}
-			if(!$jntp->packet{'Data'}{'ThreadID'}) 
+			if(!$jntp->packet{'Data'}{'ThreadID'})
 			{
 				$jntp->packet{'Data'}{'ThreadID'} = getThreadID();
 				$jntp->forgePacket();
@@ -190,7 +190,7 @@ class DataType
 	function afterInsertion()
 	{
 		global $jntp;
-		if(!$jntp->stopSuperDiffuse) 
+		if(!$jntp->stopSuperDiffuse)
 		{
 			$jntp->superDiffuse();
 		}
