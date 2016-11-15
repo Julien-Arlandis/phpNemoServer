@@ -21,19 +21,22 @@ This file is part of PhpNemoServer.
     along with PhpNemoServer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+$die = false;
 if( !file_exists( __DIR__ . '/sleep'))
 {
-	echo '500 You must create '.__DIR__ . '/sleep file to continue installation<br>';
-	echo '<strong>touch jntp/sleep<strong>';
-	die();
+	$die = true;
+	echo 'You must create '.__DIR__ . '/sleep file to continue installation : <br>';
+	echo '<strong>touch jntp/sleep<strong><p>';
 }
 
 if( !is_writable( __DIR__ . '/conf'))
 {
-	echo '500 '.__DIR__ . "/conf/ is not writable<br>";
-	echo "<strong>chmod o+w jntp/conf<strong>";
-	die();
+	$die = true;
+	echo __DIR__ . "/conf/ is not writable : <br>";
+	echo "<strong>chmod o+w jntp/conf<strong><p>";
 }
+
+if($die) die();
 
 $server_version = '0.92b';
 $config = array(
