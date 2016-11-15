@@ -42,9 +42,7 @@ then you can install server :
 
     git clone https://github.com/Julien-Arlandis/phpNemoServer.git jntp
 
-Go to http://yourserver/jntp/  
-Create sleep.txt file and follow the instructions.  
-Configure your feed in Applications/core/conf/description.json, do not forget to set actif=1 for active feeds.  
+Go to http://yourserver/jntp/ and follow the instructions.  
 Greats :)
 
 Procedure to export users to user.json file
