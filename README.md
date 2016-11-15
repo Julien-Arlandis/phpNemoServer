@@ -58,7 +58,8 @@ git pull
 Export users to user.json file
 -------
 
-```mongoexport --db <database> --collection user --out user.json
+```sh
+mongoexport --db <database> --collection user --out user.json
 ```
 
 Import users from user.json file
