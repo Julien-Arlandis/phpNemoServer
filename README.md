@@ -1,4 +1,4 @@
-phpNemoServer/Nemo Readme
+phpNemoServer Readme
 ===================
 
 Version 0.92b 
