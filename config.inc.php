@@ -30,6 +30,13 @@ define('ACTIVE_LOG', 0);
 define('LOG_PATH', '');
 define('LOG_FEED_PATH', '');
 
+define('SMTP_HOST', 'localhost');
+define('SMTP_PORT', '25');
+define('SMTP_SECURE', ''); // TLS | SSL | ''
+define('SMTP_AUTH', 0);
+define('SMTP_LOGIN', '');
+define('SMTP_PASSWORD','');
+
 /* RSA keys */
 define('PUBLIC_KEY','#PUBLIC_KEY#');
 
