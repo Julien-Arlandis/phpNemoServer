@@ -45,8 +45,7 @@ git clone https://github.com/Julien-Arlandis/NemoClient.git .
 git clone https://github.com/Julien-Arlandis/phpNemoServer.git jntp
 ```
 
-* Go to http://yourserver/jntp/ and follow the instructions.  
-Greats :)
+* Go to http://yourserver/jntp/ and follow the instructions. Greats :)
 
 Upgrade Server
 -------
