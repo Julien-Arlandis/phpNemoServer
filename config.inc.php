@@ -24,7 +24,7 @@ This file is part of PhpNemoServer.
 /* Config */
 define('DB_NAME', '#DB_NAME#');
 define('PHP_PATH', '/usr/bin/php'); // !important
-define('SHELL_EXEC', 0);
+define('SHELL_EXEC', 1);
 
 /* Logs */
 define('ACTIVE_LOG', 0);
