@@ -20,41 +20,41 @@ This file is part of PhpNemoServer.
     You should have received a copy of the GNU Affero General Public License
     along with PhpNemoServer.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+header("Cache-Control: no-cache, must-revalidate");
 require_once(__DIR__."/Applications/core/lib/class.jntp.php");
+
 
 if( !file_exists( __DIR__ . '/conf/config.php'))
 {
 	require_once(__DIR__."/install.php");
 }
 
-if( file_exists( __DIR__ . '/sleep.txt'))
+if( file_exists( __DIR__ . '/sleep'))
 {
-	die( '500 You must remove sleep.txt file to continue' );
+	die( 'You must remove sleep file to continue<br><strong>rm jntp/sleep</strong>' );
 }
 
 $jntp = new JNTP();
 
 // Permit local connection
-if(!isset($_SERVER['HTTP_REFERER']) || ($jntp->config['crossDomainAccept']))
+if(!isset($_SERVER['HTTP_REFERER']) || $jntp->config['crossDomainAccept'])
 {
 	header("Access-Control-Allow-Headers: JNTP-Session");
 	header("Access-Control-Allow-Origin: *");
-	$headers = apache_request_headers();
-	if(isset( $headers['JNTP-Session'] ) && $headers['JNTP-Session'] != '') 
+	if(isset( $_SERVER['JNTP-Session'] ) && $_SERVER['JNTP-Session'] != '')
 	{
-		$_COOKIE['JNTP-Session'] = $headers['JNTP-Session'];
+		$_COOKIE['JNTP-Session'] = $_SERVER['JNTP-Session'];
 	}
 }
 
 $post = file_get_contents("php://input");
 $queryString = $_SERVER['QUERY_STRING'];
-if($queryString = $_SERVER['QUERY_STRING']) 
+if($queryString = $_SERVER['QUERY_STRING'])
 {
 	die( $jntp->getResource($queryString) );
 }
 
-if($post === '') 
+if($post === '')
 {
 	$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == true) ? 'https' : 'http';
 	die( "200 ".$protocol.'://'.$jntp->config{'domain'}.'/jntp/ - PhpNemoServer/'.$jntp->config{'serverVersion'}.' - JNTP Service Ready - '.$jntp->config{'administrator'}.' - Type ["help"] for help' );
