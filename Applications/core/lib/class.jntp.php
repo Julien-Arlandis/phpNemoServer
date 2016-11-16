@@ -386,8 +386,16 @@ class JNTP
 			$jid = str_replace("'","\'",$this->packet{'Jid'});
 			$datatype = str_replace("'","\'",$this->packet{'Data'}{'DataType'});
 			$dataid = str_replace("'","\'",$this->packet{'Data'}{'DataID'});
-			$cmd = PHP_PATH.' '.__DIR__.'/../../../connector/'.$this->config{'outFeeds'}{$server}{'type'}[1].' '.$server." '$jid' '$dataid' '$datatype'";
-			shell_exec($cmd. ' >> /dev/null &');
+			if(SHELL_EXEC)
+			{
+				$cmd = PHP_PATH.' '.__DIR__.'/../../../connector/'.$this->config{'outFeeds'}{$server}{'type'}[1].' '.$server." '$jid' '$dataid' '$datatype'";
+				shell_exec($cmd. ' >> /dev/null &');
+			}
+			else
+			{
+				require_once(__DIR__.'/../../../connector/'.$this->config{'outFeeds'}{$server}{'type'}[1]);
+				J2J($server, $jid, $dataid, $datatype); //change J2J by J2_()
+			}
 		}
 	}
 
