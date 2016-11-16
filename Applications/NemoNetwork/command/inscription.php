@@ -53,6 +53,7 @@ function mailInscription($email, $password, $userid, $check)
 {
 	global $jntp;
 	require_once(__DIR__.'/../../core/lib/class.phpmailer.php');
+	require_once(__DIR__.'/../../core/lib/class.smtp.php');
 	
 	$url = "http://".$jntp->config{'domain'}."/jntp/Applications/NemoNetwork/account.php?action=inscription&amp;userid=".$userid."&amp;check=".$check;
 	$message = "
