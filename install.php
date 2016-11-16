@@ -1,5 +1,7 @@
 <?php
 
+header("Cache-Control: no-cache, must-revalidate");
+
 /**
 Copyright © 2013-2014 Julien Arlandis
     @author : Julien Arlandis <julien.arlandis_at_gmail.com>
