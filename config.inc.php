@@ -24,12 +24,14 @@ This file is part of PhpNemoServer.
 /* Config */
 define('DB_NAME', '#DB_NAME#');
 define('PHP_PATH', '/usr/bin/php'); // !important
+define('SHELL_EXEC', 0);
 
 /* Logs */
 define('ACTIVE_LOG', 0);
 define('LOG_PATH', '');
 define('LOG_FEED_PATH', '');
 
+/* SMTP */
 define('SMTP_HOST', 'localhost');
 define('SMTP_PORT', 25); // 25 | 465 | 587
 define('SMTP_SECURE', ''); // '' | 'SSL' | 'TLS'
