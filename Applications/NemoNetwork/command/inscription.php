@@ -36,7 +36,7 @@ function insertUser($email, $password, $privilege = 1)
 			$code = "400";
 		}
 	}
-	if($code == 200)
+	if($code == "200")
 	{
 		$check = (string)rand(100000000000, 99999999999999);
 		$hashkey = sha1(rand(0, 9e16).uniqid());
@@ -98,9 +98,10 @@ ou en le recopiant dans votre barre d'adresse.";
 if($this->config{'activeInscription'} || $this->privilege == 'admin')
 {
 	$res = insertUser($this->param{'email'}, $this->param{'password'});
-	if($res['code'] == 200 || $res['code'] == 300)
+	if($res['code'] == "200" || $res['code'] == "300")
 	{
 		mailInscription($this->param{'email'}, $this->param{'password'}, $res['userid'], $res['check']);
+		$res['code'] = "200";
 	}
 	$this->reponse{'code'} = $res['code'];
 	$this->reponse{'info'} = $res['info'];
