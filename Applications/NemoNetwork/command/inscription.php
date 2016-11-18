@@ -24,7 +24,7 @@ function insertUser($email, $password, $privilege = 1)
 
 	if ( $total > 0)
 	{
-		$obj = $jntp->mongo->user->find(array('email' => strtolower($email)));
+		$obj = $jntp->mongo->user->findOne(array('email' => strtolower($email)));
 		if($obj{'check'} != '')
 		{
 			array_push($error, "Un nouveau mail d'activation a été envoyé");
