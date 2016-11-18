@@ -95,7 +95,7 @@ if($this->config{'activeInscription'} || $this->privilege == 'admin')
 	}
 	else
 	{
-		$obj = $jntp->mongo->user->findOne(array('UserID' => intval($userid) ));
+		$obj = $this->mongo->user->findOne(array('UserID' => intval($userid) ));
 		if($obj{'check'} != '')
 		{
 			mailInscription($this->param{'email'}, $this->param{'password'}, $res['userid'], $res['check']);
