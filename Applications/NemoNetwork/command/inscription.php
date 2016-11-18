@@ -24,8 +24,17 @@ function insertUser($email, $password, $privilege = 1)
 
 	if ( $total > 0)
 	{
-		array_push($error, "Email déjà pris");
-		$code = "400";
+		$obj = $this->mongo->user->findOne(array('UserID' => intval($userid) ));
+		if($obj{'check'} != '')
+		{
+			array_push($error, "Un nouveau mail d'activation a été envoyé");
+			$code = "300";
+		}
+		else
+		{
+			array_push($error, "Email déjà pris");
+			$code = "400";
+		}
 	}
 	if($code == 200)
 	{
@@ -89,17 +98,9 @@ ou en le recopiant dans votre barre d'adresse.";
 if($this->config{'activeInscription'} || $this->privilege == 'admin')
 {
 	$res = insertUser($this->param{'email'}, $this->param{'password'});
-	if($res['code'] == 200)
+	if($res['code'] == 200 || $res['code'] == 300)
 	{
 		mailInscription($this->param{'email'}, $this->param{'password'}, $res['userid'], $res['check']);
-	}
-	else
-	{
-		$obj = $this->mongo->user->findOne(array('UserID' => intval($userid) ));
-		if($obj{'check'} != '')
-		{
-			mailInscription($this->param{'email'}, $this->param{'password'}, $res['userid'], $res['check']);
-		}
 	}
 	$this->reponse{'code'} = $res['code'];
 	$this->reponse{'info'} = $res['info'];
