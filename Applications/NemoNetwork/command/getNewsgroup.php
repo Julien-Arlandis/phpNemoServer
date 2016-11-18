@@ -4,7 +4,7 @@ $this->setSession();
 $query = array();
 $sort = array('name' => 1);
 
-if($this->param{'name'})
+if(isset($this->param{'name'}))
 {
 	if(!preg_match('/^#?[a-zA-Z0-9*.-]+$/', $this->param{'name'}))
 	{
@@ -20,24 +20,24 @@ if($this->param{'name'})
 	}
 }
 
-if($this->param{'level'})
+if(isset($this->param{'level'}))
 {
 	$level = substr_count($this->param{'name'}, '.') + $this->param{'level'};
 	array_push($query, array('level' => $level));
 }
 
-if($this->param{'type'})
+if(isset($this->param{'type'}))
 {
 	array_push($query, array('type' => $this->param{'type'}));
 }
 
-if($this->param{'category'})
+if(isset($this->param{'category'}))
 {
 	array_push($query, array('category' => array('$exists' => true) ));
 	$sort = array('sort' => 1, 'name' => 1);
 }
 
-if($this->param{'total'} && is_numeric($this->param{'total'}) )
+if(isset($this->param{'total'}) && is_numeric($this->param{'total'}) )
 {
 	$cursor = $this->mongo->newsgroup->find( array('$and' => $query) )->sort($sort)->limit($this->param{'total'});
 }else{
