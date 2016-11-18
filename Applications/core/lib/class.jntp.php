@@ -189,6 +189,8 @@ class JNTP
 	// Initialise la session
 	function setSession()
 	{
+		if(!isset($_COOKIE["JNTP-Session"])) return;
+		
 		$session = $_COOKIE["JNTP-Session"];
 		if(!$session)
 		{
