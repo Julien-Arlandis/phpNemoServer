@@ -23,6 +23,20 @@ This file is part of PhpNemoServer.
     along with PhpNemoServer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+function checkModules()
+{
+?>
+<h2>Check modules</h2>
+<ul>
+
+<li>curl : <?=extension_loaded('curl')?'oui':'non';?></li>
+<li>mongo : <?=extension_loaded('mongo')?'oui':'non';?></li>
+<li>shell_exec : <?=function_exists('shell_exec')?'oui':'non';?></li>
+<li>openssl_pkey_get_public : <?=function_exists('openssl_pkey_get_public')?'oui':'non';?></li>
+</ul>
+<?php
+}
+
 $die = false;
 if( !file_exists( __DIR__ . '/sleep'))
 {
@@ -40,6 +54,20 @@ if( !is_writable( __DIR__ . '/conf'))
 
 if($die) die();
 
+if(isset($_GET['php_path']))
+{
+	$php_path = $_GET['php_path'];
+	$fp = popen($php_path.' '.__DIR__.'/install.php phpcli', 'r');
+
+	while(!feof($fp))
+	{
+		print fread($fp, 1024);
+		flush();
+	}
+	fclose($fp);
+	exit();
+}
+
 $server_version = '0.92b';
 $config = array(
     "private_key_bits" => 1024,
@@ -54,34 +82,6 @@ $publicKey = $pubkey['key'];
 
 $publicKey = (substr($publicKey, -1, 1) == "\n") ? substr($publicKey, 0, -1) : $publicKey;
 $privateKey = (substr($privateKey, -1, 1) == "\n") ? substr($privateKey, 0, -1) : $privateKey;
-
-function checkModules()
-{
-?>
-<h2>Check modules</h2>
-<ul>
-
-<li>curl : <?=extension_loaded('curl')?'oui':'non';?></li>
-<li>mongo : <?=extension_loaded('mongo')?'oui':'non';?></li>
-<li>shell_exec : <?=function_exists('shell_exec')?'oui':'non';?></li>
-<li>openssl_pkey_get_public : <?=function_exists('openssl_pkey_get_public')?'oui':'non';?></li>
-</ul>
-<?php
-}
-
-if(isset($_GET['php_path']))
-{
-	$php_path = $_GET['php_path'];
-	$fp = popen($php_path.' '.__DIR__.'/install.php phpcli', 'r');
-
-	while(!feof($fp))
-	{
-		print fread($fp, 1024);
-		flush();
-	}
-	fclose($fp);
-	exit();
-}
 
 if (!isset($_POST['action']) )
 {
@@ -114,17 +114,15 @@ input[type=text], input[type=password] {
 <body>
 
 <?php
-if(count($argv)>0)
+if(php_sapi_name() == 'cli')
 {
 ?>
 <h1>CHECK MODE PHP CLI</h1>
-<?php
-checkModules();
-?>
+<?=checkModules();?>
 </body>
 </html>
 <?php
-exit();
+die();
 }
 ?>
 
