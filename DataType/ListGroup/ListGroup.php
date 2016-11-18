@@ -48,7 +48,7 @@ class DataType
 			$jntp->mongo->newsgroup->remove(array("name"=>$value));
 			foreach($jntp->packet{'Data'}{'ListGroup'} as $cle => $obj)
 			{
-				if($cfg['rules'][$obj['name']])
+				if(isset($cfg['rules'][$obj['name']]))
 				{
 					$obj['rulesIfNotConnected'] = $cfg['rules'][$obj['name']]['rulesIfNotConnected'];
 				}
