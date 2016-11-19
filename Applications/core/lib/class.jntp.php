@@ -282,7 +282,7 @@ class JNTP
 		if(!$this->packet{'Route'}) $this->packet{'Route'} = array();
 		if(!$this->packet{'Meta'}) $this->packet{'Meta'} = array();
 
-		if (!$privateKey = openssl_pkey_get_private($jntp->config{'privateKey'})) die('Loading Private Key failed');
+		if (!$privateKey = openssl_pkey_get_private($this->config{'privateKey'})) die('Loading Private Key failed');
 		openssl_private_encrypt($this->packet{'Jid'}, $signature, $privateKey);
 		
 		$this->packet{'Meta'}{'ServerSign'} = base64_encode($signature);
