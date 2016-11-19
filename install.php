@@ -68,7 +68,6 @@ if(isset($_GET['php_path']))
 	exit();
 }
 
-$server_version = '0.92b';
 $config = array(
     "private_key_bits" => 1024,
     "private_key_type" => OPENSSL_KEYTYPE_RSA,
@@ -89,7 +88,7 @@ if (!isset($_POST['action']) )
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>Installation de PHP Nemo Server <?=$server_version?></title>
+<title>Installation de PHP Nemo Server <?=SERVER_VERSION?></title>
 <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
 <style>
 
@@ -126,7 +125,7 @@ die();
 }
 ?>
 
-<h1>Installation de PHP Nemo Server <?=$server_version?></h1>
+<h1>Installation de PHP Nemo Server <?=SERVER_VERSION?></h1>
 
 <?=checkModules();?>
 
