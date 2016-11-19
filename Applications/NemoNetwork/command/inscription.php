@@ -95,19 +95,19 @@ ou en le recopiant dans votre barre d'adresse.";
 	return true;
 }
 
-if($this->config{'activeInscription'} || $this->privilege == 'admin')
+if($jntp->config{'activeInscription'} || $jntp->privilege == 'admin')
 {
-	$res = insertUser($this->param{'email'}, $this->param{'password'});
+	$res = insertUser($jntp->param{'email'}, $jntp->param{'password'});
 	if($res['code'] == "200" || $res['code'] == "300")
 	{
-		mailInscription($this->param{'email'}, $this->param{'password'}, $res['userid'], $res['check']);
+		mailInscription($jntp->param{'email'}, $jntp->param{'password'}, $res['userid'], $res['check']);
 		$res['code'] = "200";
 	}
-	$this->reponse{'code'} = $res['code'];
-	$this->reponse{'info'} = $res['info'];
+	$jntp->reponse{'code'} = $res['code'];
+	$jntp->reponse{'info'} = $res['info'];
 }
 else
 {
-	$this->reponse{'code'} = "400";
-	$this->reponse{'info'} = "L'inscription en ligne est désactivée sur ce serveur, veuillez adresser un mail à ".$this->config{'administrator'}." en spécifiant le mot de passe souhaité, votre compte sera ouvert dans les plus brefs délais.";
+	$jntp->reponse{'code'} = "400";
+	$jntp->reponse{'info'} = "L'inscription en ligne est désactivée sur ce serveur, veuillez adresser un mail à ".$jntp->config{'administrator'}." en spécifiant le mot de passe souhaité, votre compte sera ouvert dans les plus brefs délais.";
 }
