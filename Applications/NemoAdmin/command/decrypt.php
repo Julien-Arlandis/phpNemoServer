@@ -1,7 +1,5 @@
 <?php
 
-$this->setSession();
-
 if($this->privilege == 'admin' || $this->privilege == 'moderator')
 {
 	$this->reponse{'code'} = "200";
