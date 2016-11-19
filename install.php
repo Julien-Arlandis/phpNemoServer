@@ -198,11 +198,11 @@ else
 $file_general_copy = __DIR__."/config.inc.json";
 $file_general_final = __DIR__."/conf/config.json";
 $buffer = json_decode(file_get_contents($file_general_copy), true);
-	
+
 $buffer['dbName'] = $_POST['DB_NAME'];
 $buffer['phpPath'] = $_POST['PHP_PATH'];
-$buffer['publicKey'] = $_POST['PUBLIC_KEY'];
-$buffer['privateKey'] = $_POST['PRIVATE_KEY'];
+$buffer['publicKey'] = str_replace("\t", "", $_POST['PUBLIC_KEY']);
+$buffer['privateKey'] = str_replace("\t", "", $_POST['PRIVATE_KEY']);
 $buffer['domain'] = $_SERVER['SERVER_NAME'];
 $buffer['administrator'] = 'newsmaster@'.$_SERVER['SERVER_NAME'];
 $buffer = json_encode($buffer, JSON_PRETTY_PRINT);
