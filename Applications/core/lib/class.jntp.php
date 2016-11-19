@@ -286,7 +286,7 @@ class JNTP
 		openssl_private_encrypt($this->packet{'Jid'}, $signature, $privateKey);
 		
 		$this->packet{'Meta'}{'ServerSign'} = base64_encode($signature);
-		$this->packet{'Meta'}{'ServerPublicKey'} = $jntp->config{'publicKey'};
+		$this->packet{'Meta'}{'ServerPublicKey'} = $this->config{'publicKey'};
 	}
 
 	// Insère le packet dans la base
