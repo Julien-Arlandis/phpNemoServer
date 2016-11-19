@@ -27,15 +27,7 @@ require_once(__DIR__."/Applications/core/lib/class.jntp.php");
 
 if( !file_exists( __DIR__ . '/conf/config.php')) require_once(__DIR__."/install.php");
 if( file_exists( __DIR__ . '/sleep')) die( 'You must remove sleep file to continue<br><strong>rm jntp/sleep</strong>' );
+if( $queryString = $_SERVER['QUERY_STRING'] ) die( JNTP::getResource($queryString) );
 
 $jntp = new JNTP();
-$jntp->setSession();
-
-if($queryString = $_SERVER['QUERY_STRING']) die( $jntp->getResource($queryString) );
-
-$post = file_get_contents("php://input");
-
-$jntp->log($post);
-$jntp->exec($post);
-$jntp->send();
-
+$jntp->exec( file_get_contents("php://input") );
