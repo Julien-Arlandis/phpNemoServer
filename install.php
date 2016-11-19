@@ -300,6 +300,3 @@ Vous devez supprimer le fichier sleep pour continuer.
 <strong>rm jntp/sleep</strong>
 </body>
 </html>
-<?php
-
-die();
