@@ -1,5 +1,4 @@
 <?php
-$this->setSession();
 
 $query = array();
 $sort = array('name' => 1);
