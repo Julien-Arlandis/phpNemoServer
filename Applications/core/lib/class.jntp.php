@@ -326,10 +326,12 @@ class JNTP
 	}
 
 	// Retourne la ressource d'un packet requêtée au format URI ex : http://[server]/jntp/[Jid]/Data.FromName
-	function getResource($path) // à corriger.
+	static function getResource($path) // à corriger.
 	{
 		$tab = preg_split('/\//', $path);
-		$json = $this->getPacket( array('Data.DataID'=>$tab[0]) );
+		$m = new MongoClient();
+		$mongo = $m->selectDB(DB_NAME);
+		$json  = $mongo->packet->findOne( array('Data.DataID'=>$tab[0]), array('_id'=>0) );
 		$tab = preg_split("/([:\.\/]+)/", $tab[1], -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY );
 
 		if(!$json) {
