@@ -12,7 +12,7 @@
 	"activeLog": true,
 	"logPath": "",
 	"logFeedPath": "",
-	"smtpHost": 'localhost',
+	"smtpHost": "localhost",
 	"smtpPort": 25,
 	"smtpSecure": false,
 	"smtpAuth": false,
