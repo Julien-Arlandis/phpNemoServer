@@ -1,5 +1,5 @@
 <?php
-$this->setSession();
+
 if( $this->id )
 {
 	$obj = $this->mongo->user->findOne( array('UserID' => $this->id) );
