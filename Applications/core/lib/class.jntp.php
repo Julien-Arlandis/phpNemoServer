@@ -118,7 +118,6 @@ class JNTP
 			$this->reponse{'code'} = "500";
 			$this->reponse{'info'} = "Command not found, [".$this->command."]";
 		}
-		$this->send();
 	}
 
 	// Met à jour les informations de l' utilisateur
