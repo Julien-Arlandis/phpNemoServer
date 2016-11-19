@@ -210,9 +210,6 @@ $file = fopen($file_general_final, 'w');
 fputs($file, $buffer);
 fclose($file);
 
-require_once($file_config_final);
-require_once('Applications/core/lib/class.jntp.php');
-
 $jntp = new JNTP();
 
 /*
@@ -269,7 +266,7 @@ $jntp->exec('["synchronizeNewsgroup"]');
 <p>
 Installation de PHP Nemo Server (version <?=$server_version?>) terminée.
 <p>
-La base <?=DB_NAME?> a bien été crée.
+La base <?=$jntp->config{'dbName'}?> a bien été crée.
 <p>
 <?=$jntp->reponse{'info'};?>
 <p>
