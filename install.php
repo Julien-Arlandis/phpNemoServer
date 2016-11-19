@@ -129,7 +129,7 @@ die();
 
 <?=checkModules();?>
 
-<form action="" method="post">
+<form action="" method="post" enctype="multipart/form-data">
 
 <h2> Configuration générale </h2>
 <span class="champ">[DB_NAME] Nom de la base de données : </span>
