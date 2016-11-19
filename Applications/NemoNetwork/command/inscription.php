@@ -75,18 +75,22 @@ Merci de valider votre adresse mail en cliquant sur ce lien : <br>
 <a href=\"".$url."\">".$url."</a><br>
 ou en le recopiant dans votre barre d'adresse.";
 	
-  $mail = new PHPMailer();
-  $mail->isSMTP();
-  $mail->Host = $jntp->config{'smtpHost'};
-  $mail->SMTPAuth = $jntp->config{'smtpAuth'};
-  $mail->SMTPSecure = $jntp->config{'smtpSecure'};
-  $mail->Port = $jntp->config{'smtpPort'};
-  $mail->setFrom($jntp->config{'administrator'}, $jntp->config{'organization'});
-  $mail->AddAddress($email);
-  $mail->Subject = "Bienvenue sur ".$jntp->config{'organization'};
-  $mail->isHTML(true);
-  $mail->Body = $message;
-  $mail->CharSet = "UTF-8";
+	$mail = new PHPMailer();
+	$mail->isSMTP();
+	$mail->Host = $jntp->config{'smtpHost'};
+	if($mail->SMTPAuth = $jntp->config{'smtpAuth'};)
+	{
+		$mail->Username = $jntp->config{'smtpLogin'};
+		$mail->Password = $jntp->config{'smtpPassword'};  
+	}	  
+	$mail->SMTPSecure = $jntp->config{'smtpSecure'};
+	$mail->Port = $jntp->config{'smtpPort'};
+	$mail->setFrom($jntp->config{'administrator'}, $jntp->config{'organization'});
+	$mail->AddAddress($email);
+	$mail->Subject = "Bienvenue sur ".$jntp->config{'organization'};
+	$mail->isHTML(true);
+	$mail->Body = $message;
+	$mail->CharSet = "UTF-8";
 	
 	if(!$mail->Send())
 	{
