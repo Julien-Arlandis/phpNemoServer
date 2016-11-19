@@ -37,18 +37,7 @@ if( file_exists( __DIR__ . '/sleep'))
 }
 
 $jntp = new JNTP();
-
-
-// Permit local connection
-if(!isset($_SERVER['HTTP_REFERER']) || $jntp->config['crossDomainAccept'])
-{
-	header("Access-Control-Allow-Headers: JNTP-Session");
-	header("Access-Control-Allow-Origin: *");
-	if(isset( $_SERVER['JNTP-Session'] ) && $_SERVER['JNTP-Session'] != '')
-	{
-		$_COOKIE['JNTP-Session'] = $_SERVER['JNTP-Session'];
-	}
-}
+$jntp->setSession();
 
 $post = file_get_contents("php://input");
 $queryString = $_SERVER['QUERY_STRING'];
