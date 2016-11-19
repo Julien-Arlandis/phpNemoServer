@@ -191,38 +191,18 @@ die();
 }
 else
 {
-
-/*
-* Création du fichier de config.php
-*/
-
-$file_config_copy = __DIR__."/config.inc.php";
-$file_config_final = __DIR__."/conf/config.php";
-$buffer = file_get_contents($file_config_copy);
-
-$variables = array(
-	'#DB_NAME#' => $_POST['DB_NAME'],
-	'#PHP_PATH#' => $_POST['PHP_PATH'],
-	'#PUBLIC_KEY#' => $_POST['PUBLIC_KEY'],
-	'#PRIVATE_KEY#' => $_POST['PRIVATE_KEY']
-);
-
-foreach($variables as $code_variable => $valeur)
-{
-	$buffer = str_replace($code_variable, $valeur, $buffer);
-}
-
-$file = fopen($file_config_final, 'w');
-fputs($file, $buffer);
-fclose($file);
-
 /*
 * Création du fichier general.json
 */
-
-$file_general_copy = __DIR__."/general.inc.json";
-$file_general_final = __DIR__."/conf/general.json";
+	
+$file_general_copy = __DIR__."/config.inc.json";
+$file_general_final = __DIR__."/conf/config.json";
 $buffer = json_decode(file_get_contents($file_general_copy), true);
+	
+$buffer['dbName'] = $_POST['DB_NAME'];
+$buffer['phpPath'] = $_POST['PHP_PATH'];
+$buffer['publicKey'] = $_POST['PUBLIC_KEY'];
+$buffer['privateKey'] = $_POST['PRIVATE_KEY'];
 $buffer['domain'] = $_SERVER['SERVER_NAME'];
 $buffer['administrator'] = 'newsmaster@'.$_SERVER['SERVER_NAME'];
 $buffer = json_encode($buffer, JSON_PRETTY_PRINT);
