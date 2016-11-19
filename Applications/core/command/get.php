@@ -1,7 +1,5 @@
 <?php
 
-$this->setSession();
-
 $projection = array('_id'=>0);
 $count = false;
 $listen = ($this->param{'listen'} && $this->param{'listen'} == 1 ) ? true : false;
