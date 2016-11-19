@@ -325,9 +325,53 @@ class JNTP
 		return $bool;
 	}
 
+	// Contacte les feeds pour distribuer $this->packet
+	function superDiffuse()
+	{
+		foreach($this->config{'outFeeds'} as $server => $value)
+		{
+			if(!$this->config{'outFeeds'}{$server}{'actif'}) continue;
+			if(in_array($server, $this->packet{'Route'})) continue;
+
+			$jid = str_replace("'","\'",$this->packet{'Jid'});
+			$datatype = str_replace("'","\'",$this->packet{'Data'}{'DataType'});
+			$dataid = str_replace("'","\'",$this->packet{'Data'}{'DataID'});
+			if(SHELL_EXEC)
+			{
+				$cmd = PHP_PATH.' '.__DIR__.'/../../../connector/'.$this->config{'outFeeds'}{$server}{'type'}[1].' '.$server." '$jid' '$dataid' '$datatype'";
+				shell_exec($cmd. ' >> /dev/null &');
+			}
+			else
+			{
+				require_once(__DIR__.'/../../../connector/'.$this->config{'outFeeds'}{$server}{'type'}[1]);
+				J2J($server, $jid, $dataid, $datatype); //change J2J by J2_()
+			}
+		}
+	}
+
+	function getIPs()
+	{
+		$record = dns_get_record ( $this->param{'From'}, DNS_ALL );
+		$ip = array();
+		for($i=0; $i < count($record); $i++)
+		{
+			if($record[$i]['type'] == 'A')
+			{
+				array_push($ip, $record[$i]['ip']);
+			}
+			else if($record[$i]['type'] == 'AAAA')
+			{
+				array_push($ip, $record[$i]['ipv6']);
+			}
+		}
+		return $ip;
+	}
+	
+	
 	// Retourne la ressource d'un packet requêtée au format URI ex : http://[server]/jntp/[Jid]/Data.FromName
 	static function getResource($path) // à corriger.
 	{
+		require_once(__DIR__."/../../../conf/config.php");
 		$tab = preg_split('/\//', $path);
 		$m = new MongoClient();
 		$mongo = $m->selectDB(DB_NAME);
@@ -397,49 +441,8 @@ class JNTP
 			}
 		}
 	}
-
-	// Contacte les feeds pour distribuer $this->packet
-	function superDiffuse()
-	{
-		foreach($this->config{'outFeeds'} as $server => $value)
-		{
-			if(!$this->config{'outFeeds'}{$server}{'actif'}) continue;
-			if(in_array($server, $this->packet{'Route'})) continue;
-
-			$jid = str_replace("'","\'",$this->packet{'Jid'});
-			$datatype = str_replace("'","\'",$this->packet{'Data'}{'DataType'});
-			$dataid = str_replace("'","\'",$this->packet{'Data'}{'DataID'});
-			if(SHELL_EXEC)
-			{
-				$cmd = PHP_PATH.' '.__DIR__.'/../../../connector/'.$this->config{'outFeeds'}{$server}{'type'}[1].' '.$server." '$jid' '$dataid' '$datatype'";
-				shell_exec($cmd. ' >> /dev/null &');
-			}
-			else
-			{
-				require_once(__DIR__.'/../../../connector/'.$this->config{'outFeeds'}{$server}{'type'}[1]);
-				J2J($server, $jid, $dataid, $datatype); //change J2J by J2_()
-			}
-		}
-	}
-
-	function getIPs()
-	{
-		$record = dns_get_record ( $this->param{'From'}, DNS_ALL );
-		$ip = array();
-		for($i=0; $i < count($record); $i++)
-		{
-			if($record[$i]['type'] == 'A')
-			{
-				array_push($ip, $record[$i]['ip']);
-			}
-			else if($record[$i]['type'] == 'AAAA')
-			{
-				array_push($ip, $record[$i]['ipv6']);
-			}
-		}
-		return $ip;
-	}
-
+	
+	
 	static function logFeed($post, $server, $direct = '<')
 	{
 		if(ACTIVE_LOG)
