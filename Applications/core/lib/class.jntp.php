@@ -47,6 +47,7 @@ class JNTP
 		$m = new MongoClient();
 		$this->mongo = $m->selectDB(DB_NAME);
 		$this->config = json_decode(file_get_contents(__DIR__.'/../../../conf/general.json'),true);
+		$this->config{'serverVersion'} = SERVER_VERSION;
 		$this->maxDataLength = $this->config['maxDataLength'];
 		foreach($this->config['application'] as $application => $content)
 		{
