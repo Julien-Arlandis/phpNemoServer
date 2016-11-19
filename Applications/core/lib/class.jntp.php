@@ -60,6 +60,13 @@ class JNTP
 	// Execute une commande JNTP sur le présent serveur ou sur un serveur distant
 	function exec($post, $server = false)
 	{
+		
+		if($post === '')
+		{
+			$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == true) ? 'https' : 'http';
+			die( "200 ".$protocol.'://'.$this->config{'domain'}.'/jntp/ - PhpNemoServer/'.$this->config{'serverVersion'}.' - JNTP Service Ready - '.$this->config{'administrator'}.' - Type ["help"] for help' );
+		}
+		
 		if($server)
 		{
 			$post = is_array($post) ? json_encode($post) : $post;
@@ -443,8 +450,8 @@ class JNTP
 	}
 
 	static function log($post, $direct = '<')
-	{
-		if(ACTIVE_LOG)
+	{		
+		if(ACTIVE_LOG && $post != '')
 		{
 			$handle = fopen(LOG_PATH, 'a');
 			$put = '['.date(DATE_RFC822).'] ['.$_SERVER['REMOTE_ADDR'].'] '.$direct.' '.mb_strimwidth($post, 0, 300)."\n";
