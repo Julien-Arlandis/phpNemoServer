@@ -189,6 +189,9 @@ class JNTP
 	// Initialise la session
 	function setSession()
 	{	
+		
+		$session = $_COOKIE["JNTP-Session"];
+		
 		// Permit local connection
 		if(!isset($_SERVER['HTTP_REFERER']) || $jntp->config['crossDomainAccept'])
 		{
@@ -196,11 +199,10 @@ class JNTP
 			header("Access-Control-Allow-Origin: *");
 			if(isset( $_SERVER['JNTP-Session'] ) && $_SERVER['JNTP-Session'] != '')
 			{
-				$_COOKIE['JNTP-Session'] = $_SERVER['JNTP-Session'];
+				$session = $_SERVER['JNTP-Session'];
 			}
 		}
 		
-		$session = $_COOKIE["JNTP-Session"];
 		if(!$session)
 		{
 			$headers = getallheaders();
