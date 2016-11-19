@@ -538,7 +538,7 @@ class JNTP
 	
 	static function getConfig()
 	{
-		return json_decode(file_get_contents(__DIR__.'/../../../conf/general.json'),true);
+		return json_decode(file_get_contents(__DIR__.'/../../../conf/config.json'),true);
 	}
 }
 
