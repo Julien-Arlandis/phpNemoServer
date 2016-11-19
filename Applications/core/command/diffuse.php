@@ -1,5 +1,4 @@
 <?php
-$this->setSession();
 
 // Query from Client
 if($this->param{'Data'})
