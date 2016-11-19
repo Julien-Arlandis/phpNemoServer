@@ -7,8 +7,6 @@ function deleteUser($id)
 	return $jntp->mongo->user->remove(array('UserID' => $id));
 }
 
-$this->setSession();
-
 if($this->privilege == 'admin')
 {
 	$this->reponse{'code'} = "200";
