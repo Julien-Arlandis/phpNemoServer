@@ -78,7 +78,7 @@ ou en le recopiant dans votre barre d'adresse.";
 	$mail = new PHPMailer();
 	$mail->isSMTP();
 	$mail->Host = $jntp->config{'smtpHost'};
-	if($mail->SMTPAuth = $jntp->config{'smtpAuth'};)
+	if($mail->SMTPAuth = $jntp->config{'smtpAuth'})
 	{
 		$mail->Username = $jntp->config{'smtpLogin'};
 		$mail->Password = $jntp->config{'smtpPassword'};  
