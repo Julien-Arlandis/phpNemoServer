@@ -42,7 +42,6 @@ class JNTP
 	// Constructeur
 	function __construct()
 	{
-		require_once(__DIR__."/../../../conf/config.php");
 		date_default_timezone_set('UTC');
 		$m = new MongoClient();
 		$this->config = JNTP::getConfig();
@@ -376,7 +375,6 @@ class JNTP
 	// Retourne la ressource d'un packet requêtée au format URI ex : http://[server]/jntp/[Jid]/Data.FromName
 	static function getResource($path) // à corriger.
 	{
-		require_once(__DIR__."/../../../conf/config.json");
 		$tab = preg_split('/\//', $path);
 		$conf = JNTP::getConfig();
 		$m = new MongoClient();
