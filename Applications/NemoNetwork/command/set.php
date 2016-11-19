@@ -1,6 +1,5 @@
 <?php
 
-$this->setSession();
 if($this->userid)
 {
 	if(isset($this->param{'email'}))
