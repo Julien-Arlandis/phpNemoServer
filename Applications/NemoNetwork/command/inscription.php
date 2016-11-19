@@ -77,10 +77,10 @@ ou en le recopiant dans votre barre d'adresse.";
 	
   $mail = new PHPMailer();
   $mail->isSMTP();
-  $mail->Host = SMTP_HOST;
-  $mail->SMTPAuth = SMTP_AUTH;
-  $mail->SMTPSecure = SMTP_SECURE;
-  $mail->Port = SMTP_PORT;
+  $mail->Host = $jntp->config{'smtpHost'};
+  $mail->SMTPAuth = $jntp->config{'smtpAuth'};
+  $mail->SMTPSecure = $jntp->config{'smtpSecure'};
+  $mail->Port = $jntp->config{'smtpPort'};
   $mail->setFrom($jntp->config{'administrator'}, $jntp->config{'organization'});
   $mail->AddAddress($email);
   $mail->Subject = "Bienvenue sur ".$jntp->config{'organization'};
