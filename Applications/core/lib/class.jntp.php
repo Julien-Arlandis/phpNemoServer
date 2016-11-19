@@ -200,7 +200,7 @@ class JNTP
 
 	// Initialise la session
 	function setSession()
-	{	
+	{
 		
 		$session = $_COOKIE["JNTP-Session"];
 		
@@ -282,11 +282,11 @@ class JNTP
 		if(!$this->packet{'Route'}) $this->packet{'Route'} = array();
 		if(!$this->packet{'Meta'}) $this->packet{'Meta'} = array();
 
-		if (!$privateKey = openssl_pkey_get_private(PRIVATE_KEY)) die('Loading Private Key failed');
+		if (!$privateKey = openssl_pkey_get_private($jntp->config{'privateKey'})) die('Loading Private Key failed');
 		openssl_private_encrypt($this->packet{'Jid'}, $signature, $privateKey);
 		
 		$this->packet{'Meta'}{'ServerSign'} = base64_encode($signature);
-		$this->packet{'Meta'}{'ServerPublicKey'} = PUBLIC_KEY;
+		$this->packet{'Meta'}{'ServerPublicKey'} = $jntp->config{'publicKey'};
 	}
 
 	// Insère le packet dans la base
@@ -340,9 +340,9 @@ class JNTP
 			$jid = str_replace("'","\'",$this->packet{'Jid'});
 			$datatype = str_replace("'","\'",$this->packet{'Data'}{'DataType'});
 			$dataid = str_replace("'","\'",$this->packet{'Data'}{'DataID'});
-			if(SHELL_EXEC)
+			if($jntp->config{'shellExec'})
 			{
-				$cmd = PHP_PATH.' '.__DIR__.'/../../../connector/'.$this->config{'outFeeds'}{$server}{'type'}[1].' '.$server." '$jid' '$dataid' '$datatype'";
+				$cmd = $jntp->config{'phpPath'}.' '.__DIR__.'/../../../connector/'.$this->config{'outFeeds'}{$server}{'type'}[1].' '.$server." '$jid' '$dataid' '$datatype'";
 				shell_exec($cmd. ' >> /dev/null &');
 			}
 			else
@@ -449,10 +449,10 @@ class JNTP
 	
 	static function logFeed($post, $server, $direct = '<')
 	{
-		if(ACTIVE_LOG)
+		if($jntp->config{'activeLog'})
 		{
 			$post = is_array($post) ? json_encode($post) : $post;
-			$handle = fopen(LOG_FEED_PATH, 'a');
+			$handle = fopen($jntp->config{'logFeedPath'}, 'a');
 			$put = '['.date(DATE_RFC822).'] ['.$server.'] '.$direct.' '.rtrim(mb_strimwidth($post, 0, 300))."\n";
 			fwrite($handle, $put);
 			fclose($handle);
@@ -460,10 +460,10 @@ class JNTP
 	}
 
 	static function log($post, $direct = '<')
-	{		
-		if(ACTIVE_LOG && $post != '')
+	{
+		if($jntp->config{'activeLog'} && $post != '')
 		{
-			$handle = fopen(LOG_PATH, 'a');
+			$handle = fopen($jntp->config{'logPath'}, 'a');
 			$put = '['.date(DATE_RFC822).'] ['.$_SERVER['REMOTE_ADDR'].'] '.$direct.' '.mb_strimwidth($post, 0, 300)."\n";
 			fwrite($handle, $put);
 			fclose($handle);
