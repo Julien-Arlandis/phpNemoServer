@@ -28,7 +28,7 @@ function insertUser($email, $password, $privilege = 1)
 		if($obj{'check'} != '')
 		{
 			array_push($error, "Un nouveau mail d'activation a été envoyé");
-			$code = "300";
+			$code = "200";
 		}
 		else
 		{
