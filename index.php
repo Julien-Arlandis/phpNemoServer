@@ -25,10 +25,9 @@ error_reporting( ~E_NOTICE );
 header( "Cache-Control: no-cache, must-revalidate" );
 require_once( __DIR__."/Applications/core/lib/class.jntp.php" );
 
-if( !file_exists( __DIR__ . '/conf/config.php' ) ) require_once( __DIR__."/install.php" ); die();
-if( file_exists( __DIR__ . '/sleep' ) ) die( 'You must remove sleep file to continue<br><strong>rm jntp/sleep</strong>' );
-
-if( $_SERVER['QUERY_STRING'] ) die( JNTP::getResource( $_SERVER['QUERY_STRING'] ) );
+if( !file_exists( __DIR__ . '/conf/config.php' ) ) { require_once( __DIR__."/install.php" ); die(); }
+if( file_exists( __DIR__ . '/sleep' ) ) { die( 'You must remove sleep file to continue<br><strong>rm jntp/sleep</strong>' ); }
+if( $_SERVER['QUERY_STRING'] ) { die( JNTP::getResource( $_SERVER['QUERY_STRING'] ) ); }
 
 $jntp = new JNTP();
 $jntp->exec( file_get_contents( "php://input" ) );
