@@ -1,7 +1,7 @@
 <?php
 
 /**
-Copyright © 2013-2014 Julien Arlandis
+Copyright © 2013-2016 Julien Arlandis
     @author : Julien Arlandis <julien.arlandis_at_gmail.com>
     @Licence : http://www.gnu.org/licenses/agpl-3.0.txt
 
