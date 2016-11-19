@@ -23,27 +23,27 @@ ou en le recopiant dans votre barre d'adresse.";
 	return true;
 }
 
-if(isset($this->param{'email'}))
+if(isset($jntp->param{'email'}))
 {
-	$total = $this->mongo->user->find(array('email' => $this->param{'email'}))->count();
+	$total = $jntp->mongo->user->find(array('email' => $jntp->param{'email'}))->count();
 
 	if ( $total == 0)
 	{
-		$this->reponse{'code'} = "400";
-		$this->reponse{'info'} = "Cet email n'est pas enregistré dans la base";
+		$jntp->reponse{'code'} = "400";
+		$jntp->reponse{'info'} = "Cet email n'est pas enregistré dans la base";
 	}
 	else
 	{
 		$check = (string)rand(1e15, 9e15);
-		$obj = $this->mongo->user->findOne( array('email' => $this->param{'email'}) );
-		$this->mongo->user->update(array('UserID' => $obj['UserID']), array('$set' => array('checkpassword' => $check) ));
-		mailRecupPassword($obj['email'], $obj['UserID'], $check, $this->config{'organization'}, $this->config{'administrator'}, $this->config{'domain'});
-		$this->reponse{'code'} = "200";
-		$this->reponse{'info'} = "Un courriel a été envoyé à l'adresse ".$obj['email'];
+		$obj = $jntp->mongo->user->findOne( array('email' => $jntp->param{'email'}) );
+		$jntp->mongo->user->update(array('UserID' => $obj['UserID']), array('$set' => array('checkpassword' => $check) ));
+		mailRecupPassword($obj['email'], $obj['UserID'], $check, $jntp->config{'organization'}, $jntp->config{'administrator'}, $jntp->config{'domain'});
+		$jntp->reponse{'code'} = "200";
+		$jntp->reponse{'info'} = "Un courriel a été envoyé à l'adresse ".$obj['email'];
 	}
 }
 else
 {
-	$this->reponse{'code'} = "400";
-	$this->reponse{'info'} = "Not connected";
+	$jntp->reponse{'code'} = "400";
+	$jntp->reponse{'info'} = "Not connected";
 }

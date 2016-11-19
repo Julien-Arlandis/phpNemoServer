@@ -1,15 +1,15 @@
 <?php
 
-if( $this->id )
+if( $jntp->id )
 {
-	$obj = $this->mongo->user->findOne( array('UserID' => $this->id) );
-	$this->reponse{'code'} = "200";
-	$this->reponse{'body'} = array("FromName"=>$obj{'FromName'}, "FromMail"=>$obj{'FromMail'}, "ReplyTo"=>$obj{'ReplyTo'}, "UserID"=>$this->userid, "email"=>$obj{'email'}, "privilege"=>$this->privilege, "Session"=>$this->session, "hashkey"=>$obj{'hashkey'});
-	$this->reponse{'info'} = "User ".$this->userid." connected on ".$this->config{'domain'};
+	$obj = $jntp->mongo->user->findOne( array('UserID' => $jntp->id) );
+	$jntp->reponse{'code'} = "200";
+	$jntp->reponse{'body'} = array("FromName"=>$obj{'FromName'}, "FromMail"=>$obj{'FromMail'}, "ReplyTo"=>$obj{'ReplyTo'}, "UserID"=>$jntp->userid, "email"=>$obj{'email'}, "privilege"=>$jntp->privilege, "Session"=>$jntp->session, "hashkey"=>$obj{'hashkey'});
+	$jntp->reponse{'info'} = "User ".$jntp->userid." connected on ".$jntp->config{'domain'};
 }
 else
 {
-	$this->reponse{'code'} = "400";
-	$this->reponse{'body'} = array();
-	$this->reponse{'info'} = "User not connected";
+	$jntp->reponse{'code'} = "400";
+	$jntp->reponse{'body'} = array();
+	$jntp->reponse{'info'} = "User not connected";
 }

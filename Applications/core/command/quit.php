@@ -1,4 +1,5 @@
 <?php
-$this->destroySession();
-$this->reponse{'code'} = "200";
-$this->reponse{'info'} = "GoodBye!";
+
+$jntp->destroySession();
+$jntp->reponse{'code'} = "200";
+$jntp->reponse{'info'} = "GoodBye!";

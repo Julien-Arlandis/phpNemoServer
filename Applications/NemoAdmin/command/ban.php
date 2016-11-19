@@ -7,14 +7,14 @@ function deleteUser($id)
 	return $jntp->mongo->user->remove(array('UserID' => $id));
 }
 
-if($this->privilege == 'admin')
+if($jntp->privilege == 'admin')
 {
-	$this->reponse{'code'} = "200";
-	deleteUser($this->param{'UserID'});
-	$this->reponse{'info'} = "User ".$this->param{'UserID'}." deleted";
+	$jntp->reponse{'code'} = "200";
+	deleteUser($jntp->param{'UserID'});
+	$jntp->reponse{'info'} = "User ".$jntp->param{'UserID'}." deleted";
 }
 else
 {
-	$this->reponse{'code'} = "400";
-	$this->reponse{'info'} = "Not autorised to delete";
+	$jntp->reponse{'code'} = "400";
+	$jntp->reponse{'info'} = "Not autorised to delete";
 }

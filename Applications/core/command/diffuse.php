@@ -1,130 +1,130 @@
 <?php
 
 // Query from Client
-if($this->param{'Data'})
+if($jntp->param{'Data'})
 {
-	$this->packet{'Data'} = $this->param{'Data'};
+	$jntp->packet{'Data'} = $jntp->param{'Data'};
 
 	// Check if Data.DataType is valid
-	if ($this->loadDataType())
+	if ($jntp->loadDataType())
 	{
 		// Check if Data is conform to DataType declaration
-		if( $this->datatype->isValidData() )
+		if( $jntp->datatype->isValidData() )
 		{
 			// Traitment before insertion
-			if ( $this->datatype->beforeInsertion() )
+			if ( $jntp->datatype->beforeInsertion() )
 			{
 				// Complete Data
-				$this->datatype->forgeData();
+				$jntp->datatype->forgeData();
 				// Forge packet
-				$this->forgePacket();
+				$jntp->forgePacket();
 				// Insert packet in database
-				$this->insertPacket();
-				$this->datatype->afterInsertion($this->packet{'ID'});
+				$jntp->insertPacket();
+				$jntp->datatype->afterInsertion($jntp->packet{'ID'});
 
-				$this->reponse{'code'} = "200";
-				$this->reponse{'body'}{'Data'}{'DataID'} = $this->packet{'Data'}{'DataID'};
-				$this->reponse{'body'}{'Data'}{'DataType'} = $this->packet{'Data'}{'DataType'};
-				$this->reponse{'body'}{'Jid'} = $this->packet{'Jid'};
-				$this->reponse{'body'}{'ID'} = $this->packet{'ID'};
-				$this->reponse{'info'} = 'Diffuse '.$this->packet{'Data'}{'DataID'}.' OK';
+				$jntp->reponse{'code'} = "200";
+				$jntp->reponse{'body'}{'Data'}{'DataID'} = $jntp->packet{'Data'}{'DataID'};
+				$jntp->reponse{'body'}{'Data'}{'DataType'} = $jntp->packet{'Data'}{'DataType'};
+				$jntp->reponse{'body'}{'Jid'} = $jntp->packet{'Jid'};
+				$jntp->reponse{'body'}{'ID'} = $jntp->packet{'ID'};
+				$jntp->reponse{'info'} = 'Diffuse '.$jntp->packet{'Data'}{'DataID'}.' OK';
 			}
 		}
 		else
 		{
-			$this->reponse{'code'} = "400";
+			$jntp->reponse{'code'} = "400";
 		}
 	}
 	else
 	{
-		$this->reponse{'code'} = "400";
-		$this->reponse{'info'} = "DataType ".$this->packet{'Data'}{'DataType'}." unsupported";
+		$jntp->reponse{'code'} = "400";
+		$jntp->reponse{'info'} = "DataType ".$jntp->packet{'Data'}{'DataType'}." unsupported";
 	}
 }
 
 // Query from Server
-elseif($this->param{'Packet'})
+elseif($jntp->param{'Packet'})
 {
-	$this->packet = $this->param{'Packet'};
-	$this->loadDataType();
+	$jntp->packet = $jntp->param{'Packet'};
+	$jntp->loadDataType();
 
 	$want = false;
 	// Check if packet exists
-	if( !isset($this->packet{'Data'}{'DataID'}) || $this->packet{'Jid'} == substr($this->packet{'Data'}{'DataID'},0,27) )
+	if( !isset($jntp->packet{'Data'}{'DataID'}) || $jntp->packet{'Jid'} == substr($jntp->packet{'Data'}{'DataID'},0,27) )
 	{
-		if( !$this->isStorePacket( array('Jid' => $this->packet{'Jid'}) ) )
+		if( !$jntp->isStorePacket( array('Jid' => $jntp->packet{'Jid'}) ) )
 		{
 			$want = true;
 		}
 		else
 		{
-			$this->reponse{'code'} = "400";
-			$this->reponse{'info'} = 'Jid ' . $this->packet{'Jid'} . " already inserted";
+			$jntp->reponse{'code'} = "400";
+			$jntp->reponse{'info'} = 'Jid ' . $jntp->packet{'Jid'} . " already inserted";
 		}
 	}
 	else
 	{
-		if( !$this->isStorePacket( array('Data.DataID'=>$this->packet{'Data'}{'DataID'}, 'Data.DataType'=>$this->packet{'Data'}{'DataType'} ) ) )
+		if( !$jntp->isStorePacket( array('Data.DataID'=>$jntp->packet{'Data'}{'DataID'}, 'Data.DataType'=>$jntp->packet{'Data'}{'DataType'} ) ) )
 		{
 			$want = true;
 		}
 		else
 		{
-			$this->reponse{'code'} = "400";
-			$this->reponse{'info'} = $this->packet{'Data'}{'DataType'} .':'. $this->packet{'Data'}{'DataID'} . " already inserted";
+			$jntp->reponse{'code'} = "400";
+			$jntp->reponse{'info'} = $jntp->packet{'Data'}{'DataType'} .':'. $jntp->packet{'Data'}{'DataID'} . " already inserted";
 		}
 	}
 
 	if( $want )
 	{
-		if( $this->isValidPacket() )
+		if( $jntp->isValidPacket() )
 		{
 			// Traitment before insertion
-			if ( $this->datatype->beforeInsertion() )
+			if ( $jntp->datatype->beforeInsertion() )
 			{
 				// Insert packet in database
-				if($this->insertPacket())
+				if($jntp->insertPacket())
 				{
-					$this->datatype->afterInsertion($this->packet{'ID'});
-					$this->reponse{'code'} = "200";
-					$this->reponse{'info'} = $this->packet{'Jid'} . " : inserted";
+					$jntp->datatype->afterInsertion($jntp->packet{'ID'});
+					$jntp->reponse{'code'} = "200";
+					$jntp->reponse{'info'} = $jntp->packet{'Jid'} . " : inserted";
 				}
 				else
 				{
-					$this->reponse{'code'} = "400";
-					$this->reponse{'info'} = $this->packet{'Jid'} . " : not inserted";
+					$jntp->reponse{'code'} = "400";
+					$jntp->reponse{'info'} = $jntp->packet{'Jid'} . " : not inserted";
 				}
 			}
 		}
 		else
 		{
-			$this->reponse{'code'} = "400";
-			$this->reponse{'info'} = "invalid packet";
+			$jntp->reponse{'code'} = "400";
+			$jntp->reponse{'info'} = "invalid packet";
 		}
 	}
 	else
 	{
-		$this->reponse{'code'} = "400";
-		$this->reponse{'info'} = $this->packet{'Jid'} . " already inserted";
+		$jntp->reponse{'code'} = "400";
+		$jntp->reponse{'info'} = $jntp->packet{'Jid'} . " already inserted";
 	}
 }
-elseif($this->param{'Propose'})
+elseif($jntp->param{'Propose'})
 {
-	for($i=0; $i<count($this->param{'Propose'}); $i++)
+	for($i=0; $i<count($jntp->param{'Propose'}); $i++)
 	{
-		$pack = $this->param{'Propose'}[$i];
+		$pack = $jntp->param{'Propose'}[$i];
 		$jid = array();
 		$dataid = array();
 		if( !isset($pack{'Data'}{'DataID'}) || $pack{'Jid'} == substr($pack{'Data'}{'DataID'},0,27) )
 		{
-			if( !$this->isStorePacket( array('Jid' => $pack{'Jid'}) ) )
+			if( !$jntp->isStorePacket( array('Jid' => $pack{'Jid'}) ) )
 			{
 				array_push($jid, $pack{'Jid'});
 			}
 		}
 		else
 		{
-			if( !$this->isStorePacket( array('Data.DataID'=>$pack{'Data'}{'DataID'}, 'Data.DataType'=>$pack{'Data'}{'DataType'} ) ) )
+			if( !$jntp->isStorePacket( array('Data.DataID'=>$pack{'Data'}{'DataID'}, 'Data.DataType'=>$pack{'Data'}{'DataType'} ) ) )
 			{
 				array_push($dataid, $pack{'Data'}{'DataID'});
 			}
@@ -132,8 +132,8 @@ elseif($this->param{'Propose'})
 	}
 
 	$commande = array();
-	$this->reponse{'code'} = "200";
-	$this->reponse{'body'}{'Jid'} = $jid;
-	$this->reponse{'body'}{'Data.DataID'} = $dataid;
-	$this->reponse{'info'} = 'Proposition processed';
+	$jntp->reponse{'code'} = "200";
+	$jntp->reponse{'body'}{'Jid'} = $jid;
+	$jntp->reponse{'body'}{'Data.DataID'} = $dataid;
+	$jntp->reponse{'info'} = 'Proposition processed';
 }

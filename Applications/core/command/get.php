@@ -2,34 +2,34 @@
 
 $projection = array('_id'=>0);
 $count = false;
-$listen = ($this->param{'listen'} && $this->param{'listen'} == 1 ) ? true : false;
+$listen = ($jntp->param{'listen'} && $jntp->param{'listen'} == 1 ) ? true : false;
 $delay = 1;
 $limit = 500;
 $count_packet = 0;
 
-if($this->param{'limit'} && is_numeric($this->param{'limit'}) )
+if($jntp->param{'limit'} && is_numeric($jntp->param{'limit'}) )
 {
-	$limit = ($this->param{'limit'} > $limit) ? $limit : $this->param{'limit'};
+	$limit = ($jntp->param{'limit'} > $limit) ? $limit : $jntp->param{'limit'};
 }
 
-if(is_int($this->param{'maxDataLength'}) && ($this->param{'maxDataLength'} > 27 || $this->param{'maxDataLength'} == 0) )
+if(is_int($jntp->param{'maxDataLength'}) && ($jntp->param{'maxDataLength'} > 27 || $jntp->param{'maxDataLength'} == 0) )
 {
-	$this->maxDataLength = $this->param{'maxDataLength'};
+	$jntp->maxDataLength = $jntp->param{'maxDataLength'};
 }
 
-if($this->param{'group'})
+if($jntp->param{'group'})
 {
-	foreach($this->param{'group'} as $field)
+	foreach($jntp->param{'group'} as $field)
 	{
-		if($field == 'count') 
+		if($field == 'count')
 		{
 			$count = true;
 		}
 	}
 }
-elseif($this->param{'select'}) 
+elseif($jntp->param{'select'})
 {
-	foreach($this->param{'select'} as $field)
+	foreach($jntp->param{'select'} as $field)
 	{
 		$projection['ID'] = 1;
 		$projection['Jid'] = 1;
@@ -45,30 +45,30 @@ elseif($this->param{'select'})
 	}
 }
 
-if( $this->param{'filter'})
+if( $jntp->param{'filter'})
 {
-	if( !$this->param{'filter'}{'Data.DataType'} || !$this->config['DataType'][$this->param{'filter'}{'Data.DataType'}])
+	if( !$jntp->param{'filter'}{'Data.DataType'} || !$jntp->config['DataType'][$jntp->param{'filter'}{'Data.DataType'}])
 	{
-		$this->reponse{'code'} = "500";
-		$this->reponse{'info'} = "DataType not found";
-		$this->send();
+		$jntp->reponse{'code'} = "500";
+		$jntp->reponse{'info'} = "DataType not found";
+		$jntp->send();
 	}
 
 	$query = array();
 
-	foreach($this->param{'filter'} as $key => $value)
+	foreach($jntp->param{'filter'} as $key => $value)
 	{
 		$key = explode(":", $key);
 		$ind = (isset($key[1]) && is_numeric($key[1])) ? $key[1] : 0;
 		$key = $key[0];
-		if( !in_array($key, $this->config['DataType']['ProtoData']['filter']) && !in_array($key, $this->config['DataType'][$this->param{'filter'}{'Data.DataType'}]['filter'] ) )
+		if( !in_array($key, $jntp->config['DataType']['ProtoData']['filter']) && !in_array($key, $jntp->config['DataType'][$jntp->param{'filter'}{'Data.DataType'}]['filter'] ) )
 		{
-			$this->reponse{'code'} = "400";
-			$this->reponse{'info'} = "Filter [".$key."] not allowed";
-			$this->send();
+			$jntp->reponse{'code'} = "400";
+			$jntp->reponse{'info'} = "Filter [".$key."] not allowed";
+			$jntp->send();
 		}
 
-		if($ind) 
+		if($ind)
 		{
 			$key = $key.".".($ind-1);
 		}
@@ -120,47 +120,47 @@ if( $this->param{'filter'})
 	do {
 		if(!$count)
 		{
-			$cursor = $this->mongo->packet->find( array('$and'=>$query), $projection )->limit($limit)->sort(array('ID' => -1));
+			$cursor = $jntp->mongo->packet->find( array('$and'=>$query), $projection )->limit($limit)->sort(array('ID' => -1));
 		}
 		else
 		{
-			$cursor = $this->mongo->packet->count(array('$and'=>$query));
+			$cursor = $jntp->mongo->packet->count(array('$and'=>$query));
 		}
-		if(!$firstQuery) 
+		if(!$firstQuery)
 		{
 			sleep($delay);
 		}
 		$firstQuery = false;
 		$time_execution += $delay;
-		if($time_execution >= $time_execution_max) 
+		if($time_execution >= $time_execution_max)
 		{
-			$this->reponse{'code'} = "200";
-			$this->reponse{'body'} = array();
-			$this->send();
+			$jntp->reponse{'code'} = "200";
+			$jntp->reponse{'body'} = array();
+			$jntp->send();
 		}
 	} while($listen && $cursor->count()==0);
 }
 
 if(!$count)
 {
-	$this->reponse{'code'} = "200";
-	$this->reponse{'body'} = array();
+	$jntp->reponse{'code'} = "200";
+	$jntp->reponse{'body'} = array();
 	foreach($cursor as $packet)
 	{
 		$count_packet++;
-		if( $this->privilege != 'admin' && $this->privilege != 'moderator')
+		if( $jntp->privilege != 'admin' && $jntp->privilege != 'moderator')
 		{
 			unset( $packet{'Meta'}{'ForAdmin'} );
 		}
-		array_push($this->reponse{'body'}, $this->replaceHash( $packet ) );
+		array_push($jntp->reponse{'body'}, $jntp->replaceHash( $packet ) );
 	}
-	$this->reponse{'info'} = "Get ".$count_packet." packet(s)";
-	if ($this->param{'select'}) $this->reponse{'info'} .= " with projection";
+	$jntp->reponse{'info'} = "Get ".$count_packet." packet(s)";
+	if ($jntp->param{'select'}) $jntp->reponse{'info'} .= " with projection";
 }
 else
 {
-	$this->reponse{'code'} = "200";
-	$this->reponse{'body'} = array("count"=>$cursor);
-	$this->reponse{'info'} = "Count ".$cursor->count()." packet(s)";
+	$jntp->reponse{'code'} = "200";
+	$jntp->reponse{'body'} = array("count"=>$cursor);
+	$jntp->reponse{'info'} = "Count ".$cursor->count()." packet(s)";
 }
 
