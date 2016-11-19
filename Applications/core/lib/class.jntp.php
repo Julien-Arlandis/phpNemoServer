@@ -114,7 +114,7 @@ class JNTP
 			function go()
 			{
 				global $jntp;
-				require(__DIR__.'/../../'.$application.'/command/'.$this->command.'.php');
+				require(__DIR__.'/../../'.$application.'/command/'.$jntp->command.'.php');
 			}
 			go();
 		}
