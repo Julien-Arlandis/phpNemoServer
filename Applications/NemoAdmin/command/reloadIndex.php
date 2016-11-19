@@ -1,7 +1,5 @@
 <?php
 
-$this->setSession();
-
 if($this->privilege == 'admin')
 {
 	$this->createIndex();
