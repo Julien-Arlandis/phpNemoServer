@@ -45,8 +45,8 @@ class JNTP
 		require_once(__DIR__."/../../../conf/config.php");
 		date_default_timezone_set('UTC');
 		$m = new MongoClient();
-		$this->mongo = $m->selectDB(DB_NAME);
-		$this->config = json_decode(file_get_contents(__DIR__.'/../../../conf/general.json'),true);
+		$this->config = JNTP::getConfig();
+		$this->mongo = $m->selectDB($this->config{'dbName'});
 		$this->config{'serverVersion'} = SERVER_VERSION;
 		$this->maxDataLength = $this->config['maxDataLength'];
 		foreach($this->config['application'] as $application => $content)
@@ -376,10 +376,11 @@ class JNTP
 	// Retourne la ressource d'un packet requêtée au format URI ex : http://[server]/jntp/[Jid]/Data.FromName
 	static function getResource($path) // à corriger.
 	{
-		require_once(__DIR__."/../../../conf/config.php");
+		require_once(__DIR__."/../../../conf/config.json");
 		$tab = preg_split('/\//', $path);
+		$conf = JNTP::getConfig();
 		$m = new MongoClient();
-		$mongo = $m->selectDB(DB_NAME);
+		$mongo = $m->selectDB($conf{'dbName'});
 		$json  = $mongo->packet->findOne( array('Data.DataID'=>$tab[0]), array('_id'=>0) );
 		$tab = preg_split("/([:\.\/]+)/", $tab[1], -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY );
 
@@ -535,6 +536,11 @@ class JNTP
 		$iv = pack('H*', substr($key_iv, 65));
 		$str = base64_decode($str);
 		return substr(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $iv.$str, MCRYPT_MODE_CFB, $iv), 16);
+	}
+	
+	static function getConfig()
+	{
+		return json_decode(file_get_contents(__DIR__.'/../../../conf/general.json'),true);
 	}
 }
 
