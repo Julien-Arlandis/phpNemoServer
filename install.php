@@ -221,7 +221,7 @@ fclose($file);
 * Création du fichier general.json
 */
 
-$file_general_copy = __DIR__."/general.json.inc";
+$file_general_copy = __DIR__."/general.inc.json";
 $file_general_final = __DIR__."/conf/general.json";
 $buffer = json_decode(file_get_contents($file_general_copy), true);
 $buffer['domain'] = $_SERVER['SERVER_NAME'];
