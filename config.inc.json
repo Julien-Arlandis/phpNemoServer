@@ -9,7 +9,7 @@
 	"crossDomainAccept": true,
 	"activeInscription": true,
 	"cryptPostingHost": "ifconnected",
-	"activeLog": true,
+	"activeLog": false,
 	"logPath": "",
 	"logFeedPath": "",
 	"smtpHost": "localhost",
