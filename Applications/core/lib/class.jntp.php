@@ -111,12 +111,12 @@ class JNTP
 		$application = $this->listCommand[$this->command];
 		if ($application)
 		{
-			function go()
+			function go(__DIR__.'/../../'.$application.'/command/'.$this->command.'.php')
 			{
 				global $jntp;
-				require(__DIR__.'/../../'.$application.'/command/'.$jntp->command.'.php');
+				require($script);
 			}
-			go();
+			go($script);
 		}
 		else
 		{
