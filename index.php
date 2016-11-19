@@ -23,8 +23,6 @@ This file is part of PhpNemoServer.
 
 error_reporting(~E_NOTICE);
 header("Cache-Control: no-cache, must-revalidate");
-require_once(__DIR__."/Applications/core/lib/class.jntp.php");
-
 
 if( !file_exists( __DIR__ . '/conf/config.php'))
 {
@@ -36,15 +34,16 @@ if( file_exists( __DIR__ . '/sleep'))
 	die( 'You must remove sleep file to continue<br><strong>rm jntp/sleep</strong>' );
 }
 
+require_once(__DIR__."/Applications/core/lib/class.jntp.php");
 $jntp = new JNTP();
 $jntp->setSession();
 
-$post = file_get_contents("php://input");
-$queryString = $_SERVER['QUERY_STRING'];
 if($queryString = $_SERVER['QUERY_STRING'])
 {
 	die( $jntp->getResource($queryString) );
 }
+
+$post = file_get_contents("php://input");
 
 if($post === '')
 {
