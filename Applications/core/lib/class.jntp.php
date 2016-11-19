@@ -55,18 +55,18 @@ class JNTP
 				$this->listCommand[$command] = $application;
 			}
 		}
+		$this->setSession();
 	}
 	
 	// Execute une commande JNTP sur le présent serveur ou sur un serveur distant
 	function exec($post, $server = false)
 	{
-		
+		$this->log($post);
 		if($post === '')
 		{
 			$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == true) ? 'https' : 'http';
 			die( "200 ".$protocol.'://'.$this->config{'domain'}.'/jntp/ - PhpNemoServer/'.$this->config{'serverVersion'}.' - JNTP Service Ready - '.$this->config{'administrator'}.' - Type ["help"] for help' );
 		}
-		
 		if($server)
 		{
 			$post = is_array($post) ? json_encode($post) : $post;
@@ -118,6 +118,7 @@ class JNTP
 			$this->reponse{'code'} = "500";
 			$this->reponse{'info'} = "Command not found, [".$this->command."]";
 		}
+		$this->send();
 	}
 
 	// Met à jour les informations de l' utilisateur
