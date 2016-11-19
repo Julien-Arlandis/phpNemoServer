@@ -23,33 +23,17 @@ This file is part of PhpNemoServer.
 
 error_reporting(~E_NOTICE);
 header("Cache-Control: no-cache, must-revalidate");
-
-if( !file_exists( __DIR__ . '/conf/config.php'))
-{
-	require_once(__DIR__."/install.php");
-}
-
-if( file_exists( __DIR__ . '/sleep'))
-{
-	die( 'You must remove sleep file to continue<br><strong>rm jntp/sleep</strong>' );
-}
-
 require_once(__DIR__."/Applications/core/lib/class.jntp.php");
+
+if( !file_exists( __DIR__ . '/conf/config.php')) require_once(__DIR__."/install.php");
+if( file_exists( __DIR__ . '/sleep')) die( 'You must remove sleep file to continue<br><strong>rm jntp/sleep</strong>' );
+
 $jntp = new JNTP();
 $jntp->setSession();
 
-if($queryString = $_SERVER['QUERY_STRING'])
-{
-	die( $jntp->getResource($queryString) );
-}
+if($queryString = $_SERVER['QUERY_STRING']) die( $jntp->getResource($queryString) );
 
 $post = file_get_contents("php://input");
-
-if($post === '')
-{
-	$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == true) ? 'https' : 'http';
-	die( "200 ".$protocol.'://'.$jntp->config{'domain'}.'/jntp/ - PhpNemoServer/'.$jntp->config{'serverVersion'}.' - JNTP Service Ready - '.$jntp->config{'administrator'}.' - Type ["help"] for help' );
-}
 
 $jntp->log($post);
 $jntp->exec($post);
