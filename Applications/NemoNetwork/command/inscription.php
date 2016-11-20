@@ -64,16 +64,15 @@ function mailInscription($email, $password, $userid, $check)
 	require_once(__DIR__.'/../../core/lib/class.phpmailer.php');
 	require_once(__DIR__.'/../../core/lib/class.smtp.php');
 	
-	$url = "http://".$jntp->config{'domain'}."/jntp/Applications/NemoNetwork/account.php?action=inscription&amp;userid=".$userid."&amp;check=".$check;
-	$message = "
-Bonjour, bienvenue sur <a href=\"http://".$jntp->config{'domain'}."\">".$jntp->config{'organization'}."</a>.
-<br><br>
-Votre inscription a bien été enregistrée avec l'email ".$email.".<br>
-Votre mot de passe est : <strong>".$password."</strong>
-<br><br>
-Merci de valider votre adresse mail en cliquant sur ce lien : <br>
-<a href=\"".$url."\">".$url."</a><br>
-ou en le recopiant dans votre barre d'adresse.";
+	$body = JNTP::getTpl("../tpl/inscription_mail.tpl",
+			array(
+				"domain" => $jntp->config{'domain'},
+				"organization" => $jntp->config{'organization'},
+				"email" => $email,
+				"password" => $password,
+				"url" => $url
+			     )
+	);
 	
 	$mail = new PHPMailer();
 	$mail->isSMTP();
@@ -89,7 +88,7 @@ ou en le recopiant dans votre barre d'adresse.";
 	$mail->AddAddress($email);
 	$mail->Subject = "Bienvenue sur ".$jntp->config{'organization'};
 	$mail->isHTML(true);
-	$mail->Body = $message;
+	$mail->Body = $body;
 	$mail->CharSet = "UTF-8";
 	
 	if(!$mail->Send())
