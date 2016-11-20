@@ -543,12 +543,12 @@ class JNTP
 	
 	static function getTpl($tpl, $assign)
 	{
-	  $body = file_get_contents($tpl);
+	  $tpl = file_get_contents($tpl);
 	  foreach ($assign as $key => $value)
 	  {
-	    str_replace($key, $value, $tpl);
+	    $tpl = str_replace('%'.$key.'%', $value, $tpl);
 	  }
-	  return $body;
+	  return $tpl;
 	}
 	
 }
