@@ -1,10 +1,12 @@
 Bonjour,
 <br><br>
-Bienvenue sur <a href="http://%domain%">%organization%</a>.
+Bienvenue sur le réseau <strong><a href="http://www.nemoweb.net/">Nemoweb</a></strong>.
 <br><br>
-Votre inscription a bien été enregistrée avec l'email %email%<br>
-Votre mot de passe est : <strong>%password%</strong>
+Votre inscription a été enregistrée sur le serveur <a href="http://%domain%">http://%domain%</a>, avec les éléments suivants pour vous authentifier.
 <br><br>
-Merci de valider votre adresse mail en cliquant sur ce lien : <br>
+Votre email : <strong>%email%</strong><br>
+Votre mot de passe : <strong>%password%</strong>
+<br><br>
+Pour valider votre inscription, merci de cliquer sur ce lien<br>
 <a href="%url%">%url%</a><br>
-ou en le recopiant dans la barre d'adresse de votre navigateur.
+ou de le copier dans la barre d'adresse de votre navigateur.
