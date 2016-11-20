@@ -31,6 +31,12 @@ if($action == "inscription")
 	{
 		$txt = "Ce compte n'existe pas.";
 	}
+	
+	echo JNTP::getTpl(__DIR__."/tpl/valid_inscription.tpl",
+			array(
+				"txt" => $txt
+				)
+	);
 }
 elseif($action == "unsubscribe")
 {
@@ -57,6 +63,13 @@ elseif($action == "unsubscribe")
 			$txt = "Ce compte n'existe pas.";
 		}
 	}
+	
+	echo JNTP::getTpl(__DIR__."/tpl/valid_unsubscribe.tpl",
+		array(
+				"txt" => $txt
+				)
+	);
+	
 }
 elseif( $action == "changepassword" )
 {
@@ -102,6 +115,13 @@ elseif( $action == "changepassword" )
 			$txt = "Ce compte n'existe pas.";
 		}
 	}
+	
+	echo JNTP::getTpl(__DIR__."/tpl/confirm_changePassword.tpl",
+	array(
+				"txt" => $txt
+			)
+	);
+	
 }
 else
 {
