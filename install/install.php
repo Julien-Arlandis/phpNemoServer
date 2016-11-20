@@ -38,14 +38,14 @@ function checkModules()
 }
 
 $die = false;
-if( !file_exists( __DIR__ . '../sleep'))
+if( !file_exists( __DIR__ . '/../sleep'))
 {
 	$die = true;
-	echo 'You must create jntp/sleep file to continue installation : <br>';
+	echo 'You must create '.__DIR__.'sleep file to continue installation : <br>';
 	echo '<strong>touch jntp/sleep</strong><p>';
 }
 
-if( !is_writable( __DIR__ . '../conf'))
+if( !is_writable( __DIR__ . '/../conf'))
 {
 	$die = true;
 	echo "jntp/conf/ is not writable : <br>";
@@ -167,7 +167,7 @@ Le fichier /jntp/conf/config.php va être crée, vous devrez le modifier ultéri
 $(document).ready(function() {
   
 	$('#check_php_path').click(function() {
-		window.open('/jntp/install.php?php_path='+$('#PHP_PATH').val());
+		window.open('/jntp/?php_path='+$('#PHP_PATH').val());
 	});
 	
 	$('#check_add_user').change(function() {
@@ -196,7 +196,7 @@ else
 */
 	
 $file_general_copy = __DIR__."/config.inc.json";
-$file_general_final = __DIR__."../conf/config.json";
+$file_general_final = __DIR__."/../conf/config.json";
 $buffer = json_decode(file_get_contents($file_general_copy), true);
 
 $buffer['dbName'] = $_POST['DB_NAME'];
