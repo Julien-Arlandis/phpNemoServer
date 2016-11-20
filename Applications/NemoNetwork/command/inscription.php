@@ -63,14 +63,14 @@ function mailInscription($email, $password, $userid, $check)
 	global $jntp;
 	require_once(__DIR__.'/../../core/lib/class.phpmailer.php');
 	require_once(__DIR__.'/../../core/lib/class.smtp.php');
-	
+
 	$body = JNTP::getTpl(__DIR__."/../tpl/mail_inscription.tpl",
 			array(
 				"domain" => $jntp->config{'domain'},
 				"organization" => $jntp->config{'organization'},
 				"email" => $email,
 				"password" => $password,
-				"url" => $url
+				"url" => "http://".$jntp->config{'domain'}."/jntp/Applications/NemoNetwork/account.php?action=inscription&amp;userid=".$userid."&amp;check=".$check
 			     )
 	);
 	
