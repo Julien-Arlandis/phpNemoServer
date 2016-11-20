@@ -1,7 +1,5 @@
 <?php
 
-echo 'aaaaa';
-
 /**
 Copyright © 2013-2016 Julien Arlandis
     @author : Julien Arlandis <julien.arlandis_at_gmail.com>
