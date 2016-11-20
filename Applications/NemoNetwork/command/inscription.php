@@ -64,7 +64,7 @@ function mailInscription($email, $password, $userid, $check)
 	require_once(__DIR__.'/../../core/lib/class.phpmailer.php');
 	require_once(__DIR__.'/../../core/lib/class.smtp.php');
 	
-	$body = JNTP::getTpl("../tpl/inscription_mail.tpl",
+	$body = JNTP::getTpl(__DIR__."/../tpl/mail_inscription.tpl",
 			array(
 				"domain" => $jntp->config{'domain'},
 				"organization" => $jntp->config{'organization'},
@@ -80,8 +80,8 @@ function mailInscription($email, $password, $userid, $check)
 	if($mail->SMTPAuth = $jntp->config{'smtpAuth'})
 	{
 		$mail->Username = $jntp->config{'smtpLogin'};
-		$mail->Password = $jntp->config{'smtpPassword'};  
-	}	  
+		$mail->Password = $jntp->config{'smtpPassword'};
+	}
 	$mail->SMTPSecure = $jntp->config{'smtpSecure'};
 	$mail->Port = $jntp->config{'smtpPort'};
 	$mail->setFrom($jntp->config{'administrator'}, $jntp->config{'organization'});

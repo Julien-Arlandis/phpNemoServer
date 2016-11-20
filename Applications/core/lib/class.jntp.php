@@ -540,5 +540,16 @@ class JNTP
 	{
 		return json_decode(file_get_contents(__DIR__.'/../../../conf/config.json'),true);
 	}
+	
+	static function getTpl($tpl, $assign)
+	{
+	  $body = file_get_contents($tpl);
+	  foreach ($assign as $key => $value)
+	  {
+	    str_replace($key, $value, $tpl);
+	  }
+	  return $body;
+	}
+	
 }
 
