@@ -23,7 +23,7 @@ This file is part of PhpNemoServer.
 
 error_reporting( ~E_NOTICE );
 header( "Cache-Control: no-cache, must-revalidate" );
-define('SERVER_VERSION', '0.93.2');
+define('SERVER_VERSION', '0.93.3');
 require_once( __DIR__."/Applications/core/lib/class.jntp.php" );
 
 if( !file_exists( __DIR__ . '/conf/config.json' ) ) { require_once( __DIR__."/install/install.php" ); die(); }
