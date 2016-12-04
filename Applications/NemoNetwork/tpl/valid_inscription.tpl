@@ -2,9 +2,7 @@
 <html>
 <head>
 <title>Nemo : Accès aux Newsgroups</title>
-
-%redirection%
-
+<meta http-equiv="Refresh" content="5; url=/" />
 <meta charset="UTF-8">
 </head>
 <body>
@@ -13,7 +11,7 @@
 	</h2>
 <br>
 
-%redirection_message%
+Redirection vers Nemo dans 5 secondes.
 
 </body>
 </html>
