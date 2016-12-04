@@ -4,11 +4,9 @@ require_once(__DIR__."/../core/lib/class.jntp.php");
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 $check = isset($_GET['check']) ? $_GET['check'] : '';
 $userid = isset($_GET['userid']) ? $_GET['userid'] : '';
-$redirection = false;
 
 if($action == "inscription")
 {
-	$redirection = true;
 	$jntp = new JNTP();
 	$obj = $jntp->mongo->user->findOne(array('UserID' => intval($userid) ));
 
@@ -125,6 +123,5 @@ elseif( $action == "changepassword" )
 }
 else
 {
-	$redirection = true;
 	$txt = "URL incomplète";
 }
