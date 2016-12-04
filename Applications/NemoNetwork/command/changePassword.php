@@ -31,7 +31,7 @@ if( isset( $jntp->param{'email'} ) )
 				array(
 					"organization" => $jntp->config{'organization'},
 					"email" => $obj['email'],
-					"url" => "http://".$jntp->config{'domain'}."/NemoServer/Applications/NemoNetwork/account.php?action=changepassword&amp;userid=".$obj['UserID']."&amp;check=".$check;
+					"url" => "http://".$jntp->config{'domain'}."/NemoServer/Applications/NemoNetwork/account.php?action=changepassword&amp;userid=".$obj['UserID']."&amp;check=".$check
 				     )
 		);
 		if(!$mail->Send())
