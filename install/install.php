@@ -23,18 +23,33 @@ This file is part of PhpNemoServer.
     along with PhpNemoServer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+function flushCmd($cmd)
+{
+	$fp = popen($cmd, 'r');
+
+	while(!feof($fp))
+	{
+		print fread($fp, 1024);
+		flush();
+	}
+	fclose($fp);
+}
+
 function checkModules()
 {
-?>
-<h2>Check modules</h2>
-<ul>
+  $curl = extension_loaded('curl') ? "oui" : "non";
+  $mongo = extension_loaded('mongo') ? "oui" : "non";
+  $shell_exec = function_exists('shell_exec') ? "oui" : "non";
+  $openssl_pkey_get_public = function_exists('openssl_pkey_get_public') ? "oui" : "non";
 
-<li>curl : <?=extension_loaded('curl')?'oui':'non';?></li>
-<li>mongo : <?=extension_loaded('mongo')?'oui':'non';?></li>
-<li>shell_exec : <?=function_exists('shell_exec')?'oui':'non';?></li>
-<li>openssl_pkey_get_public : <?=function_exists('openssl_pkey_get_public')?'oui':'non';?></li>
-</ul>
-<?php
+  $t="<h2>Check modules</h2>";
+  $t.="<ul>";
+  $t.="<li>curl : ".$curl."</li>";
+  $t.="<li>mongo : ".$mongo."</li>";
+  $t.="<li>shell_exec : ".$shell_exec."</li>";
+  $t.="<li>openssl_pkey_get_public : ".$openssl_pkey_get_public."</li>";
+  $t.="</ul>";
+  return $t;
 }
 
 $die = false;
@@ -52,41 +67,50 @@ if( !is_writable( __DIR__ . '/../conf'))
 	echo "<strong>chmod o+w jntp/conf</strong><p>";
 }
 
-if(isset($_GET['php_path']))
-{
-	$php_path = $_GET['php_path'];
-	$fp = popen($php_path.' '.__DIR__.'/install.php phpcli', 'r');
-
-	while(!feof($fp))
-	{
-		print fread($fp, 1024);
-		flush();
-	}
-	fclose($fp);
-	$die = true;
-}
-
 if($die) die();
 
-$config = array(
-    "private_key_bits" => 1024,
-    "private_key_type" => OPENSSL_KEYTYPE_RSA,
-);
+if(count($argv) > 1 && $argv[1] == "phpcli" )
+{
+  die( checkModules() );
+}
 
-$res = openssl_pkey_new($config);
-openssl_pkey_export($res, $privateKey);
-
-$pubkey = openssl_pkey_get_details($res);
-$publicKey = $pubkey['key'];
-
-$publicKey = (substr($publicKey, -1, 1) == "\n") ? substr($publicKey, 0, -1) : $publicKey;
-$privateKey = (substr($privateKey, -1, 1) == "\n") ? substr($privateKey, 0, -1) : $privateKey;
+if(isset($_GET['php_path']))
+{
+  $cmd = $_GET['php_path'].' '.__DIR__.'/install.php phpcli';
+  flushCmd($cmd);
+  die();
+}
 
 if (!isset($_POST['action']) )
 {
 
-
-die();
+  $config = array(
+      "private_key_bits" => 1024,
+      "private_key_type" => OPENSSL_KEYTYPE_RSA,
+  );
+  
+  $res = openssl_pkey_new($config);
+  openssl_pkey_export($res, $privateKey);
+  
+  $pubkey = openssl_pkey_get_details($res);
+  $publicKey = $pubkey['key'];
+  
+  $publicKey = (substr($publicKey, -1, 1) == "\n") ? substr($publicKey, 0, -1) : $publicKey;
+  $privateKey = (substr($privateKey, -1, 1) == "\n") ? substr($privateKey, 0, -1) : $privateKey;
+  
+  
+  echo JNTP::getTpl(__DIR__."/tpl/install_form.tpl",
+  			array(
+  				"server_version" => SERVER_VERSION,
+  				"publicKey" => $publicKey,
+  				"privateKey" => $privateKey,
+  				"checkModules"=>checkModules(),
+  				"password"=> substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),0,8),
+  				"email" => "newsmaster@".$_SERVER['SERVER_NAME'],
+  				"user_admin" => "admin",
+  				"php_path" => "/usr/bin/php"
+  			     )
+  	);
 }
 else
 {
@@ -109,12 +133,11 @@ $file = fopen($file_general_final, 'w');
 fputs($file, $buffer);
 fclose($file);
 
-$jntp = new JNTP();
-
 /*
 * Création de la base de données
 */
 
+$jntp = new JNTP();
 if(isset($_POST['DEL_DB']))
 {
 	$jntp->mongo->drop();
@@ -127,8 +150,7 @@ if(isset($_POST['DEL_DB']))
 
 if(isset($_POST['ADD_ADMIN']))
 {
-	$hashkey = (string)rand(100000000000, 99999999999999);
-	$session = $hashkey = (string)rand(100000000000, 99999999999999);
+	$session = $hashkey = sha1(uniqid());
 	$checksum = sha1(uniqid());
 	$password_crypt = sha1($checksum.$_POST['PASSWORD']);
 	$date = date("Y-m-d").'T'.date("H:i:s").'Z';
@@ -150,7 +172,6 @@ if(isset($_POST['ADD_ADMIN']))
 */
 $jntp->privilege = 'admin';
 $jntp->exec('["synchronizeNewsgroup"]');
-
 
 echo JNTP::getTpl(__DIR__."/tpl/install_valid.tpl",
 			array(

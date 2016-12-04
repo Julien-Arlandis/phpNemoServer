@@ -1,7 +1,7 @@
 <?php
 
 // Insère un nouvel utilisateur
-function insertUser($email, $password, $privilege = 1)
+function insertUser($email, $password)
 {
 	global $jntp;
 	$error = array();
@@ -19,24 +19,14 @@ function insertUser($email, $password, $privilege = 1)
 		$code = "400";
 	}
 
-	$total = $jntp->mongo->user->find(array('email' => strtolower($email)))->count();
-	$total = ($total > 0 ) ? $total : 0;
+	$isUserInDataBase = $jntp->mongo->user->find(array('email' => strtolower($email)))->count();
 
-	if ( $total > 0)
+	if ( $isUserInDataBase )
 	{
-		$obj = $jntp->mongo->user->findOne(array('email' => strtolower($email)));
-		if($obj{'check'} != '')
-		{
-			array_push($error, "Un nouveau mail d'activation a été envoyé");
-			$code = "200";
-		}
-		else
-		{
 			array_push($error, "Email déjà pris");
 			$code = "400";
-		}
 	}
-	if($code == "200")
+	else
 	{
 		$check = (string)rand(100000000000, 99999999999999);
 		$hashkey = sha1(rand(0, 9e16).uniqid());
@@ -51,60 +41,49 @@ function insertUser($email, $password, $privilege = 1)
 			array("new" => true, "upsert"=>true)
 		);
 		$userid = $res['seq'];
-		$user = array('UserID' => $userid, 'email' => $email, 'password' => $password_crypt, 'privilege' => $privilege, 'hashkey' => $hashkey, 'check' => $check, date => $date, 'checksum' => $checksum);
+		$user = array('UserID' => $userid, 'email' => $email, 'password' => $password_crypt, 'privilege' => 1, 'hashkey' => $hashkey, 'check' => $check, date => $date, 'checksum' => $checksum);
 
 		$jntp->mongo->user->save($user);
 	}
 	return(array("code" => $code, "info" => $error, "userid" => $userid, "check" => $check));
 }
 
-function mailInscription($email, $password, $userid, $check)
-{
-	global $jntp;
-	require_once(__DIR__.'/../../core/lib/class.phpmailer.php');
-	require_once(__DIR__.'/../../core/lib/class.smtp.php');
-
-	$body = JNTP::getTpl(__DIR__."/../tpl/mail_inscription.tpl",
-			array(
-				"domain" => $jntp->config{'domain'},
-				"organization" => $jntp->config{'organization'},
-				"email" => $email,
-				"password" => $password,
-				"url" => "http://".$jntp->config{'domain'}."/jntp/Applications/NemoNetwork/account.php?action=inscription&amp;userid=".$userid."&amp;check=".$check
-			     )
-	);
-	
-	$mail = new PHPMailer();
-	$mail->isSMTP();
-	$mail->Host = $jntp->config{'smtpHost'};
-	if($mail->SMTPAuth = $jntp->config{'smtpAuth'})
-	{
-		$mail->Username = $jntp->config{'smtpLogin'};
-		$mail->Password = $jntp->config{'smtpPassword'};
-	}
-	$mail->SMTPSecure = $jntp->config{'smtpSecure'};
-	$mail->Port = $jntp->config{'smtpPort'};
-	$mail->setFrom($jntp->config{'administrator'}, $jntp->config{'organization'});
-	$mail->AddAddress($email);
-	$mail->Subject = "Bienvenue sur ".$jntp->config{'organization'};
-	$mail->isHTML(true);
-	$mail->Body = $body;
-	$mail->CharSet = "UTF-8";
-	
-	if(!$mail->Send())
-	{
-		return array("code" =>"400", "info" => "L'email n'a pas pu être envoyé\n" );
-	}
-	return true;
-}
-
 if($jntp->config{'activeInscription'} || $jntp->privilege == 'admin')
 {
 	$res = insertUser($jntp->param{'email'}, $jntp->param{'password'});
-	if($res['code'] == "200" || $res['code'] == "300")
+	if($res['code'] == "200")
 	{
-		mailInscription($jntp->param{'email'}, $jntp->param{'password'}, $res['userid'], $res['check']);
-		$res['code'] = "200";
+		require_once(__DIR__.'/../../core/lib/class.phpmailer.php');
+		require_once(__DIR__.'/../../core/lib/class.smtp.php');
+
+		$mail = new PHPMailer();
+		$mail->isSMTP();
+		$mail->Host = $jntp->config{'smtpHost'};
+		if($mail->SMTPAuth = $jntp->config{'smtpAuth'})
+		{
+			$mail->Username = $jntp->config{'smtpLogin'};
+			$mail->Password = $jntp->config{'smtpPassword'};
+		}
+		$mail->SMTPSecure = $jntp->config{'smtpSecure'};
+		$mail->Port = $jntp->config{'smtpPort'};
+		$mail->setFrom( $jntp->config{'administrator'}, $jntp->config{'organization'} );
+		$mail->AddAddress( $jntp->param{'email'} );
+		$mail->Subject = "Bienvenue sur ".$jntp->config{'organization'};
+		$mail->isHTML( true );
+		$mail->CharSet = "UTF-8";
+		$mail->Body = JNTP::getTpl(__DIR__."/../tpl/mail_inscription.tpl",
+				array(
+					"domain" => $jntp->config{'domain'},
+					"organization" => $jntp->config{'organization'},
+					"email" => $jntp->param{'email'},
+					"password" => $jntp->param{'password'},
+					"url" => "http://".$jntp->config{'domain'}."/jntp/Applications/NemoNetwork/account.php?action=inscription&amp;userid=".$res['userid']."&amp;check=".$res['check']
+				     )
+		);
+		if(!$mail->Send())
+		{
+			array_push( $res['info'], "L'email n'a pas pu être envoyé" );
+		}
 	}
 	$jntp->reponse{'code'} = $res['code'];
 	$jntp->reponse{'info'} = $res['info'];
