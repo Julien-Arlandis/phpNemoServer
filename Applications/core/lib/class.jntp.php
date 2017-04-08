@@ -157,7 +157,6 @@ class JNTP
 
 	function createIndex()
 	{
-		$this->mongo->newsgroup->ensureIndex(array('name' => 1), array('unique' => true)); // spécifique à Article
 		$this->mongo->user->ensureIndex(array('email' => 1), array('unique' => true));
 		$this->mongo->user->ensureIndex(array('UserID' => 1), array('unique' => true));
 		$this->mongo->packet->ensureIndex(array('ID' => 1), array('unique' => true));
