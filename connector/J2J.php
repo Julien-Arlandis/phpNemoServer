@@ -40,8 +40,8 @@ function J2_($server, $jid, $dataid, $datatype)
 
 	$jntp->exec($post, $server);
 
-	$jntp->logFeed($post, $server, 'SEND');
-	$jntp->logFeed($jntp->reponse, $server, 'RESP');
+	$jntp->logFeed($post, $server, '(SEND)');
+	$jntp->logFeed($jntp->reponse, $server, '(RESP)');
 
 	if($jntp->reponse{'code'} == '200') 
 	{
@@ -53,8 +53,8 @@ function J2_($server, $jid, $dataid, $datatype)
 			$post[1]{'From'} = $jntp->config['domain'];
 			$jntp->exec($post, $server);
 
-			$jntp->logFeed($post, $server, 'SEND');
-			$jntp->logFeed($jntp->reponse, $server, 'RESP');
+			$jntp->logFeed($post, $server, '(SEND)');
+			$jntp->logFeed($jntp->reponse, $server, '(RESP)');
 		}
 	}
 }
