@@ -357,7 +357,7 @@ class JNTP
 			else
 			{
 				require_once(__DIR__.'/../../../connector/'.$this->config{'outFeeds'}{$server}{'type'}[1]);
-				J2J($server, $jid, $dataid, $datatype); //change J2J by J2_()
+				J2_($server, $jid, $dataid, $datatype);
 			}
 		}
 	}
@@ -401,7 +401,7 @@ class JNTP
 		if(count($tab) >= 5 && $tab[3] == "." ) {$json = $json[$tab[4]];}
 		if(count($tab) >= 5 && $tab[3] == ":" ) {$json = $json[$tab[4]-1];}
 
-		if($tab[2] == 'Media') // Spécifique à Article
+		if($tab[2] == 'Media') // à documenter dans la RFC de JNTP
 		{
 			$dataMedia = true;
 		}
