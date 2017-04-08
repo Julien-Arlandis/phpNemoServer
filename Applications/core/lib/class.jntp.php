@@ -33,8 +33,8 @@ class JNTP
 	var $datatype; // class DataType
 	var $mongo; // class MongoClient
 	var $session = false; // JNTP-Session
-	var $listCommand;
-	var $listDataType;
+	var $commandByApplication;
+	var $datatypeByApplication;
 	var $config;
 	var $maxDataLength;
 	var $stopSuperDiffuse = false;
@@ -61,7 +61,7 @@ class JNTP
 			$this->config{'Applications'}{$app} = json_decode(file_get_contents(__DIR__.'/../../'.$app.'/conf/conf.json'),true);
 			foreach( $this->config{'Applications'}{$app}{'commands'} as $command)
 			{
-				$this->command[$command] = $app;
+				$this->$commandByApplication[$command] = $app;
 			}
 		}
 	}
@@ -116,7 +116,7 @@ class JNTP
 			$this->reponse{'info'} = "Bad Syntax, type help command";
 			$this->send();
 		}
-		$application = $this->listCommand[$this->command];
+		$application = $this->commandsByApplication[$this->command];
 		if ($application)
 		{
 			function go($script)
