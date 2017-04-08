@@ -61,7 +61,7 @@ class JNTP
 			$this->config{'Applications'}{$app} = json_decode(file_get_contents(__DIR__.'/../../'.$app.'/conf/conf.json'),true);
 			foreach( $this->config{'Applications'}{$app}{'commands'} as $command)
 			{
-				$this->$commandByApplication[$command] = $app;
+				$this->commandByApplication[$command] = $app;
 			}
 		}
 	}
