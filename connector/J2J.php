@@ -40,8 +40,8 @@ function J2_($server, $jid, $dataid, $datatype)
 
 	$jntp->exec($post, $server);
 
-	$jntp->logFeed($post, $server, '>');
-	$jntp->logFeed($jntp->reponse, $server, '<');
+	$jntp->logFeed($post, $server, 'SEND');
+	$jntp->logFeed($jntp->reponse, $server, 'RESP');
 
 	if($jntp->reponse{'code'} == '200') 
 	{
