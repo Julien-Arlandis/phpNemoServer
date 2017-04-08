@@ -1,4 +1,9 @@
 {
   "description": "JNTP Server core",
-  "commands": ["diffuse","get","auth","whoami","quit"]
+  "commands": ["diffuse","get","auth","whoami","quit"],
+  "DataType": {
+		"ProtoData": {
+			"filter": ["Jid", "ID", "Data.DataType", "Data.DataID", "Data.InjectionDate", "Data.Protocol"]
+		}
+	}
 }
