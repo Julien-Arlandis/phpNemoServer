@@ -1,0 +1,8 @@
+{
+  "description": "Administration of Nemo network",
+  "commands": [
+    "ban",
+    "synchronizeNewsgroup",
+    "reloadIndex"
+  ]
+ }
