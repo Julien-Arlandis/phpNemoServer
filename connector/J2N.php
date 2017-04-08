@@ -28,25 +28,25 @@ function J2_($server, $jid, $dataid, $datatype)
 	fgets($fp, 128);
 	if (!$fp && $argv[0]) 
 	{
-		$jntp->logFeed('can not connect', $server, '>');
+		$jntp->logFeed('can not connect', $server, '(SEND)');
 		die ($errstr." ".$errno."\n"); 
 	}
 
 	$put = "CHECK <".$dataid.">\n";
 	fputs($fp, $put);
-	$jntp->logFeed($put, $server, '>');
+	$jntp->logFeed($put, $server, '(SEND)');
 	$reponse = fgets($fp);
-	$jntp->logFeed($reponse, $server, '<');
+	$jntp->logFeed($reponse, $server, '(RESP)');
 	$reponses = preg_split("/[\s]+/", $reponse);
 	if ($reponses[0] == "238")
 	{
 		$packet = $jntp->getPacket( array('Data.DataType'=>'Article', 'Data.DataID'=>$dataid) );
 		$put = "TAKETHIS <".$packet{'Data'}{'DataID'}.">\n".NNTP::articleJ2N($packet)."\r\n.\r\n";
 		fputs($fp, $put);
-		$jntp->logFeed($put, $server, '>');
+		$jntp->logFeed($put, $server, '(SEND)');
 		$reponse = fgets($fp);
 		$reponses = preg_split("/[\s]+/", $reponse);
-		$jntp->logFeed($reponse, $server, '<');
+		$jntp->logFeed($reponse, $server, '(RESP)');
 	}
 	fclose($fp);
 }
