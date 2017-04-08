@@ -12,7 +12,7 @@
 	"maxCrosspostWithoutFU2": 3,
 	"DataType": {
 		"Article": {
-			"filter": ["Data.Newsgroups", "Data.UserAgent", "Data.FromName", "Data.FromMail", "Data.Subject", "Data.ThreadID", "Data.UserID", "Data.ReferenceUserID", "Data.Control"]
+			"filter": ["Meta.Hierarchy", "Data.Newsgroups", "Data.UserAgent", "Data.FromName", "Data.FromMail", "Data.Subject", "Data.ThreadID", "Data.UserID", "Data.ReferenceUserID", "Data.Control"]
 		},
 		"ListGroup": {
 			"filter": ["Data.Newsgroups", "Data.Hierarchy"]
