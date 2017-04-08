@@ -124,7 +124,7 @@ class JNTP
 				global $jntp;
 				require($script);
 			}
-			go(__DIR__.'/../Applications/'.$application.'/command/'.$this->command.'.php');
+			go(__DIR__.'/../../'.$application.'/command/'.$this->command.'.php');
 		}
 		else
 		{
