@@ -20,15 +20,10 @@ if($jntp->privilege == 'admin')
 
 				if ( $jntp->datatype->beforeInsertion() )
 				{
-					// Insère le packet dans la base de données.
-					if($jntp->insertPacket())
-					{
-						$jntp->datatype->afterInsertion($jntp->packet{'ID'});
-					}
+					$jntp->insertPacket();
+					array_push($body, $cfg->hierarchy[$i]);
+					break;
 				}
-				$jntp->insertPacket();
-				array_push($body, $cfg->hierarchy[$i]);
-				break;
 			}
 		}
 	}
