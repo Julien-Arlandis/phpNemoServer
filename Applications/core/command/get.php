@@ -62,7 +62,7 @@ if( $jntp->param{'filter'})
 		$key = explode(":", $key);
 		$ind = (isset($key[1]) && is_numeric($key[1])) ? $key[1] : 0;
 		$key = $key[0];
-		if( $key != 'ID' & $key != 'Jid' && !in_array($key, $jntp->config['Applications'][$application]['DataType'][$jntp->param{'filter'}{'Data.DataType'}]['filter'] ) )
+		if( $key != 'ID' && $key != 'Jid' && !in_array($key, $jntp->config['Applications'][$application]['DataType'][$jntp->param{'filter'}{'Data.DataType'}]['filter'] ) )
 		{
 			$jntp->reponse{'code'} = "400";
 			$jntp->reponse{'info'} = "Filter [".$key."] not allowed";
