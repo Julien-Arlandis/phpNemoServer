@@ -63,7 +63,7 @@ class JNTP
 			{
 				$this->commandByApplication[$command] = $app;
 			}
-			foreach( $this->config{'Applications'}{$app}{'DataType'} as $command)
+			foreach( $this->config{'Applications'}{$app}{'DataType'} as $datatype)
 			{
 				$this->datatypeByApplication[$datatype] = $app;
 			}
