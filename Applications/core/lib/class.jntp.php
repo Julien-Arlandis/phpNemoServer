@@ -65,7 +65,7 @@ class JNTP
 			}
 			foreach( $this->config{'Applications'}{$app}{'DataType'} as $datatype => $value)
 			{
-				echo $value;
+				print_r($value);
 				//$this->datatypeByApplication[$datatype] = $app;
 			}
 		}
