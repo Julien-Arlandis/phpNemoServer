@@ -54,7 +54,6 @@ class JNTP
 	
 	function getConfig()
 	{
-		echo '*';
 		$this->config = json_decode(file_get_contents(__DIR__.'/../../../conf/config.json'),true);
 		$dir = array_diff(scandir( __DIR__.'/../../../Applications/' ), array('..', '.'));
 		foreach ($dir as $app)
@@ -64,9 +63,10 @@ class JNTP
 			{
 				$this->commandByApplication[$command] = $app;
 			}
-			foreach( $this->config{'Applications'}{$app}{'DataType'} as $datatype)
+			foreach( $this->config{'Applications'}{$app}{'DataType'} as $datatype => $value)
 			{
-				$this->datatypeByApplication[$datatype] = $app;
+				echo 'ppp';
+				//$this->datatypeByApplication[$datatype] = $app;
 			}
 		}
 	}
