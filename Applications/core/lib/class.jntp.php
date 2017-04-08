@@ -177,21 +177,12 @@ class JNTP
 
 	function loadDataType()
 	{
-		$isdatatype = false;
 		$datatype = $this->packet{'Data'}{'DataType'};
-		if ($this->config{'DataType'})
-		{
-			$datatype = $this->packet{'Data'}{'DataType'};
-			$isdatatype = true;
-		}
-		else
-		{
-			$datatype = 'ProtoData';
-		}
+		$datatype = ($this->config{'DataType'}) ? $this->packet{'Data'}{'DataType'} : 'ProtoData' ;
 		$application = $this->datatypeByApplication[$datatype];
 		require_once(__DIR__.'/../../'.$application.'/DataType/'.$datatype.'/'.$datatype.'.php');
 		$this->datatype = new DataType();
-		return $isdatatype;
+		return $datatype;
 	}
 
 	function startSession($session, $userid, $privilege)
