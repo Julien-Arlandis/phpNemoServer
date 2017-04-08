@@ -16,6 +16,7 @@ if($jntp->privilege == 'admin')
 			
 			if(is_array($jntp->packet))
 			{
+				echo 'pppppp';
 				$jntp->loadDataType();
 
 				if ( $jntp->datatype->beforeInsertion() )
