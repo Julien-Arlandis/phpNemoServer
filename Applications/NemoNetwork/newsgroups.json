@@ -1,0 +1,33 @@
+{
+	"rules":{
+		"nemo.test": {
+			"rulesIfNotConnected": {
+			    "w": "1"
+			}
+		},
+		"nemo.bavardages": {
+			"rulesIfNotConnected": {
+			    "w": "1"
+			}
+		},
+		"fr.test": {
+			"rulesIfNotConnected": {
+			    "w": "1"
+			}
+		}
+	},
+	"categories": {
+		"Groupes Nemo": {"sort":1,"Hierarchies":["nemo.*"]},
+		"Usenet francophone": {"sort":2,"Hierarchies":["fr.*"]},
+		"Big8": {"sort":3,"Hierarchies":["comp.*","humanities.*","misc.*","news.*","rec.*","sci.*","soc.*","talk.*"]}
+	},
+	"localNewsgroups": [
+		{
+			"name": "nemo.local",	
+			"description": "Groupe local de test",
+			"rules": { "w": "1" }
+		}
+	],
+	"hierarchy": ["fr.*","nemo.*","big8"]
+}
+
