@@ -47,7 +47,7 @@ class DataType
 	function isValidData()
 	{
 		global $jntp;
-		if(count($jntp->packet{'Data'}{'FollowupTo'}) <= $jntp->config{'application'}{'NemoNetwork'}{'maxFU2'})
+		if(count($jntp->packet{'Data'}{'FollowupTo'}) <= $jntp->config{'Applications'}{'NemoNetwork'}{'maxFU2'})
 		{
 			foreach($jntp->packet{'Data'}{'FollowupTo'} as $groupe)
 			{
@@ -67,17 +67,17 @@ class DataType
 		}
 		else
 		{
-			$jntp->reponse{'info'} = $jntp->config{'application'}{'NemoNetwork'}{'maxFU2'}." redirections autorisées au maximum";
+			$jntp->reponse{'info'} = $jntp->config{'Applications'}{'NemoNetwork'}{'maxFU2'}." redirections autorisées au maximum";
 			return false;
 		}
-		if(count($jntp->packet{'Data'}{'FollowupTo'}) == 0 && count($jntp->packet{'Data'}{'Newsgroups'}) > $jntp->config{'application'}{'NemoNetwork'}{'maxCrosspostWithoutFU2'})
+		if(count($jntp->packet{'Data'}{'FollowupTo'}) == 0 && count($jntp->packet{'Data'}{'Newsgroups'}) > $jntp->config{'Applications'}{'NemoNetwork'}{'maxCrosspostWithoutFU2'})
 		{
 			$jntp->reponse{'info'} = "Redirection requise";
 			return false;
 		}
-		if (count($jntp->packet{'Data'}{'Newsgroups'}) > $jntp->config{'application'}{'NemoNetwork'}{'maxCrosspost'})
+		if (count($jntp->packet{'Data'}{'Newsgroups'}) > $jntp->config{'Applications'}{'NemoNetwork'}{'maxCrosspost'})
 		{
-			$jntp->reponse{'info'} = $jntp->config{'application'}{'NemoNetwork'}{'maxCrosspost'}." newsgroups maximum";
+			$jntp->reponse{'info'} = $jntp->config{'Applications'}{'NemoNetwork'}{'maxCrosspost'}." newsgroups maximum";
 			return false;
 		}
 
