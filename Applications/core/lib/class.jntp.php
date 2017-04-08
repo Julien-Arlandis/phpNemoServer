@@ -116,7 +116,7 @@ class JNTP
 			$this->reponse{'info'} = "Bad Syntax, type help command";
 			$this->send();
 		}
-		$application = $this->commandsByApplication[$this->command];
+		$application = $this->commandByApplication[$this->command];
 		if ($application)
 		{
 			function go($script)
