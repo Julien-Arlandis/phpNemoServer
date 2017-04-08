@@ -1,42 +1,42 @@
 {
-		"news2.nemoweb.net": {
-			"actif": 1,
-			"type": [
-				"JNTP",
-				"J2J.php"
+	"news2.nemoweb.net": {
+		"actif": 1,
+		"type": [
+			"JNTP",
+			"J2J.php"
+		],
+		"match": [{
+			"Data.DataType": [
+				"Article"
 			],
-			"match": [{
-				"Data.DataType": [
-					"Article"
-				],
-				"Data.Newsgroups": [
-					"*"
-				]
-			}, {
-				"Data.DataType": [
-					"*"
-				]
-			}],
-			"mail": "newsmaster@exemple2.net"
-		},
-		"nntpserver.net": {
-			"actif": 0,
-			"type": [
-				"NNTP",
-				"J2N.php"
+			"Data.Newsgroups": [
+				"*"
+			]
+		}, {
+			"Data.DataType": [
+				"*"
+			]
+		}],
+		"mail": "newsmaster@exemple2.net"
+	},
+	"nntpserver.net": {
+		"actif": 0,
+		"type": [
+			"NNTP",
+			"J2N.php"
+		],
+		"match": [{
+			"Data.DataType": [
+				"Article"
 			],
-			"match": [{
-				"Data.DataType": [
-					"Article"
-				],
-				"Data.Newsgroups": [
-					"*"
-				]
-			}, {
-				"Data.DataType": [
-					"*"
-				]
-			}],
-			"mail": "newsmaster@nntpserver.net"
-		}
+			"Data.Newsgroups": [
+				"*"
+			]
+		}, {
+			"Data.DataType": [
+				"*"
+			]
+		}],
+		"mail": "newsmaster@nntpserver.net"
 	}
+}
