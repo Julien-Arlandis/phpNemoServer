@@ -47,7 +47,7 @@ elseif($jntp->param{'select'})
 
 if( $jntp->param{'filter'})
 {
-	if( !$jntp->param{'filter'}{'Data.DataType'} || !in_array($jntp->param{'filter'}{'Data.DataType'}, $jntp->datatypeByApplication)
+	if( !$jntp->param{'filter'}{'Data.DataType'} || !in_array($jntp->param{'filter'}{'Data.DataType'}, $jntp->datatypeByApplication) )
 	{
 		$jntp->reponse{'code'} = "500";
 		$jntp->reponse{'info'} = "DataType not found";
