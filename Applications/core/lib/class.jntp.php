@@ -544,6 +544,7 @@ class JNTP
 		foreach ($dir as $value) {
 		    $conf{'Applications'}{$value} = json_decode(file_get_contents(__DIR__.'/../../../Applications/'.$value.'/conf/conf.json'),true);
 		}
+		return $conf;
 	}
 	
 	static function getTpl($tpl, $assign)
