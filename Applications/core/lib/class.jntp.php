@@ -49,7 +49,7 @@ class JNTP
 		$this->mongo = $m->selectDB($this->config{'dbName'});
 		$this->config{'serverVersion'} = SERVER_VERSION;
 		$this->maxDataLength = $this->config['maxDataLength'];
-		if( $withWSession ) $this->setSession();
+		if( $withSession ) $this->setSession();
 	}
 	
 	function getConfig()
