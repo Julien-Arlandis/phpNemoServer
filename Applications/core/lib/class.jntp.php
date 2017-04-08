@@ -55,6 +55,7 @@ class JNTP
 	function getConfig()
 	{
 		$this->config = json_decode(file_get_contents(__DIR__.'/../../../conf/config.json'),true);
+		$this->config{'outFeeds'} = json_decode(file_get_contents(__DIR__.'/../../../conf/feeds.json'),true);
 		$dir = array_diff(scandir( __DIR__.'/../../../Applications/' ), array('..', '.'));
 		foreach ($dir as $app)
 		{
