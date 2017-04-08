@@ -162,13 +162,16 @@ class JNTP
 		$this->mongo->packet->ensureIndex(array('ID' => 1), array('unique' => true));
 		$this->mongo->packet->ensureIndex(array('Jid' => 1), array('unique' => true));
 
-		foreach($this->config['DataType'] as $datatype => $content)
+		foreach( $this->config{'Applications'} as $app => $val)
 		{
-			foreach($content['filter'] as $key)
+			foreach($val as $datatype => $content)
 			{
-				if($key != 'ID' && $key != 'Jid')
+				foreach($content['filter'] as $key)
 				{
-					$this->mongo->packet->ensureIndex(array($key => 1, 'ID' => 1));
+					if($key != 'ID' && $key != 'Jid')
+					{
+						$this->mongo->packet->ensureIndex(array($key => 1, 'ID' => 1));
+					}
 				}
 			}
 		}
@@ -177,11 +180,13 @@ class JNTP
 	function loadDataType()
 	{
 		$datatype = $this->packet{'Data'}{'DataType'};
-		$datatype = ($this->config{'DataType'}) ? $this->packet{'Data'}{'DataType'} : 'ProtoData' ;
-		$application = $this->datatypeByApplication[$datatype];
-		require_once(__DIR__.'/../../'.$application.'/DataType/'.$datatype.'/'.$datatype.'.php');
-		$this->datatype = new DataType();
-		return $datatype;
+		if( $application = $this->datatypeByApplication[$datatype] )
+		{
+			require_once(__DIR__.'/../../'.$application.'/DataType/'.$datatype.'/'.$datatype.'.php');
+			$this->datatype = new DataType();
+			return true;
+		}
+		return false;
 	}
 
 	function startSession($session, $userid, $privilege)
