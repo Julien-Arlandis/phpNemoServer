@@ -10,26 +10,25 @@ if($jntp->privilege == 'admin')
 	{
 		for($j=0; $j<count($jntp->config{'publicServer'}); $j++)
 		{
-			// Mettre à jour la requête : Penser à remplacer les / par des ., total => limit
 			$query = '["get", {"filter":{"Data.DataType":"ListGroup","Data.Hierarchy":"'.$cfg->hierarchy[$i].'"},"limit":1 } ]';
 			$jntp->exec($query, $jntp->config{'publicServer'}[$j]);
 			$jntp->packet = $jntp->reponse{'body'}[0];
 			
 			if(is_array($jntp->packet))
 			{
-  			$jntp->loadDataType();
-  
-  			if ( $jntp->datatype->beforeInsertion() )
-  			{
-  				// Insère le packet dans la base de données.
-  				if($jntp->insertPacket())
-  				{
-  					$jntp->datatype->afterInsertion($jntp->packet{'ID'});
-  				}
-  			}
-  			$jntp->insertPacket();
-			  array_push($body, $cfg->hierarchy[$i]);
-			  break;
+				$jntp->loadDataType();
+
+				if ( $jntp->datatype->beforeInsertion() )
+				{
+					// Insère le packet dans la base de données.
+					if($jntp->insertPacket())
+					{
+						$jntp->datatype->afterInsertion($jntp->packet{'ID'});
+					}
+				}
+				$jntp->insertPacket();
+				array_push($body, $cfg->hierarchy[$i]);
+				break;
 			}
 		}
 	}
