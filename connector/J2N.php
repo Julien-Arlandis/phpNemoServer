@@ -21,7 +21,7 @@ This file is part of PhpNemoServer.
     along with PhpNemoServer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-function J2N($server, $jid, $dataid, $datatype)
+function J2_($server, $jid, $dataid, $datatype)
 {
 	$jntp = new JNTP();
 	$fp = fsockopen($server, 119, $errno, $errstr, 10);
@@ -55,5 +55,5 @@ if(count($argv)>1)
 {
 	require_once(__DIR__."/../Applications/core/lib/class.jntp.php");
 	require_once(__DIR__."/../Applications/NemoNetwork/lib/class.nntp.php");
-	J2N($argv[1], $argv[2], $argv[3], $argv[4]);
+	J2_($argv[1], $argv[2], $argv[3], $argv[4]);
 }
