@@ -54,7 +54,8 @@ elseif($jntp->param{'select'})
 			else // cas N-i,N
 			{
 				$ind0 = explode("-", $ind0);
-				$projection[$field] = array('$slice'=> -$ind0 );
+				$ind0 = (int) $ind0[1];
+				$projection[$field] = array('$slice' => -$ind0 );
 			}
 		}
 		else
