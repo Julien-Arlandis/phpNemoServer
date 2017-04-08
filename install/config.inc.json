@@ -45,13 +45,13 @@
 			"filter": ["Jid", "ID", "Data.DataType", "Data.DataID", "Data.InjectionDate", "Data.Protocol"]
 		},
 		"Article": {
-			"filter": ["Jid", "ID", "Data.Newsgroups", "Data.UserAgent", "Data.FromName", "Data.FromMail", "Data.Subject", "Data.ThreadID", "Data.UserID", "Data.ReferenceUserID", "Data.Control"]
+			"filter": ["Data.Newsgroups", "Data.UserAgent", "Data.FromName", "Data.FromMail", "Data.Subject", "Data.ThreadID", "Data.UserID", "Data.ReferenceUserID", "Data.Control"]
 		},
 		"ListGroup": {
-			"filter": ["Jid", "ID", "Data.Newsgroups", "Data.Hierarchy"]
+			"filter": ["Data.Newsgroups", "Data.Hierarchy"]
 		},
 		"Like": {
-			"filter": ["Jid", "ID", "Data.Newsgroups", "Data.JidLike"]
+			"filter": ["Data.Newsgroups", "Data.JidLike"]
 		}
 	},
 	"outFeeds": {
