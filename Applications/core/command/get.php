@@ -33,8 +33,8 @@ elseif($jntp->param{'select'})
 	{
 		$projection['ID'] = 1;
 		$projection['Jid'] = 1;
-
-		if($field == '@2References') // Spécifique à Article
+		
+		if($field == '@2References') // Spécifique à Article, à remplacer par Data.References:N-2,N:
 		{
 			$projection['Data.References'] = array('$slice'=>-2);
 		}
