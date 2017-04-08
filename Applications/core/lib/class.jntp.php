@@ -44,19 +44,26 @@ class JNTP
 	function __construct()
 	{
 		date_default_timezone_set('UTC');
+		$this->getConfig();
 		$m = new MongoClient();
-		$this->config = JNTP::getConfig();
 		$this->mongo = $m->selectDB($this->config{'dbName'});
 		$this->config{'serverVersion'} = SERVER_VERSION;
 		$this->maxDataLength = $this->config['maxDataLength'];
-		foreach($this->config['application'] as $application => $content)
+		$this->setSession();
+	}
+	
+	function getConfig()
+	{
+		$this->config = json_decode(file_get_contents(__DIR__.'/../../../conf/config.json'),true);
+		$dir = array_diff(scandir( __DIR__.'/../../../Applications/' ), array('..', '.'));
+		foreach ($dir as $application)
 		{
-			foreach($content['commands'] as $command)
+			$this->config{'Applications'}{$application} = json_decode(file_get_contents(__DIR__.'/../../../Applications/'.$value.'/conf/conf.json'),true);
+			foreach( $this->config{'Applications'}{$application}{'commands'} as $command)
 			{
 				$this->listCommand[$command] = $application;
 			}
 		}
-		$this->setSession();
 	}
 	
 	// Execute une commande JNTP sur le présent serveur ou sur un serveur distant
@@ -535,16 +542,6 @@ class JNTP
 		$iv = pack('H*', substr($key_iv, 65));
 		$str = base64_decode($str);
 		return substr(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $iv.$str, MCRYPT_MODE_CFB, $iv), 16);
-	}
-	
-	static function getConfig()
-	{
-		$conf = json_decode(file_get_contents(__DIR__.'/../../../conf/config.json'),true);
-		$dir = array_diff(scandir( __DIR__.'/../../../Applications/' ), array('..', '.'));
-		foreach ($dir as $value) {
-		    $conf{'Applications'}{$value} = json_decode(file_get_contents(__DIR__.'/../../../Applications/'.$value.'/conf/conf.json'),true);
-		}
-		return $conf;
 	}
 	
 	static function getTpl($tpl, $assign)
