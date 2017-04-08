@@ -41,7 +41,7 @@ class JNTP
 	var $publicKeyForModeration = false;
 
 	// Constructeur
-	function __construct()
+	function __construct($withSession = true)
 	{
 		date_default_timezone_set('UTC');
 		$this->getConfig();
@@ -49,7 +49,7 @@ class JNTP
 		$this->mongo = $m->selectDB($this->config{'dbName'});
 		$this->config{'serverVersion'} = SERVER_VERSION;
 		$this->maxDataLength = $this->config['maxDataLength'];
-		$this->setSession();
+		if( $withWSession ) $this->setSession();
 	}
 	
 	function getConfig()
