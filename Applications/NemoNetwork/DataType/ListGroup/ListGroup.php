@@ -39,8 +39,6 @@ class DataType
 	function beforeInsertion()
 	{
 		global $jntp;
-
-		echo 'kkkkkk';
 		
 		$cfg = json_decode(file_get_contents(__DIR__.'/../../conf/newsgroups.json'), true);
 		
@@ -48,6 +46,7 @@ class DataType
 		{
 			$value = new MongoRegex("/^".preg_quote(substr($jntp->packet{'Data'}{'Hierarchy'},0,-1))."/");
 			$jntp->mongo->newsgroup->remove(array("name"=>$value));
+			$jntp->mongo->newsgroup->ensureIndex(array('name' => 1), array('unique' => true)); // à vérifier
 			foreach($jntp->packet{'Data'}{'ListGroup'} as $cle => $obj)
 			{
 				if(isset($cfg['rules'][$obj['name']]))
