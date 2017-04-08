@@ -1,0 +1,13 @@
+{
+	"description": "Manage a server of newsgroups for Nemo network",
+	"commands": [
+		"getNewsgroup",
+		"set",
+		"inscription",
+		"help",
+		"changePassword"
+	],
+	"maxCrosspost": 5,
+	"maxFU2": 5,
+	"maxCrosspostWithoutFU2": 3
+}
