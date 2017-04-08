@@ -53,8 +53,8 @@ function J2_($server, $jid, $dataid, $datatype)
 			$post[1]{'From'} = $jntp->config['domain'];
 			$jntp->exec($post, $server);
 
-			$jntp->logFeed($post, $server, '>');
-			$jntp->logFeed($jntp->reponse, $server, '<');
+			$jntp->logFeed($post, $server, 'SEND');
+			$jntp->logFeed($jntp->reponse, $server, 'RESP');
 		}
 	}
 }
