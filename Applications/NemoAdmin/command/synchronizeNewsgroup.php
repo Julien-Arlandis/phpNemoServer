@@ -1,5 +1,5 @@
 <?php
-$cfg = json_decode(file_get_contents(__DIR__.'/../../../conf/newsgroups.json'));
+$cfg = json_decode(file_get_contents(__DIR__.'/../conf/newsgroups.json'));
 
 if($jntp->privilege == 'admin')
 {
