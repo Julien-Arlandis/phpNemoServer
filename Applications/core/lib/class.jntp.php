@@ -210,11 +210,10 @@ class JNTP
 	// Initialise la session
 	function setSession()
 	{
-		
 		$session = $_COOKIE["JNTP-Session"];
 		
 		// Permit local connection
-		if(!isset($_SERVER['HTTP_REFERER']) || $jntp->config['crossDomainAccept'])
+		if(!isset($_SERVER['HTTP_REFERER']) || $this->config['crossDomainAccept'])
 		{
 			header("Access-Control-Allow-Headers: JNTP-Session");
 			header("Access-Control-Allow-Origin: *");
@@ -349,9 +348,9 @@ class JNTP
 			$jid = str_replace("'","\'",$this->packet{'Jid'});
 			$datatype = str_replace("'","\'",$this->packet{'Data'}{'DataType'});
 			$dataid = str_replace("'","\'",$this->packet{'Data'}{'DataID'});
-			if($jntp->config{'shellExec'})
+			if($this->config{'shellExec'})
 			{
-				$cmd = $jntp->config{'phpPath'}.' '.__DIR__.'/../../../connector/'.$this->config{'outFeeds'}{$server}{'type'}[1].' '.$server." '$jid' '$dataid' '$datatype'";
+				$cmd = $this->config{'phpPath'}.' '.__DIR__.'/../../../connector/'.$this->config{'outFeeds'}{$server}{'type'}[1].' '.$server." '$jid' '$dataid' '$datatype'";
 				shell_exec($cmd. ' >> /dev/null &');
 			}
 			else
@@ -453,23 +452,23 @@ class JNTP
 	}
 	
 	
-	static function logFeed($post, $server, $direct = '<')
+	function logFeed($post, $server, $direct = '<')
 	{
-		if($jntp->config{'activeLog'})
+		if($this->config{'activeLog'})
 		{
 			$post = is_array($post) ? json_encode($post) : $post;
-			$handle = fopen($jntp->config{'logFeedPath'}, 'a');
+			$handle = fopen($this->config{'logFeedPath'}, 'a');
 			$put = '['.date(DATE_RFC822).'] ['.$server.'] '.$direct.' '.rtrim(mb_strimwidth($post, 0, 300))."\n";
 			fwrite($handle, $put);
 			fclose($handle);
 		}
 	}
 
-	static function log($post, $direct = '<')
+	function log($post, $direct = '<')
 	{
-		if($jntp->config{'activeLog'} && $post != '')
+		if($this->config{'activeLog'} && $post != '')
 		{
-			$handle = fopen($jntp->config{'logPath'}, 'a');
+			$handle = fopen($this->config{'logPath'}, 'a');
 			$put = '['.date(DATE_RFC822).'] ['.$_SERVER['REMOTE_ADDR'].'] '.$direct.' '.mb_strimwidth($post, 0, 300)."\n";
 			fwrite($handle, $put);
 			fclose($handle);
