@@ -22,19 +22,5 @@
 	"phpPath": "/usr/bin/php",
 	"shellExec": true,
 	"publicKey": "",
-	"privateKey": "",
-	"DataType": {
-		"ProtoData": {
-			"filter": ["Jid", "ID", "Data.DataType", "Data.DataID", "Data.InjectionDate", "Data.Protocol"]
-		},
-		"Article": {
-			"filter": ["Data.Newsgroups", "Data.UserAgent", "Data.FromName", "Data.FromMail", "Data.Subject", "Data.ThreadID", "Data.UserID", "Data.ReferenceUserID", "Data.Control"]
-		},
-		"ListGroup": {
-			"filter": ["Data.Newsgroups", "Data.Hierarchy"]
-		},
-		"Like": {
-			"filter": ["Data.Newsgroups", "Data.JidLike"]
-		}
-	}
+	"privateKey": ""
 }
