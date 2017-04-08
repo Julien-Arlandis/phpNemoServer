@@ -42,6 +42,8 @@ class DataType
 
 		$cfg = json_decode(file_get_contents(__DIR__.'/../../conf/newsgroups.json'), true);
 
+		print_r($cfg);
+		
 		if( $jntp->packet{'Data'}{'DataType'} == 'ListGroup' && $jntp->packet{'Data'}{'ListGroup'} )
 		{
 			$value = new MongoRegex("/^".preg_quote(substr($jntp->packet{'Data'}{'Hierarchy'},0,-1))."/");
