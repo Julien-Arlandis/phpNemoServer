@@ -9,5 +9,16 @@
 	],
 	"maxCrosspost": 5,
 	"maxFU2": 5,
-	"maxCrosspostWithoutFU2": 3
+	"maxCrosspostWithoutFU2": 3,
+	"DataType": {
+		"Article": {
+			"filter": ["Data.Newsgroups", "Data.UserAgent", "Data.FromName", "Data.FromMail", "Data.Subject", "Data.ThreadID", "Data.UserID", "Data.ReferenceUserID", "Data.Control"]
+		},
+		"ListGroup": {
+			"filter": ["Data.Newsgroups", "Data.Hierarchy"]
+		},
+		"Like": {
+			"filter": ["Data.Newsgroups", "Data.JidLike"]
+		}
+	}
 }
