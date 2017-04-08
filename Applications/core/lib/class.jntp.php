@@ -56,12 +56,12 @@ class JNTP
 	{
 		$this->config = json_decode(file_get_contents(__DIR__.'/../../../conf/config.json'),true);
 		$dir = array_diff(scandir( __DIR__.'/../../../Applications/' ), array('..', '.'));
-		foreach ($dir as $application)
+		foreach ($dir as $app)
 		{
-			$this->config{'Applications'}{$application} = json_decode(file_get_contents(__DIR__.'/../../../Applications/'.$value.'/conf/conf.json'),true);
-			foreach( $this->config{'Applications'}{$application}{'commands'} as $command)
+			$this->config{'Applications'}{$app} = json_decode(file_get_contents(__DIR__.'/../../'.$app.'/conf/conf.json'),true);
+			foreach( $this->config{'Applications'}{$app}{'commands'} as $command)
 			{
-				$this->command[$command] = $application;
+				$this->command[$command] = $app;
 			}
 		}
 	}
