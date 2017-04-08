@@ -1,0 +1,4 @@
+{
+  "description": "JNTP Server core",
+  "commands": ["diffuse","get","auth","whoami","quit"]
+}
