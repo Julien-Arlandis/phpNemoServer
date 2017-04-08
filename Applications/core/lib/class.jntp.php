@@ -61,7 +61,7 @@ class JNTP
 			$this->config{'Applications'}{$application} = json_decode(file_get_contents(__DIR__.'/../../../Applications/'.$value.'/conf/conf.json'),true);
 			foreach( $this->config{'Applications'}{$application}{'commands'} as $command)
 			{
-				$this->listCommand[$command] = $application;
+				$this->command[$command] = $application;
 			}
 		}
 	}
@@ -124,7 +124,7 @@ class JNTP
 				global $jntp;
 				require($script);
 			}
-			go(__DIR__.'/../../'.$application.'/command/'.$this->command.'.php');
+			go(__DIR__.'/../Applications/'.$application.'/command/'.$this->command.'.php');
 		}
 		else
 		{
