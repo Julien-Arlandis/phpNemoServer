@@ -23,7 +23,7 @@ This file is part of PhpNemoServer.
 
 function J2_($server, $jid, $dataid, $datatype)
 {
-	$jntp = new JNTP();
+	$jntp = new JNTP(false);
 	$fp = fsockopen($server, 119, $errno, $errstr, 10);
 	fgets($fp, 128);
 	if (!$fp && $argv[0]) 
