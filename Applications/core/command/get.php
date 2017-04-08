@@ -34,9 +34,28 @@ elseif($jntp->param{'select'})
 		$projection['ID'] = 1;
 		$projection['Jid'] = 1;
 		
-		if($field == '@2References') // Spécifique à Article, à remplacer par Data.References:N-2,N:
+		/* 
+		Syntaxe pour extraire un tableau :
+		Data.References:3,5 => renvoie les cellules 3, 4 et 5 => $slice: [ 3, 5 ]
+		Data.References:2,N => renvoie les cellules 2 à N
+		Data.References:2,N-5 => renvoie les cellules de 2 à N-5
+		Data.References:N-2,N => renvoie les cellules de N-2 à N => $slice:-2
+		*/
+		
+		$inds = explode(":", $field);
+		$inds = (isset($inds[1])) ? $inds[1] : 0;
+		if($inds)
 		{
-			$projection['Data.References'] = array('$slice'=>-2);
+			$inds = explode(",", $inds);
+			if ( is_numeric($inds[0]) && is_numeric($inds[1]) ) // cas i,j
+			{
+				$projection[$field] = array('$slice'=> array($inds[0], $inds[1]) );
+			}
+			else // cas N-i,N
+			{
+				$ind0 = explode("-", $ind0);
+				$projection[$field] = array('$slice'=> -$ind0 );
+			}
 		}
 		else
 		{
