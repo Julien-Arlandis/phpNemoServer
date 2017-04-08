@@ -4,5 +4,6 @@
     "ban",
     "synchronizeNewsgroup",
     "reloadIndex"
-  ]
+  ],
+  "DataType": {}
  }
