@@ -63,6 +63,10 @@ class JNTP
 			{
 				$this->commandByApplication[$command] = $app;
 			}
+			foreach( $this->config{'Applications'}{$app}{'DataType'} as $command)
+			{
+				$this->datatypeByApplication[$datatype] = $app;
+			}
 		}
 	}
 	
@@ -183,7 +187,8 @@ class JNTP
 		{
 			$datatype = 'ProtoData';
 		}
-		require_once(__DIR__.'/../../../DataType/'.$datatype.'/'.$datatype.'.php');
+		$application = $this->datatypeByApplication[$datatype];
+		require_once(__DIR__.'/../../'.$application.'/DataType/'.$datatype.'/'.$datatype.'.php');
 		$this->datatype = new DataType();
 		return $isdatatype;
 	}
