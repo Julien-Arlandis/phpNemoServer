@@ -47,7 +47,7 @@ elseif($jntp->param{'select'})
 
 if( $jntp->param{'filter'})
 {
-	$aplication = jntp->datatypeByApplication[ $jntp->param{'filter'}{'Data.DataType'} ];
+	$application = jntp->datatypeByApplication[ $jntp->param{'filter'}{'Data.DataType'} ];
 	if( !$application )
 	{
 		$jntp->reponse{'code'} = "500";
