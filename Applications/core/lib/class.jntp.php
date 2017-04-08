@@ -54,6 +54,7 @@ class JNTP
 	
 	function getConfig()
 	{
+		echo '*';
 		$this->config = json_decode(file_get_contents(__DIR__.'/../../../conf/config.json'),true);
 		$dir = array_diff(scandir( __DIR__.'/../../../Applications/' ), array('..', '.'));
 		foreach ($dir as $app)
@@ -62,7 +63,6 @@ class JNTP
 			foreach( $this->config{'Applications'}{$app}{'commands'} as $command)
 			{
 				$this->commandByApplication[$command] = $app;
-				echo $app;
 			}
 			foreach( $this->config{'Applications'}{$app}{'DataType'} as $datatype)
 			{
