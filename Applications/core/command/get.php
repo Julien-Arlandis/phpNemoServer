@@ -17,6 +17,7 @@ if(is_int($jntp->param{'maxDataLength'}) && ($jntp->param{'maxDataLength'} > 27 
 	$jntp->maxDataLength = $jntp->param{'maxDataLength'};
 }
 
+// 
 if($jntp->param{'group'})
 {
 	foreach($jntp->param{'group'} as $field)
@@ -29,39 +30,20 @@ if($jntp->param{'group'})
 }
 elseif($jntp->param{'select'})
 {
+	$projection['ID'] = 1;
+	$projection['Jid'] = 1;
+	
 	foreach($jntp->param{'select'} as $field)
-	{
-		$projection['ID'] = 1;
-		$projection['Jid'] = 1;
-		
+	{	
 		/* 
 		Syntaxe pour extraire un tableau :
 		Data.References:3,5 => renvoie les cellules 3, 4 et 5 => $slice: [ 3, 5 ]
 		Data.References:2,N => renvoie les cellules 2 à N
 		Data.References:2,N-5 => renvoie les cellules de 2 à N-5
 		Data.References:N-2,N => renvoie les cellules de N-2 à N => $slice:-2
+		à faire...
 		*/
-		
-		$inds = explode(":", $field);
-		$inds = (isset($inds[1])) ? $inds[1] : 0;
-		if($inds)
-		{
-			$inds = explode(",", $inds);
-			if ( is_numeric($inds[0]) && is_numeric($inds[1]) ) // cas i,j
-			{
-				$projection[$field] = array('$slice'=> array($inds[0], $inds[1]) );
-			}
-			else // cas N-i,N
-			{
-				$ind0 = explode("-", $ind0);
-				$ind0 = (int) $ind0[1];
-				$projection[$field] = array('$slice' => -$ind0 );
-			}
-		}
-		else
-		{
-			$projection[$field] = 1;
-		}
+		$projection[$field] = 1;
 	}
 }
 
@@ -79,9 +61,6 @@ if( $jntp->param{'filter'})
 
 	foreach($jntp->param{'filter'} as $key => $value)
 	{
-		$key = explode(":", $key);
-		$ind = (isset($key[1]) && is_numeric($key[1])) ? $key[1] : 0;
-		$key = $key[0];
 		if( !in_array($key, $jntp->config['Applications']['core']['DataType']['ProtoData']['filter'] ) && !in_array($key, $jntp->config['Applications'][$application]['DataType'][$jntp->param{'filter'}{'Data.DataType'}]['filter'] ) )
 		{
 			$jntp->reponse{'code'} = "400";
@@ -89,24 +68,9 @@ if( $jntp->param{'filter'})
 			$jntp->send();
 		}
 
-		if($ind)
-		{
-			$key = $key.".".($ind-1);
-		}
-
 		if( is_string($value) || is_numeric($value) )
 		{
-			if($value != "" && $value != "*")
-			{
-				if($key === "Data.Newsgroups" && substr($value, -1) == "*")  // Spécifique à Article
-				{
-					array_push($query, array("Meta.Hierarchy" => $value));
-				}
-				else
-				{
-					array_push($query, array($key => $value));
-				}
-			}
+			array_push($query, array($key => $value));
 		}
 		elseif( is_array($value) && count($value) == 2 )
 		{
