@@ -23,7 +23,7 @@ This file is part of PhpNemoServer.
 
 function J2_($server, $jid, $dataid, $datatype)
 {
-	$jntp = new JNTP();
+	$jntp = new JNTP(false);
 
 	$propose = array();
 	$propose[0]{'Jid'} = $jid;
