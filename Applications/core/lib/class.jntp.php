@@ -34,6 +34,7 @@ class JNTP
 	var $mongo; // class MongoClient
 	var $session = false; // JNTP-Session
 	var $listCommand;
+	var $listDataType;
 	var $config;
 	var $maxDataLength;
 	var $stopSuperDiffuse = false;
@@ -538,7 +539,11 @@ class JNTP
 	
 	static function getConfig()
 	{
-		return json_decode(file_get_contents(__DIR__.'/../../../conf/config.json'),true);
+		$conf = json_decode(file_get_contents(__DIR__.'/../../../conf/config.json'),true);
+		$dir = array_diff(scandir( __DIR__.'/../../../Applications/' ), array('..', '.'));
+		foreach ($dir as $value) {
+		    $conf{'Applications'}{$value} = json_decode(file_get_contents(__DIR__.'/../../../Applications/'.$value.'/conf/conf.json'),true);
+		}
 	}
 	
 	static function getTpl($tpl, $assign)
