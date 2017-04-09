@@ -186,9 +186,10 @@ class DataType
 					$jntp->packet{'Data'}{'ThreadID'} = getThreadID();
 					$forgePacket = true;
 				}
-				if(!$jntp->packet{'Data'}{'ThreadID'})
+				if(!$jntp->packet{'Data'}{'ReferenceUserID'})
 				{
-					$jntp->packet{'Data'}{'ReferenceUserID'} = getReferenceUserID();
+					$RefUserID = getReferenceUserID();
+					$jntp->packet{'Data'}{'ReferenceUserID'} = $RefUserID;
 					$forgePacket = true;
 				}
 				if($forgePacket) $jntp->forgePacket();
