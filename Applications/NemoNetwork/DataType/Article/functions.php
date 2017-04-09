@@ -1,11 +1,26 @@
 <?php
 
 function getReferenceUserID()
-{
+{	
 	global $jntp;
-	$nb_ref = count($jntp->packet{'Data'}{'References'});
-	$packet = $jntp->getPacket($jntp->packet{'Data'}{'References'}[$nb_ref-1]);
-	return $packet{'Data'}{'UserID'};
+	if($jntp->packet{'Data'}{'References'})
+	{
+		$nb_ref = count($jntp->packet{'Data'}{'References'});
+		if($nb_ref > 0)
+		{
+			$ref = $jntp->packet{'Data'}{'References'}[$nb_ref-1];
+			if(strlen($ref) == 32 && substr($ref,28,5) == '@jntp')
+			{
+				$packet = $jntp->getPacket( array( 'Data.DataID' => $ref) );
+				if ($packet{'Data'}{'UserID'})
+				{
+					return $packet{'Data'}{'UserID'};
+				}
+
+			}
+		}
+	}
+	return false;
 }
 
 function forModeration()
