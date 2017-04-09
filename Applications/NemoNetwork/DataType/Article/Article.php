@@ -184,13 +184,13 @@ class DataType
 				$msg = array();
 				if(!$jntp->packet{'Data'}{'ThreadID'})
 				{
-					array_push($msg, 'compute ThreadID');
+					array_push($msg, 'compute ThreadID by '.$jntp->config{'domain'});
 					$jntp->packet{'Data'}{'ThreadID'} = getThreadID();
 					$forgePacket = true;
 				}
 				if(!$jntp->packet{'Data'}{'ReferenceUserID'} && $RefUserID = getReferenceUserID() )
 				{
-					array_push($msg, 'compute ReferenceUserID');
+					array_push($msg, 'compute ReferenceUserID by '.$jntp->config{'domain'});
 					$jntp->packet{'Data'}{'ReferenceUserID'} = $RefUserID;
 					$forgePacket = true;
 				}
