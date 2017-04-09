@@ -91,18 +91,10 @@ elseif($jntp->param{'select'})
 {
 	$projection['ID'] = 1;
 	$projection['Jid'] = 1;
-	
 	foreach($jntp->param{'select'} as $field)
 	{		
-		if($field == '@2References') // Spécifique à Article
-		{
-			$projection['Data.References'] = array('$slice'=>-2);
-		}
-		else
-		{
-			$item = explode(':',$field);
-			$projection[$item[0]] = setProjection($field);
-		}
+		$item = explode(':',$field);
+		$projection[$item[0]] = setProjection($field);
 	}
 }
 
