@@ -5,6 +5,7 @@ function getReferenceUserID()
 	global $jntp;
 	if($jntp->packet{'Data'}{'References'})
 	{
+		return '66666';
 		$nb_ref = count($jntp->packet{'Data'}{'References'});
 		if($nb_ref > 0)
 		{
@@ -20,7 +21,7 @@ function getReferenceUserID()
 			}
 		}
 	}
-	return 'iiiii';
+	return false;
 }
 
 function forModeration()
