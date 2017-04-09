@@ -20,7 +20,7 @@ function getReferenceUserID()
 			}
 		}
 	}
-	return false;
+	return 'iiiii';
 }
 
 function forModeration()
