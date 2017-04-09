@@ -1,6 +1,6 @@
 <?php
 
-define('SERVER_VERSION', '0.94.1');
+define('SERVER_VERSION', '0.94.2');
 
 /**
 Copyright © 2013-2014 Julien Arlandis
