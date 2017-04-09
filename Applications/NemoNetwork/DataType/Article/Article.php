@@ -181,17 +181,24 @@ class DataType
 			if(substr($jntp->packet{'Data'}{'DataID'},0,27) != $jntp->packet{'Jid'})
 			{
 				$forgePacket = false;
+				$msg = array();
 				if(!$jntp->packet{'Data'}{'ThreadID'})
 				{
+					array_push($msg, 'compute ThreadID');
 					$jntp->packet{'Data'}{'ThreadID'} = getThreadID();
 					$forgePacket = true;
 				}
 				if(!$jntp->packet{'Data'}{'ReferenceUserID'} && $RefUserID = getReferenceUserID() )
 				{
+					array_push($msg, 'compute ReferenceUserID');
 					$jntp->packet{'Data'}{'ReferenceUserID'} = $RefUserID;
 					$forgePacket = true;
 				}
-				if($forgePacket) $jntp->forgePacket();
+				if($forgePacket) 
+				{
+					$jntp->packet{'Data'}{'HistoricForge'} = $msg;
+					$jntp->forgePacket();
+				}
 			}
 			return true;
 		}
