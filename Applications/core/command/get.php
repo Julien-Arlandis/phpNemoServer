@@ -55,7 +55,7 @@ function setProjection($key)
                 }
             }
         }else{
-            return array($item => 1)
+            return array($item => 1);
         }
     }
 }
