@@ -1,5 +1,54 @@
 <?php
 
+
+
+	function ____beforeInsertion()
+	{
+		global $jntp;
+
+		if($jntp->packet{'Data'}{'Protocol'} === 'JNTP-Transitional' )
+		{
+			$jntp->packet{'Data'}{'DataType'} = 'Article';
+			// Affectation de Data/ThreadID
+			if( !$jntp->packet{'Data'}{'ThreadID'} || !$jntp->packet{'Data'}{'ReferenceUserID'} )
+			{
+				$nb_ref = count($jntp->packet{'Data'}{'References'});
+				if($nb_ref == 0) 
+				{
+					if( !$jntp->packet{'Data'}{'ThreadID'})
+					{
+						$jntp->packet{'Data'}{'ThreadID'} = $jntp->packet{'Jid'};
+					}
+				}
+				else
+				{
+					// Affectation de Data/ReferenceUserID
+					$packet = $jntp->getPacket($jntp->packet{'Data'}{'References'}[$nb_ref-1]);
+					if(!$jntp->packet{'Data'}{'ReferenceUserID'} && $packet{'Data'}{'Protocol'} === "JNTP-Strict")
+					{
+						$jntp->packet{'Data'}{'ReferenceUserID'} = $packet{'Data'}{'UserID'};
+					}
+				
+					// Affectation du ThreadID
+					if($cursor = $jntp->mongo->article->findOne( array('Jid' => array('$in'=>$jntp->packet{'Data'}{'References'}) , 'Data.ThreadID'=>array('$exists'=>1)  ), array('Data.ThreadID'=>1) ))
+					{
+						$jntp->packet{'Data'}{'ThreadID'} = $cursor['Data']['ThreadID'];
+					}
+				}
+			}
+
+			// Suppression de l'ancien article supersédé.
+			if($jid = $jntp->packet{'Data'}{'Supersedes'})
+			{
+				$article = $jntp->getPacket($jid);
+				if($article{'Data'}{'Protocol'} === 'JNTP-Transitional') 
+				{
+					$jntp->deletePacket($jid);
+				}
+			}
+
+		}
+
 function forModeration()
 {
 	global $jntp;
