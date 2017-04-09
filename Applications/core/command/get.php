@@ -35,15 +35,24 @@ elseif($jntp->param{'select'})
 	
 	foreach($jntp->param{'select'} as $field)
 	{	
-		/* 
-		Syntaxe pour extraire un tableau :
-		Data.References:3,5 => renvoie les cellules 3, 4 et 5 => $slice: [ 3, 5 ]
-		Data.References:2,N => renvoie les cellules 2 à N
-		Data.References:2,N-5 => renvoie les cellules de 2 à N-5
-		Data.References:N-2,N => renvoie les cellules de N-2 à N => $slice:-2
-		à faire...
-		*/
-		$projection[$field] = 1;
+		
+		
+		if($field == '@2References') // Spécifique à Article
+		{
+			/* 
+			Syntaxe pour extraire un tableau :
+			Data.References:3,5 => renvoie les cellules 3, 4 et 5 => $slice: [ 3, 5 ]
+			Data.References:2,N => renvoie les cellules 2 à N
+			Data.References:2,N-5 => renvoie les cellules de 2 à N-5
+			Data.References:N-2,N => renvoie les cellules de N-2 à N => $slice:-2
+			à faire...
+			*/
+			$projection['Data.References'] = array('$slice'=>-2);
+		}
+		else
+		{
+			$projection[$field] = 1;
+		}
 	}
 }
 
