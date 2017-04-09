@@ -10,10 +10,11 @@ function setProjection($key)
 	Data.References:N-2,N => renvoie les cellules de N-2 à N => $slice:-2
 	*/
     $key = explode(':', $key);
+    $item = $key[0];
     $res = array();
     
     if( count($key) != 2) {
-        return 1;
+        return array($item => 1);
     }else{
         $key = explode(',', $key[1]);
         if( count($key) <= 2) {
@@ -35,26 +36,26 @@ function setProjection($key)
                 array_push($res, $key[$ind]);
             }
             if(count($res) == 1) {
-                if( is_numeric($res[0]) ) { return(array('$slice'=>array( $res[0]-1, 1) )); }
-                elseif($res[0] == 'end') { return(array('$slice'=>-1)); }
-                else { return(array('$slice'=>array($res[0], 1))); }
+                if( is_numeric($res[0]) ) { return(array($item=>array('$slice'=>array( $res[0]-1, 1) ))); }
+                elseif($res[0] == 'end') { return(array($item=>array('$slice'=>-1))); }
+                else { return(array($item=>array('$slice'=>array($res[0], 1)))); }
             }else{
                 if( is_numeric($res[0]) ) {
-                        if( is_numeric($res[1]) && $res[1] > 0) { return(array('$slice'=>array( $res[0]-1, $res[1]-1) )); }
-                        elseif($res[1] == 'end') { return(array('$slice'=>array( $res[0]-1, 999999) )); }
-                        else { return(array('$slice'=>array( $res[0]-1, 999999) )); }
+                        if( is_numeric($res[1]) && $res[1] > 0) { return( array($item=>array('$slice'=>array( $res[0]-1, $res[1]-1) ))); }
+                        elseif($res[1] == 'end') { return(array($item=>array('$slice'=>array( $res[0]-1, 999999) ))); }
+                        else { return(array($item=>array('$slice'=>array( $res[0]-1, 999999) ))); }
                 }else{
                     if( $res[0] == 'end' ) {
-                        return 1;
+                        return array($item => 1);
                     }else{
-                        if( is_numeric($res[1]) && $res[1] > 0 ) { return(array('$slice'=>$res[0] )); }
-                        elseif($res[1] == 'end') { return(array('$slice'=>$res[0])); }
-                        else { return(array('$slice'=>array($res[0], $res[1]-$res[0]) )); }
+                        if( is_numeric($res[1]) && $res[1] > 0 ) { return(array($item=>array('$slice'=>$res[0] ))); }
+                        elseif($res[1] == 'end') { return( array($item=> array('$slice'=>$res[0])) ); }
+                        else { return( array($item=>array('$slice'=>array($res[0], $res[1]-$res[0])) )); }
                     }
                 }
             }
         }else{
-            return 1;
+            return array($item => 1)
         }
     }
 }
