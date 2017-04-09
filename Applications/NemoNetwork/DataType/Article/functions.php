@@ -9,8 +9,7 @@ function getReferenceUserID()
 		if($nb_ref > 0)
 		{
 			$ref = $jntp->packet{'Data'}{'References'}[$nb_ref-1];
-			return $ref;
-			if(strlen($ref) == 32 && substr($ref,28,5) == '@jntp')
+			if(strlen($ref) == 32 && substr($ref,27,5) == '@jntp')
 			{
 				$packet = $jntp->getPacket( array( 'Data.DataID' => $ref) );
 				if ($packet{'Data'}{'UserID'})
