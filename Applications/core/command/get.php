@@ -14,7 +14,7 @@ function setProjection($key)
     $res = array();
     
     if( count($key) != 2) {
-        return array($item => 1);
+        return 1;
     }else{
         $key = explode(',', $key[1]);
         if( count($key) <= 2) {
