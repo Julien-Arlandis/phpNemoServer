@@ -100,8 +100,8 @@ elseif($jntp->param{'select'})
 		}
 		else
 		{
-			$projection[$field] = setProjection($field);
-			//$projection[$field] = 1;
+			$item = explode(':',$field);
+			$projection[$item[0]] = setProjection($field);
 		}
 	}
 }
