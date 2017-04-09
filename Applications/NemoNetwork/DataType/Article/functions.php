@@ -5,10 +5,10 @@ function getReferenceUserID()
 	global $jntp;
 	if($jntp->packet{'Data'}{'References'})
 	{
-		return '66666';
 		$nb_ref = count($jntp->packet{'Data'}{'References'});
 		if($nb_ref > 0)
 		{
+			return $nb_ref;
 			$ref = $jntp->packet{'Data'}{'References'}[$nb_ref-1];
 			if(strlen($ref) == 32 && substr($ref,28,5) == '@jntp')
 			{
