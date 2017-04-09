@@ -177,10 +177,21 @@ class DataType
 					array_push($jntp->packet{'Meta'}{'Size'}, $size);
 				}
 			}
-			if(!$jntp->packet{'Data'}{'ThreadID'})
+			
+			if(substr($jntp->packet{'Data'}{'DataID'},0,27) != $jntp->packet{'Jid'})
 			{
-				$jntp->packet{'Data'}{'ThreadID'} = getThreadID();
-				$jntp->forgePacket();
+				$forgePacket = false;
+				if(!$jntp->packet{'Data'}{'ThreadID'})
+				{
+					$jntp->packet{'Data'}{'ThreadID'} = getThreadID();
+					$forgePacket = true;
+				}
+				if(!$jntp->packet{'Data'}{'ThreadID'})
+				{
+					$jntp->packet{'Data'}{'ReferenceUserID'} = getReferenceUserID();
+					$forgePacket = true;
+				}
+				if($forgePacket) $jntp->forgePacket();
 			}
 			return true;
 		}
