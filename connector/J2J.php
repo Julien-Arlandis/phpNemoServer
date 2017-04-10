@@ -23,7 +23,6 @@ This file is part of PhpNemoServer.
 
 function J2_($server, $jid, $dataid, $datatype)
 {
-	global $jntp;
 	$propose = array();
 	$propose[0]{'Jid'} = $jid;
 	$propose[0]{'Data'}{'DataType'} = $datatype;
@@ -35,34 +34,32 @@ function J2_($server, $jid, $dataid, $datatype)
 	$post = array();
 	$post[0] = "diffuse";
 	$post[1]{'Propose'} = $propose;
-	$post[1]{'From'} = $jntp->config['domain'];
+	$post[1]{'From'} = JNTP::$config['domain'];
 
-	$jntp->exec($post, $server);
+	JNTP::exec($post, $server);
 
 	Tools::logFeed($post, $server, '(SEND)');
-	Tools::logFeed($jntp->reponse, $server, '(RESP)');
+	Tools::logFeed(JNTP::$reponse, $server, '(RESP)');
 
-	if($jntp->reponse{'code'} == '200')
+	if(JNTP::$reponse{'code'} == '200')
 	{
-		foreach($jntp->reponse{'body'}{'Jid'} as $jid)
+		foreach(JNTP::$reponse{'body'}{'Jid'} as $jid)
 		{
 			$post = array();
 			$post[0] = "diffuse";
-			$post[1]{'Packet'} = $jntp->getPacket( array('Jid'=>$jid) );
-			$post[1]{'From'} = $jntp->config['domain'];
-			$jntp->exec($post, $server);
+			$post[1]{'Packet'} = JNTP::getPacket( array('Jid'=>$jid) );
+			$post[1]{'From'} = JNTP::$config['domain'];
+			JNTP::exec($post, $server);
 
 			Tools::logFeed($post, $server, '(SEND)');
-			Tools::logFeed($jntp->reponse, $server, '(RESP)');
+			Tools::logFeed(JNTP::$reponse, $server, '(RESP)');
 		}
 	}
 }
 
 if(count($argv)>1)
 {
-
-	//test github app
 	require_once(__DIR__."/../Applications/core/lib/class.jntp.php");
-	if (!$jntp) $jntp = new JNTP(false);
+	JNTP::init(false);
 	J2_($argv[1], $argv[2], $argv[3], $argv[4]);
 }

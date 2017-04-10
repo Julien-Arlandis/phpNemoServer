@@ -23,7 +23,6 @@ This file is part of PhpNemoServer.
 
 function J2_($server, $jid, $dataid, $datatype)
 {
-	global $jntp;
 	$fp = fsockopen($server, 119, $errno, $errstr, 10);
 	fgets($fp, 128);
 	if (!$fp && $argv[0])
@@ -40,7 +39,7 @@ function J2_($server, $jid, $dataid, $datatype)
 	$reponses = preg_split("/[\s]+/", $reponse);
 	if ($reponses[0] == "238")
 	{
-		$packet = $jntp->getPacket( array('Data.DataType'=>'Article', 'Data.DataID'=>$dataid) );
+		$packet = JNTP::getPacket( array('Data.DataType'=>'Article', 'Data.DataID'=>$dataid) );
 		$put = "TAKETHIS <".$packet{'Data'}{'DataID'}.">\n".NNTP::articleJ2N($packet)."\r\n.\r\n";
 		fputs($fp, $put);
 		Tools::logFeed($put, $server, '(SEND)');
@@ -55,6 +54,6 @@ if(count($argv)>1)
 {
 	require_once(__DIR__."/../Applications/core/lib/class.jntp.php");
 	require_once(__DIR__."/../Applications/NemoNetwork/lib/class.nntp.php");
-	if (!$jntp) $jntp = new JNTP(false);
+	JNTP::init(false);
 	J2_($argv[1], $argv[2], $argv[3], $argv[4]);
 }
