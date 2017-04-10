@@ -12,50 +12,48 @@ class DataType
 
 	function forgeData()
 	{
-		global $jntp;
-		$jntp->packet{'Data'}{'DataID'} = "@jntp";
-		$jntp->packet{'Data'}{'OriginServer'} = $jntp->config{'domain'};
-		$jntp->packet{'Data'}{'InjectionDate'} = date("Y-m-d")."T".date("H:i:s")."Z";
-		$jntp->packet{'Data'}{'Organization'} = $jntp->config{'organization'};
-		$jntp->packet{'Data'}{'Browser'} = $_SERVER['HTTP_USER_AGENT'];
-		$jntp->packet{'Data'}{'PostingHost'} = ($jntp->config{'cryptPostingHost'} == "ifconnected" && !$jntp->userid) ? $_SERVER['REMOTE_ADDR'] : sha1($_SERVER['REMOTE_ADDR']);
-		$jntp->packet{'Data'}{'ComplaintsTo'} = $jntp->config{'administrator'};
-		$jntp->packet{'Data'}{'ProtocolVersion'} = $jntp->config{'protocolVersion'};
-		$jntp->packet{'Data'}{'Server'} = "PhpNemoServer/".$jntp->config{'serverVersion'};
-		$jntp->packet{'Meta'}{'ForAdmin'}{'IP'} = $_SERVER['REMOTE_ADDR'];
-		if( $jntp->packet{'Data'}{'ThreadID'} == '' )
+		JNTP::$packet{'Data'}{'DataID'} = "@jntp";
+		JNTP::$packet{'Data'}{'OriginServer'} = JNTP::$config{'domain'};
+		JNTP::$packet{'Data'}{'InjectionDate'} = date("Y-m-d")."T".date("H:i:s")."Z";
+		JNTP::$packet{'Data'}{'Organization'} = JNTP::$config{'organization'};
+		JNTP::$packet{'Data'}{'Browser'} = $_SERVER['HTTP_USER_AGENT'];
+		JNTP::$packet{'Data'}{'PostingHost'} = (JNTP::$config{'cryptPostingHost'} == "ifconnected" && !JNTP::$userid) ? $_SERVER['REMOTE_ADDR'] : sha1($_SERVER['REMOTE_ADDR']);
+		JNTP::$packet{'Data'}{'ComplaintsTo'} = JNTP::$config{'administrator'};
+		JNTP::$packet{'Data'}{'ProtocolVersion'} = JNTP::$config{'protocolVersion'};
+		JNTP::$packet{'Data'}{'Server'} = "PhpNemoServer/".JNTP::$config{'serverVersion'};
+		JNTP::$packet{'Meta'}{'ForAdmin'}{'IP'} = $_SERVER['REMOTE_ADDR'];
+		if( JNTP::$packet{'Data'}{'ThreadID'} == '' )
 		{
-			$jntp->packet{'Data'}{'ThreadID'} = $jntp->hashString(sha1(uniqid().$jntp->config{'domain'}));
+			JNTP::$packet{'Data'}{'ThreadID'} = JNTP::hashString(sha1(uniqid().JNTP::$config{'domain'}));
 		}
 
-		if ($jntp->userid)
+		if (JNTP::$userid)
 		{
-			$jntp->packet{'Data'}{'UserID'} = $jntp->userid;
+			JNTP::$packet{'Data'}{'UserID'} = JNTP::$userid;
 		}
 		else
 		{
-			$jntp->packet{'Data'}{'UserID'} = '0@'.$jntp->config{'domain'};
-			$jntp->packet{'Data'}{'Body'} .= "\n\n[signature]Cet article a été rédigé depuis le serveur JNTP ".$jntp->config{'domain'}." par un utilisateur non inscrit [/signature]";
+			JNTP::$packet{'Data'}{'UserID'} = '0@'.JNTP::$config{'domain'};
+			JNTP::$packet{'Data'}{'Body'} .= "\n\n[signature]Cet article a été rédigé depuis le serveur JNTP ".JNTP::$config{'domain'}." par un utilisateur non inscrit [/signature]";
 		}
-		if($this->moderationArticle)
+		if(JNTP::$moderationArticle)
 		{
-			$jntp->forgePacket();
+			JNTP::forgePacket();
 			return forModeration();
 		}
 	}
 
 	function isValidData()
 	{
-		global $jntp;
-		if(count($jntp->packet{'Data'}{'FollowupTo'}) <= $jntp->config{'Applications'}{'NemoNetwork'}{'maxFU2'})
+		if(count(JNTP::$packet{'Data'}{'FollowupTo'}) <= JNTP::$config{'Applications'}{'NemoNetwork'}{'maxFU2'})
 		{
-			foreach($jntp->packet{'Data'}{'FollowupTo'} as $groupe)
+			foreach(JNTP::$packet{'Data'}{'FollowupTo'} as $groupe)
 			{
 				if($groupe[0] != '#')
 				{
-					if(!$jntp->mongo->newsgroup->findOne(array('name' => $groupe), array('rules' => 1)))
+					if(!JNTP::$mongo->newsgroup->findOne(array('name' => $groupe), array('rules' => 1)))
 					{
-						$jntp->reponse{'info'} = "Newsgroups [".$jntp->packet{'Data'}{'FollowupTo'}[0]."] inexistant";
+						JNTP::$reponse{'info'} = "Newsgroups [".JNTP::$packet{'Data'}{'FollowupTo'}[0]."] inexistant";
 						return false;
 					}
 				}
@@ -67,55 +65,55 @@ class DataType
 		}
 		else
 		{
-			$jntp->reponse{'info'} = $jntp->config{'Applications'}{'NemoNetwork'}{'maxFU2'}." redirections autorisées au maximum";
+			JNTP::$reponse{'info'} = JNTP::$config{'Applications'}{'NemoNetwork'}{'maxFU2'}." redirections autorisées au maximum";
 			return false;
 		}
-		if(count($jntp->packet{'Data'}{'FollowupTo'}) == 0 && count($jntp->packet{'Data'}{'Newsgroups'}) > $jntp->config{'Applications'}{'NemoNetwork'}{'maxCrosspostWithoutFU2'})
+		if(count(JNTP::$packet{'Data'}{'FollowupTo'}) == 0 && count(JNTP::$packet{'Data'}{'Newsgroups'}) > JNTP::$config{'Applications'}{'NemoNetwork'}{'maxCrosspostWithoutFU2'})
 		{
-			$jntp->reponse{'info'} = "Redirection requise";
+			JNTP::$reponse{'info'} = "Redirection requise";
 			return false;
 		}
-		if (count($jntp->packet{'Data'}{'Newsgroups'}) > $jntp->config{'Applications'}{'NemoNetwork'}{'maxCrosspost'})
+		if (count(JNTP::$packet{'Data'}{'Newsgroups'}) > JNTP::$config{'Applications'}{'NemoNetwork'}{'maxCrosspost'})
 		{
-			$jntp->reponse{'info'} = $jntp->config{'Applications'}{'NemoNetwork'}{'maxCrosspost'}." newsgroups maximum";
+			JNTP::$reponse{'info'} = JNTP::$config{'Applications'}{'NemoNetwork'}{'maxCrosspost'}." newsgroups maximum";
 			return false;
 		}
 
-		foreach($jntp->packet{'Data'}{'Newsgroups'} as $groupe)
+		foreach(JNTP::$packet{'Data'}{'Newsgroups'} as $groupe)
 		{
 			if($groupe[0] != '#')
 			{
 				if($groupe != strtolower($groupe))
 				{
-					$jntp->reponse{'info'} = "Pas de majuscules dans le nom des groupes";
+					JNTP::$reponse{'info'} = "Pas de majuscules dans le nom des groupes";
 					return false;
 				}
-				$tab = $jntp->mongo->newsgroup->findOne(array('name' => $groupe));
+				$tab = JNTP::$mongo->newsgroup->findOne(array('name' => $groupe));
 
 				if(!$tab)
 				{
-					$jntp->reponse{'info'} = "Newsgroups [".$groupe."] inexistant";
+					JNTP::$reponse{'info'} = "Newsgroups [".$groupe."] inexistant";
 					return false;
 				}
 				if($tab['rules']['m'] == "1")
 				{
 					if($tab['PublicKey'])
 					{
-						$this->moderationArticle = true;
-						$jntp->publicKeyForModeration = $tab['PublicKey'];
+						JNTP::$moderationArticle = true;
+						JNTP::$publicKeyForModeration = $tab['PublicKey'];
 					}
 					else
 					{
-						$jntp->reponse{'info'} = "Le newsgroup [".$groupe."] est modéré, pas de clé publique définie";
+						JNTP::$reponse{'info'} = "Le newsgroup [".$groupe."] est modéré, pas de clé publique définie";
 						return false;
 					}
-					
+
 				}
-				if(!$jntp->userid)
+				if(!JNTP::$userid)
 				{
 					if(!$tab['rulesIfNotConnected']['w']=='1')
 					{
-						$jntp->reponse{'info'} = "Le newsgroup [".$groupe."] requiert une authentification";
+						JNTP::$reponse{'info'} = "Le newsgroup [".$groupe."] requiert une authentification";
 						return false;
 					}
 				}
@@ -126,78 +124,77 @@ class DataType
 			}
 		}
 
-		if( strlen($jntp->packet{'Data'}{'FromName'}) < 1 )
+		if( strlen(JNTP::$packet{'Data'}{'FromName'}) < 1 )
 		{
-			$jntp->reponse{'info'} = "Expéditeur absent";
+			JNTP::$reponse{'info'} = "Expéditeur absent";
 			return false;
 		}
-		if( strlen($jntp->packet{'Data'}{'FromMail'}) < 1 )
+		if( strlen(JNTP::$packet{'Data'}{'FromMail'}) < 1 )
 		{
-			$jntp->reponse{'info'} = "Email absent";
+			JNTP::$reponse{'info'} = "Email absent";
 			return false;
 		}
-		$jntp->packet{'Data'}{'Subject'}; // String
-		$jntp->packet{'Data'}{'Newsgroups'}; // Tableau(String)
-		$jntp->packet{'Data'}{'FollowupTo'}; // String
-		$jntp->packet{'Data'}{'References'}; // Tableau
-		$jntp->packet{'Data'}{'UserAgent'}; // String
-		$jntp->packet{'Data'}{'HashClient'}; // String
-		if( strlen($jntp->packet{'Data'}{'Subject'}) < 1 )
+		JNTP::$packet{'Data'}{'Subject'}; // String
+		JNTP::$packet{'Data'}{'Newsgroups'}; // Tableau(String)
+		JNTP::$packet{'Data'}{'FollowupTo'}; // String
+		JNTP::$packet{'Data'}{'References'}; // Tableau
+		JNTP::$packet{'Data'}{'UserAgent'}; // String
+		JNTP::$packet{'Data'}{'HashClient'}; // String
+		if( strlen(JNTP::$packet{'Data'}{'Subject'}) < 1 )
 		{
-			$jntp->reponse{'info'} = "Sujet manquant";
+			JNTP::$reponse{'info'} = "Sujet manquant";
 			return false;
 		}
-		if( strlen($jntp->packet{'Data'}{'Body'}) < 1 )
+		if( strlen(JNTP::$packet{'Data'}{'Body'}) < 1 )
 		{
-			$jntp->reponse{'info'} = "Article vide";
+			JNTP::$reponse{'info'} = "Article vide";
 			return false;
 		}
-		if( !isset($jntp->packet{'Data'}{'ThreadID'}) )
+		if( !isset(JNTP::$packet{'Data'}{'ThreadID'}) )
 		{
-			$jntp->reponse{'info'} = "ThreadID manquant";
+			JNTP::$reponse{'info'} = "ThreadID manquant";
 			return false;
 		}
-		$jntp->packet{'Data'}{'Media'}; // Tableau
+		JNTP::$packet{'Data'}{'Media'}; // Tableau
 		return true;
 	}
 
 	function beforeInsertion()
 	{
-		global $jntp;
 		if(checkControl())
 		{
-			$jntp->packet{'Meta'}{'Size'} = array(strlen($jntp->packet{'Data'}{'Body'}));
-			$jntp->packet{'Meta'}{'Hierarchy'} = getHierarchy();
-			$jntp->packet{'Meta'}{'Like'} = 0;
-			if($jntp->packet{'Data'}{'Media'})
+			JNTP::$packet{'Meta'}{'Size'} = array(strlen(JNTP::$packet{'Data'}{'Body'}));
+			JNTP::$packet{'Meta'}{'Hierarchy'} = getHierarchy();
+			JNTP::$packet{'Meta'}{'Like'} = 0;
+			if(JNTP::$packet{'Data'}{'Media'})
 			{
-				foreach($jntp->packet{'Data'}{'Media'} as $cle => $value)
+				foreach(JNTP::$packet{'Data'}{'Media'} as $cle => $value)
 				{
-					$size = strlen($jntp->packet{'Data'}{'Media'}[$cle]{'data'});
-					array_push($jntp->packet{'Meta'}{'Size'}, $size);
+					$size = strlen(JNTP::$packet{'Data'}{'Media'}[$cle]{'data'});
+					array_push(JNTP::$packet{'Meta'}{'Size'}, $size);
 				}
 			}
-			
-			if(substr($jntp->packet{'Data'}{'DataID'},0,27) != $jntp->packet{'Jid'})
+
+			if(substr(JNTP::$packet{'Data'}{'DataID'},0,27) != JNTP::$packet{'Jid'})
 			{
 				$forgePacket = false;
 				$msg = array();
-				if(!$jntp->packet{'Data'}{'ThreadID'})
+				if(!JNTP::$packet{'Data'}{'ThreadID'})
 				{
-					array_push($msg, 'compute ThreadID by '.$jntp->config{'domain'});
-					$jntp->packet{'Data'}{'ThreadID'} = getThreadID();
+					array_push($msg, 'compute ThreadID by '.JNTP::$config{'domain'});
+					JNTP::$packet{'Data'}{'ThreadID'} = getThreadID();
 					$forgePacket = true;
 				}
-				if(!$jntp->packet{'Data'}{'ReferenceUserID'} && $RefUserID = getReferenceUserID() )
+				if(!JNTP::$packet{'Data'}{'ReferenceUserID'} && $RefUserID = getReferenceUserID() )
 				{
-					array_push($msg, 'compute ReferenceUserID by '.$jntp->config{'domain'});
-					$jntp->packet{'Data'}{'ReferenceUserID'} = $RefUserID;
+					array_push($msg, 'compute ReferenceUserID by '.JNTP::$config{'domain'});
+					JNTP::$packet{'Data'}{'ReferenceUserID'} = $RefUserID;
 					$forgePacket = true;
 				}
-				if($forgePacket) 
+				if($forgePacket)
 				{
-					$jntp->packet{'Data'}{'HistoricForge'} = $msg;
-					$jntp->forgePacket();
+					JNTP::$packet{'Data'}{'HistoricForge'} = $msg;
+					JNTP::forgePacket();
 				}
 			}
 			return true;
@@ -207,14 +204,13 @@ class DataType
 
 	function afterInsertion()
 	{
-		global $jntp;
-		if(!$jntp->stopSuperDiffuse)
+		if(!JNTP::stopSuperDiffuse)
 		{
-			$jntp->superDiffuse();
+			JNTP::superDiffuse();
 		}
-		if ($jntp->userid)
+		if (JNTP::$userid)
 		{
-			$jntp->updateUserConfig( array("FromName" => $jntp->packet{'Data'}{'FromName'}, "FromMail" => $jntp->packet{'Data'}{'FromMail'}, "ReplyTo" => $jntp->packet{'Data'}{'ReplyTo'}) );
+			JNTP::updateUserConfig( array("FromName" => JNTP::$packet{'Data'}{'FromName'}, "FromMail" => JNTP::$packet{'Data'}{'FromMail'}, "ReplyTo" => JNTP::$packet{'Data'}{'ReplyTo'}) );
 		}
 		return true;
 	}

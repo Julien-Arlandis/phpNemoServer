@@ -1,17 +1,16 @@
 <?php
 
 function getReferenceUserID()
-{	
-	global $jntp;
-	if($jntp->packet{'Data'}{'References'})
+{
+	if(JNTP::$packet{'Data'}{'References'})
 	{
-		$nb_ref = count($jntp->packet{'Data'}{'References'});
+		$nb_ref = count(JNTP::$packet{'Data'}{'References'});
 		if($nb_ref > 0)
 		{
-			$ref = $jntp->packet{'Data'}{'References'}[$nb_ref-1];
+			$ref = JNTP::$packet{'Data'}{'References'}[$nb_ref-1];
 			if(strlen($ref) == 32 && substr($ref,27,5) == '@jntp')
 			{
-				$packet = $jntp->getPacket( array( 'Data.DataID' => $ref) );
+				$packet = JNTP::getPacket( array( 'Data.DataID' => $ref) );
 				if ($packet{'Data'}{'UserID'})
 				{
 					return $packet{'Data'}{'UserID'};
@@ -25,58 +24,54 @@ function getReferenceUserID()
 
 function forModeration()
 {
-	global $jntp;
-
-	$key_iv = $jntp->randomKeyIv();
-	$cryptPacket = $jntp->encryptAES256( json_encode($jntp->packet, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), $key_iv );
-	$jntp->packet{'Data'}{'Media'} = array();
-	$jntp->packet{'Data'}{'Media'}[0]{'data'} = $cryptPacket;
-	$jntp->packet{'Data'}{'Media'}[0]{'PublicKey'} = $jntp->publicKeyForModeration;
-	$key_resource = openssl_get_publickey($jntp->publicKeyForModeration);
+	$key_iv = JNTP::randomKeyIv();
+	$cryptPacket = JNTP::encryptAES256( json_encode(JNTP::$packet, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), $key_iv );
+	JNTP::$packet{'Data'}{'Media'} = array();
+	JNTP::$packet{'Data'}{'Media'}[0]{'data'} = $cryptPacket;
+	JNTP::$packet{'Data'}{'Media'}[0]{'PublicKey'} = JNTP::$publicKeyForModeration;
+	$key_resource = openssl_get_publickey(JNTP::$publicKeyForModeration);
 	openssl_public_encrypt($key_iv, $encrypted, $key_resource);
 	$encrypted = base64_encode($encrypted);
 
-	$jntp->packet{'Data'}{'Media'}[0]{'KeyAES256'} = $encrypted;
-	$jntp->packet{'Data'}{'Body'} = 'En attente de modération';
-	$jntp->packet{'Data'}{'Control'} = array('forModeration', $jntp->packet{'Data'}{'DataID'});
-	$jntp->packet{'Data'}{'Subject'} = '[Non modéré]';
-	$jntp->forgePacket();
+	JNTP::$packet{'Data'}{'Media'}[0]{'KeyAES256'} = $encrypted;
+	JNTP::$packet{'Data'}{'Body'} = 'En attente de modération';
+	JNTP::$packet{'Data'}{'Control'} = array('forModeration', JNTP::$packet{'Data'}{'DataID'});
+	JNTP::$packet{'Data'}{'Subject'} = '[Non modéré]';
+	JNTP::forgePacket();
 	return true;
 }
 
 function getThreadID()
 {
-	global $jntp;
-	if(count($jntp->packet{'Data'}{'References'}) > 0)
+	if(count(JNTP::$packet{'Data'}{'References'}) > 0)
 	{
-		$obj = $jntp->mongo->packet->findOne(   array("Data.ThreadID" => array('$exists'=>1), "Data.DataID" => array('$in'=>$jntp->packet{'Data'}{'References'})),
-						array("Data.ThreadID" => 1) 
+		$obj = JNTP::$mongo->packet->findOne(   array("Data.ThreadID" => array('$exists'=>1), "Data.DataID" => array('$in'=>JNTP::$packet{'Data'}{'References'})),
+						array("Data.ThreadID" => 1)
 				     	    );
-		return (count($obj) > 0) ? $obj{'Data'}{'ThreadID'} : $jntp->packet{'Data'}{'References'}[0];	
+		return (count($obj) > 0) ? $obj{'Data'}{'ThreadID'} : JNTP::$packet{'Data'}{'References'}[0];
 	}
 	else
 	{
-		return $jntp->packet{'Data'}{'DataID'};	
+		return JNTP::$packet{'Data'}{'DataID'};
 	}
 }
 
 // Vérifie la validité d'un nemotag
 function isValidNemoTag($groupe)
 {
-	global $jntp;
 	if(strlen($groupe)>32)
 	{
-		$jntp->reponse{'info'} = "Le Nemotag [".$groupe."] est trop long, 32 caractères maxi";
+		JNTP::$reponse{'info'} = "Le Nemotag [".$groupe."] est trop long, 32 caractères maxi";
 		return false;
 	}
-	if (!preg_match('/^#[a-zA-Z]*$/', $groupe)) 
+	if (!preg_match('/^#[a-zA-Z]*$/', $groupe))
 	{
-		$jntp->reponse{'info'} = "Le Nemotag [".$groupe."] contient des caractères non autorisés";
+		JNTP::$reponse{'info'} = "Le Nemotag [".$groupe."] contient des caractères non autorisés";
 		return false;
 	}
-	if($jntp->userid == false)
+	if(JNTP::$userid == false)
 	{
-		$jntp->reponse{'info'} = "Le Nemotag [".$groupe."] requiert une authentification";
+		JNTP::$reponse{'info'} = "Le Nemotag [".$groupe."] requiert une authentification";
 		return false;
 	}
 	return true;
@@ -85,10 +80,8 @@ function isValidNemoTag($groupe)
 // Retourne les hiérarchies et les sous hiérarchies qui contiennent les newsgroups déclarés dans Data.Newsgroups
 function getHierarchy()
 {
-	global $jntp;
-
 	$hierarchy = array();
-	foreach($jntp->packet{'Data'}{'Newsgroups'} as $oneGroup)
+	foreach(JNTP::$packet{'Data'}{'Newsgroups'} as $oneGroup)
 	{
 		if(substr($oneGroup, 0, 1) == '#' && !in_array("#*", $hierarchy))
 		{
@@ -103,7 +96,7 @@ function getHierarchy()
 				for ($i=0; $i<count($tab)-1; $i++)
 				{
 					$str .= $tab[$i].".";
-					if( !in_array($str."*", $hierarchy) ) 
+					if( !in_array($str."*", $hierarchy) )
 					{
 						array_push($hierarchy, $str."*");
 					}
@@ -117,19 +110,18 @@ function getHierarchy()
 // Effectue le traitement de Data/Control (suppression d'article).
 function checkControl()
 {
-	global $jntp;
-	if( $jntp->packet{'Data'}{'Control'} )
+	if( JNTP::$packet{'Data'}{'Control'} )
 	{
-		$typeCancel = $jntp->packet{'Data'}{'Control'}[0];
+		$typeCancel = JNTP::$packet{'Data'}{'Control'}[0];
 		if( $typeCancel === 'cancelUser' || $typeCancel === 'cancelServer' || $typeCancel === 'cancelLocal')
 		{
-			$dataid = $jntp->packet{'Data'}{'Control'}[1];
+			$dataid = JNTP::$packet{'Data'}{'Control'}[1];
 
 			if( $typeCancel === 'cancelUser' )
 			{
-				if(substr($article{'Data'}{'DataID'},0,27) === $article{'Jid'}) 
+				if(substr($article{'Data'}{'DataID'},0,27) === $article{'Jid'})
 				{
-					$article = $jntp->getPacket( array('Data.DataID'=>$dataid) );
+					$article = JNTP::getPacket( array('Data.DataID'=>$dataid) );
 					$data = null;
 					$data{'DataType'} = $article{'Data'}{'DataType'};
 					$data{'FromName'} = $article{'Data'}{'FromName'};
@@ -140,63 +132,63 @@ function checkControl()
 					$data{'Body'} = $article{'Data'}{'Body'};
 					$data{'Media'} = $article{'Data'}{'Media'};
 					$data{'FollowupTo'} = $article{'Data'}{'FollowupTo'};
-					$data{'HashClient'} = $jntp->packet{'Data'}{'Control'}[2];
+					$data{'HashClient'} = JNTP::$packet{'Data'}{'Control'}[2];
 
-					$hashClient = $jntp->hashString( $jntp->canonicFormat($data) );
+					$hashClient = JNTP::hashString( JNTP::canonicFormat($data) );
 
 					if( $hashClient === $article{'Data'}{'HashClient'} )
 					{
-						$jntp->deletePacket( array('Data.DataID'=> $dataid) );
+						JNTP::deletePacket( array('Data.DataID'=> $dataid) );
 						return true;
 					}
 					else
 					{
-						$jntp->reponse{'code'} = "400";
-						$jntp->reponse{'info'} = "Suppression impossible de ".$jid."\nhash ".$hashClient." incorrect";
+						JNTP::$reponse{'code'} = "400";
+						JNTP::$reponse{'info'} = "Suppression impossible de ".$jid."\nhash ".$hashClient." incorrect";
 						return false;
 					}
 				}
 				else
 				{
-					$jntp->deletePacket( array('Data.DataID'=> $dataid) );
+					JNTP::deletePacket( array('Data.DataID'=> $dataid) );
 					return true;
 				}
 			}
 			elseif( $typeCancel === 'cancelServer' )
 			{
-				if($jntp->param{'Data'})
+				if(JNTP::$param{'Data'})
 				{
-					if($jntp->privilege == "admin" || $jntp->privilege == "moderator")
+					if(JNTP::$privilege == "admin" || JNTP::$privilege == "moderator")
 					{
-						$jntp->deletePacket( array('Data.DataID'=> $dataid) );
+						JNTP::deletePacket( array('Data.DataID'=> $dataid) );
 						return true;
 					}
 					else
 					{
-						$jntp->reponse{'code'} = "400";
-						$jntp->reponse{'info'} = "User not autorised to cancel";
+						JNTP::$reponse{'code'} = "400";
+						JNTP::$reponse{'info'} = "User not autorised to cancel";
 						return false;
 					}
 				}
 				else
 				{
-					$article = $jntp->getPacket( array('Data.DataID'=>$dataid) );
-					if($article{'Data'}{'OriginServer'} == $jntp->param{'From'} )
+					$article = JNTP::getPacket( array('Data.DataID'=>$dataid) );
+					if($article{'Data'}{'OriginServer'} == JNTP::$param{'From'} )
 					{
-						$jntp->deletePacket( array('Data.DataID'=> $dataid) );
+						JNTP::deletePacket( array('Data.DataID'=> $dataid) );
 						return true;
 					}
 					else
 					{
-						if( in_array($jntp->param{'From'}, $jntp->config{'adminServer'} ) )
+						if( in_array(JNTP::$param{'From'}, JNTP::$config{'adminServer'} ) )
 						{
-							$jntp->deletePacket( array('Data.DataID'=> $dataid) );
+							JNTP::deletePacket( array('Data.DataID'=> $dataid) );
 							return true;
 						}
 						else
 						{
-							$jntp->reponse{'code'} = "400";
-							$jntp->reponse{'info'} = "Server not autorised to cancel";
+							JNTP::$reponse{'code'} = "400";
+							JNTP::$reponse{'info'} = "Server not autorised to cancel";
 							return false;
 						}
 					}
@@ -204,34 +196,34 @@ function checkControl()
 			}
 			elseif( $typeCancel === 'cancelLocal' )
 			{
-				if($jntp->param{'Data'})
+				if(JNTP::$param{'Data'})
 				{
-					if($jntp->privilege == "admin" || $jntp->privilege == "moderator" )
+					if(JNTP::$privilege == "admin" || JNTP::$privilege == "moderator" )
 					{
-						$jntp->deletePacket( array('Data.DataID'=> $dataid) );
+						JNTP::deletePacket( array('Data.DataID'=> $dataid) );
 						return true;
 					}
 					else
 					{
-						$jntp->reponse{'code'} = "400";
-						$jntp->reponse{'info'} = "User not autorised to make a local cancel";
+						JNTP::$reponse{'code'} = "400";
+						JNTP::$reponse{'info'} = "User not autorised to make a local cancel";
 						return false;
 					}
 				}
 				else
 				{
-					$jntp->reponse{'code'} = "400";
-					$jntp->reponse{'info'} = "Server not autorised to make a local cancel";
+					JNTP::$reponse{'code'} = "400";
+					JNTP::$reponse{'info'} = "Server not autorised to make a local cancel";
 					return false;
 
 				}
-				$jntp->stopSuperDiffuse = true;
+				JNTP::stopSuperDiffuse = true;
 			}
 		}
 		else
 		{
-			$jntp->reponse{'code'} = "400";
-			$jntp->reponse{'info'} = "Invalid operation : ".$jntp->packet{'Data'}{'Control'}[0];
+			JNTP::$reponse{'code'} = "400";
+			JNTP::$reponse{'info'} = "Invalid operation : ".JNTP::$packet{'Data'}{'Control'}[0];
 			return false;
 		}
 	}

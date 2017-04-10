@@ -3,18 +3,17 @@
 // Supprime un utilisateur
 function deleteUser($id)
 {
-	global $jntp;
-	return $jntp->mongo->user->remove(array('UserID' => $id));
+	return JNTP::$mongo->user->remove(array('UserID' => $id));
 }
 
-if($jntp->privilege == 'admin')
+if(JNTP::$privilege == 'admin')
 {
-	$jntp->reponse{'code'} = "200";
-	deleteUser($jntp->param{'UserID'});
-	$jntp->reponse{'info'} = "User ".$jntp->param{'UserID'}." deleted";
+	JNTP::$reponse{'code'} = "200";
+	deleteUser(JNTP::$param{'UserID'});
+	JNTP::$reponse{'info'} = "User ".JNTP::$param{'UserID'}." deleted";
 }
 else
 {
-	$jntp->reponse{'code'} = "400";
-	$jntp->reponse{'info'} = "Not autorised to delete";
+	JNTP::$reponse{'code'} = "400";
+	JNTP::$reponse{'info'} = "Not autorised to delete";
 }

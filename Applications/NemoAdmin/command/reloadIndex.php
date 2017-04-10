@@ -1,13 +1,13 @@
 <?php
 
-if($jntp->privilege == 'admin')
+if(JNTP::$privilege == 'admin')
 {
-	$jntp->createIndex();
-	$jntp->reponse{'code'} = "200";
-	$jntp->reponse{'info'} = "Reload index, done";
+	JNTP::createIndex();
+	JNTP::$reponse{'code'} = "200";
+	JNTP::$reponse{'info'} = "Reload index, done";
 }
 else
 {
-	$jntp->reponse{'code'} = "400";
-	$jntp->reponse{'info'} = "Not autorised to reload index";
+	JNTP::$reponse{'code'} = "400";
+	JNTP::$reponse{'info'} = "Not autorised to reload index";
 }

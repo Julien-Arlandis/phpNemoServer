@@ -1,37 +1,37 @@
 <?php
 $cfg = json_decode(file_get_contents(__DIR__.'/../../NemoNetwork/conf/newsgroups.json'));
 
-if($jntp->privilege == 'admin')
+if(JNTP::$privilege == 'admin')
 {
-	$jntp->mongo->newsgroup->remove();
-	$jntp->mongo->newsgroup->save(array('description'=>'Newsgroup system', 'rules' => array("w" => "0", "m" => "1")));
+	JNTP::$mongo->newsgroup->remove();
+	JNTP::$mongo->newsgroup->save(array('description'=>'Newsgroup system', 'rules' => array("w" => "0", "m" => "1")));
 	$body = array();
 	for($i=0; $i<count($cfg->hierarchy); $i++)
 	{
-		for($j=0; $j<count($jntp->config{'publicServer'}); $j++)
+		for($j=0; $j<count(JNTP::$config{'publicServer'}); $j++)
 		{
 			$query = '["get", {"filter":{"Data.DataType":"ListGroup","Data.Hierarchy":"'.$cfg->hierarchy[$i].'"},"limit":1 } ]';
-			$jntp->exec($query, $jntp->config{'publicServer'}[$j]);
-			$jntp->packet = $jntp->reponse{'body'}[0];
-			
-			if(is_array($jntp->packet))
-			{
-				$jntp->loadDataType();
+			JNTP::exec($query, JNTP::$config{'publicServer'}[$j]);
+			JNTP::$packet = JNTP::$reponse{'body'}[0];
 
-				if ( $jntp->datatype->beforeInsertion() )
+			if(is_array(JNTP::$packet))
+			{
+				JNTP::loadDataType();
+
+				if ( JNTP::$datatype->beforeInsertion() )
 				{
-					$jntp->insertPacket();
+					JNTP::insertPacket();
 					array_push($body, $cfg->hierarchy[$i]);
 					break;
 				}
 			}
 		}
 	}
-	$jntp->reponse{'body'} = $body;
-	$jntp->reponse{'info'} = "Synchronisation done : ".count($body)." hiérarchies";
+	JNTP::$reponse{'body'} = $body;
+	JNTP::$reponse{'info'} = "Synchronisation done : ".count($body)." hiérarchies";
 }
 else
 {
-	$jntp->reponse{'code'} = "400";
-	$jntp->reponse{'info'} = "Not autorised to synchronize";
+	JNTP::$reponse{'code'} = "400";
+	JNTP::$reponse{'info'} = "Not autorised to synchronize";
 }
