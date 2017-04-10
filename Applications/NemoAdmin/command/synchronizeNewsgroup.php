@@ -12,6 +12,7 @@ if(JNTP::$privilege == 'admin')
 		{
 			$query = '["get", {"filter":{"Data.DataType":"ListGroup","Data.Hierarchy":"'.$cfg->hierarchy[$i].'"},"limit":1 } ]';
 			JNTP::exec($query, JNTP::$config{'publicServer'}[$j]);
+
 			JNTP::$packet = JNTP::$reponse{'body'}[0];
 
 			if(is_array(JNTP::$packet))

@@ -47,9 +47,9 @@ class JNTP
 	{
 		date_default_timezone_set('UTC');
 		Tools::getConfig();
+		self::$config{'serverVersion'} = SERVER_VERSION;
 		$m = new MongoClient();
 		self::$mongo = $m->selectDB(self::$config{'dbName'});
-		self::$config{'serverVersion'} = SERVER_VERSION;
 		if( $withSession ) self::setSession();
 	}
 
