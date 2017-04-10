@@ -51,9 +51,9 @@ class JNTP
 		date_default_timezone_set('UTC');
 		$this->getConfig();
 		$m = new MongoClient();
-		$this->mongo = $m->selectDB(JNTP::config{'dbName'});
-		JNTP::config{'serverVersion'} = SERVER_VERSION;
-		$this->maxDataLength = JNTP::config['maxDataLength'];
+		$this->mongo = $m->selectDB(self::config{'dbName'});
+		self::config{'serverVersion'} = SERVER_VERSION;
+		$this->maxDataLength = self::config['maxDataLength'];
 		if( $withSession ) $this->setSession();
 	}
 
@@ -64,7 +64,7 @@ class JNTP
 		if($post === '')
 		{
 			$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == true) ? 'https' : 'http';
-			die( "200 ".$protocol.'://'.JNTP::config{'domain'}.'/jntp/ - PhpNemoServer/'.JNTP::config{'serverVersion'}.' - JNTP Service Ready - '.JNTP::config{'administrator'}.' - Type ["help"] for help' );
+			die( "200 ".$protocol.'://'.self::config{'domain'}.'/jntp/ - PhpNemoServer/'.self::config{'serverVersion'}.' - JNTP Service Ready - '.self::config{'administrator'}.' - Type ["help"] for help' );
 		}
 		if($server)
 		{
@@ -148,7 +148,7 @@ class JNTP
 		$this->mongo->packet->ensureIndex(array('ID' => 1), array('unique' => true));
 		$this->mongo->packet->ensureIndex(array('Jid' => 1), array('unique' => true));
 
-		foreach( JNTP::config{'Applications'} as $app => $val)
+		foreach( self::config{'Applications'} as $app => $val)
 		{
 			foreach($val as $datatype => $content)
 			{
@@ -188,7 +188,7 @@ class JNTP
 		setcookie("JNTP-Session", $session, time()+360000);
 
 		$this->id = $userid;
-		$this->userid = $userid.'@'.JNTP::config{'domain'};
+		$this->userid = $userid.'@'.self::config{'domain'};
 		$this->privilege = $privilege;
 		$this->session = $session;
 	}
@@ -199,7 +199,7 @@ class JNTP
 		$session = $_COOKIE["JNTP-Session"];
 
 		// Permit local connection
-		if(!isset($_SERVER['HTTP_REFERER']) || JNTP::config['crossDomainAccept'])
+		if(!isset($_SERVER['HTTP_REFERER']) || self::config['crossDomainAccept'])
 		{
 			header("Access-Control-Allow-Headers: JNTP-Session");
 			header("Access-Control-Allow-Origin: *");
@@ -220,7 +220,7 @@ class JNTP
 		if(count($obj) > 0)
 		{
 			$this->id = $obj{'UserID'};
-			$this->userid = $obj{'UserID'}.'@'.JNTP::config{'domain'};
+			$this->userid = $obj{'UserID'}.'@'.self::config{'domain'};
 			$this->privilege = $obj{'privilege'};
 			$this->session = $obj{'Session'};
 		}
@@ -276,17 +276,17 @@ class JNTP
 		if(!$this->packet{'Route'}) $this->packet{'Route'} = array();
 		if(!$this->packet{'Meta'}) $this->packet{'Meta'} = array();
 
-		if (!$privateKey = openssl_pkey_get_private(JNTP::config{'privateKey'})) die('Loading Private Key failed');
+		if (!$privateKey = openssl_pkey_get_private(self::config{'privateKey'})) die('Loading Private Key failed');
 		openssl_private_encrypt($this->packet{'Jid'}, $signature, $privateKey);
 
 		$this->packet{'Meta'}{'ServerSign'} = base64_encode($signature);
-		$this->packet{'Meta'}{'ServerPublicKey'} = JNTP::config{'publicKey'};
+		$this->packet{'Meta'}{'ServerPublicKey'} = self::config{'publicKey'};
 	}
 
 	// Insère le packet dans la base
 	function insertPacket()
 	{
-		array_push($this->packet{'Route'}, JNTP::config{'domain'});
+		array_push($this->packet{'Route'}, self::config{'domain'});
 		$res = $this->mongo->counters->findAndModify(
 			array("_id"=>"packetID"),
 			array('$inc'=>array("seq"=>1)),
@@ -326,22 +326,22 @@ class JNTP
 	// Contacte les feeds pour distribuer $this->packet
 	function superDiffuse()
 	{
-		foreach(JNTP::config{'outFeeds'} as $server => $value)
+		foreach(self::config{'outFeeds'} as $server => $value)
 		{
-			if(!JNTP::config{'outFeeds'}{$server}{'actif'}) continue;
+			if(!self::config{'outFeeds'}{$server}{'actif'}) continue;
 			if(in_array($server, $this->packet{'Route'})) continue;
 
 			$jid = str_replace("'","\'",$this->packet{'Jid'});
 			$datatype = str_replace("'","\'",$this->packet{'Data'}{'DataType'});
 			$dataid = str_replace("'","\'",$this->packet{'Data'}{'DataID'});
-			if(JNTP::config{'shellExec'})
+			if(self::config{'shellExec'})
 			{
-				$cmd = JNTP::config{'phpPath'}.' '.__DIR__.'/../../../connector/'.JNTP::config{'outFeeds'}{$server}{'type'}[1].' '.$server." '$jid' '$dataid' '$datatype'";
+				$cmd = self::config{'phpPath'}.' '.__DIR__.'/../../../connector/'.self::config{'outFeeds'}{$server}{'type'}[1].' '.$server." '$jid' '$dataid' '$datatype'";
 				shell_exec($cmd. ' >> /dev/null &');
 			}
 			else
 			{
-				require_once(__DIR__.'/../../../connector/'.JNTP::config{'outFeeds'}{$server}{'type'}[1]);
+				require_once(__DIR__.'/../../../connector/'.self::config{'outFeeds'}{$server}{'type'}[1]);
 				J2_($server, $jid, $dataid, $datatype);
 			}
 		}
