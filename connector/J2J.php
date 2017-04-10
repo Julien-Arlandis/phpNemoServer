@@ -61,7 +61,7 @@ function J2_($server, $jid, $dataid, $datatype)
 if(count($argv)>1) 
 {
 
-	//test
+	//test github app
 	if (!$jntp) $jntp = new JNTP(false);
 	require_once(__DIR__."/../Applications/core/lib/class.jntp.php");
 	J2_($argv[1], $argv[2], $argv[3], $argv[4]);
