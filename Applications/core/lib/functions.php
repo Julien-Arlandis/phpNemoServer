@@ -32,6 +32,7 @@ class Tools
 		$dir = array_diff(scandir( __DIR__.'/../../../Applications/' ), array('..', '.'));
 		foreach ($dir as $app)
 		{
+      if ($app[0] == '.') continue;
 			JNTP::$config{'Applications'}{$app} = json_decode(file_get_contents(__DIR__.'/../../'.$app.'/conf/conf.json'),true);
 			foreach( JNTP::$config{'Applications'}{$app}{'commands'} as $command)
 			{
