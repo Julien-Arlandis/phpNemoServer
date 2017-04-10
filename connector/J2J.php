@@ -62,7 +62,7 @@ if(count($argv)>1)
 {
 
 	//test github app
-	if (!$jntp) $jntp = new JNTP(false);
 	require_once(__DIR__."/../Applications/core/lib/class.jntp.php");
+	if (!$jntp) $jntp = new JNTP(false);
 	J2_($argv[1], $argv[2], $argv[3], $argv[4]);
 }
