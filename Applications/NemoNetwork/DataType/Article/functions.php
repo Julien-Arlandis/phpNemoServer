@@ -217,7 +217,7 @@ function checkControl()
 					return false;
 
 				}
-				JNTP::stopSuperDiffuse = true;
+				JNTP::$stopSuperDiffuse = true;
 			}
 		}
 		else

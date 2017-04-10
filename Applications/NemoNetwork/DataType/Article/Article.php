@@ -36,7 +36,7 @@ class DataType
 			JNTP::$packet{'Data'}{'UserID'} = '0@'.JNTP::$config{'domain'};
 			JNTP::$packet{'Data'}{'Body'} .= "\n\n[signature]Cet article a été rédigé depuis le serveur JNTP ".JNTP::$config{'domain'}." par un utilisateur non inscrit [/signature]";
 		}
-		if(JNTP::$moderationArticle)
+		if($this->moderationArticle)
 		{
 			JNTP::forgePacket();
 			return forModeration();
@@ -99,7 +99,7 @@ class DataType
 				{
 					if($tab['PublicKey'])
 					{
-						JNTP::$moderationArticle = true;
+						$this->moderationArticle = true;
 						JNTP::$publicKeyForModeration = $tab['PublicKey'];
 					}
 					else
@@ -204,7 +204,7 @@ class DataType
 
 	function afterInsertion()
 	{
-		if(!JNTP::stopSuperDiffuse)
+		if(!JNTP::$stopSuperDiffuse)
 		{
 			JNTP::superDiffuse();
 		}
