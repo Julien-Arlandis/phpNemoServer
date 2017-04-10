@@ -146,9 +146,9 @@ class JNTP
 
 		foreach( self::$config{'Applications'} as $app => $val)
 		{
-			foreach($val as $datatype => $content)
+			foreach($val{'DataType'} as $datatype => $content)
 			{
-				foreach($content['filter'] as $key)
+				foreach($content{'filter'} as $key)
 				{
 					if($key != 'ID' && $key != 'Jid')
 					{
