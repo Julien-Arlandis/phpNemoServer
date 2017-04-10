@@ -1,7 +1,5 @@
 <?php
 
-define('SERVER_VERSION', '0.94.2');
-
 /**
 Copyright © 2013-2014 Julien Arlandis
     @author : Julien Arlandis <julien.arlandis_at_gmail.com>
@@ -23,8 +21,14 @@ This file is part of PhpNemoServer.
     along with PhpNemoServer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+define('SERVER_VERSION', '0.94.2');
+require_once(__DIR__."/functions.php");
+
 class JNTP
 {
+
+	public static $config;
+
 	var $reponse; // reponse du serveur
 	var $param; // contient les arguments de la requête JNTP
 	var $command; // Commande JNTP requêtée par le client
@@ -37,7 +41,6 @@ class JNTP
 	var $session = false; // JNTP-Session
 	var $commandByApplication;
 	var $datatypeByApplication;
-	var $config;
 	var $maxDataLength;
 	var $stopSuperDiffuse = false;
 	var $publicKeyForModeration = false;
@@ -48,39 +51,20 @@ class JNTP
 		date_default_timezone_set('UTC');
 		$this->getConfig();
 		$m = new MongoClient();
-		$this->mongo = $m->selectDB($this->config{'dbName'});
-		$this->config{'serverVersion'} = SERVER_VERSION;
-		$this->maxDataLength = $this->config['maxDataLength'];
+		$this->mongo = $m->selectDB(JNTP::config{'dbName'});
+		JNTP::config{'serverVersion'} = SERVER_VERSION;
+		$this->maxDataLength = JNTP::config['maxDataLength'];
 		if( $withSession ) $this->setSession();
 	}
-	
-	function getConfig()
-	{
-		$this->config = json_decode(file_get_contents(__DIR__.'/../../../conf/config.json'),true);
-		$this->config{'outFeeds'} = json_decode(file_get_contents(__DIR__.'/../../../conf/feeds.json'),true);
-		$dir = array_diff(scandir( __DIR__.'/../../../Applications/' ), array('..', '.'));
-		foreach ($dir as $app)
-		{
-			$this->config{'Applications'}{$app} = json_decode(file_get_contents(__DIR__.'/../../'.$app.'/conf/conf.json'),true);
-			foreach( $this->config{'Applications'}{$app}{'commands'} as $command)
-			{
-				$this->commandByApplication[$command] = $app;
-			}
-			foreach( $this->config{'Applications'}{$app}{'DataType'} as $datatype => $value)
-			{
-				$this->datatypeByApplication[$datatype] = $app;
-			}
-		}
-	}
-	
+
 	// Execute une commande JNTP sur le présent serveur ou sur un serveur distant
 	function exec($post, $server = false)
 	{
-		$this->log($post);
+		Tools::log($post);
 		if($post === '')
 		{
 			$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == true) ? 'https' : 'http';
-			die( "200 ".$protocol.'://'.$this->config{'domain'}.'/jntp/ - PhpNemoServer/'.$this->config{'serverVersion'}.' - JNTP Service Ready - '.$this->config{'administrator'}.' - Type ["help"] for help' );
+			die( "200 ".$protocol.'://'.JNTP::config{'domain'}.'/jntp/ - PhpNemoServer/'.JNTP::config{'serverVersion'}.' - JNTP Service Ready - '.JNTP::config{'administrator'}.' - Type ["help"] for help' );
 		}
 		if($server)
 		{
@@ -153,7 +137,7 @@ class JNTP
 	function send()
 	{
 		$res = json_encode( $this->reponse );
-		$this->log($res, '>');
+		Tools::log($res, '>');
 		die( $res );
 	}
 
@@ -164,7 +148,7 @@ class JNTP
 		$this->mongo->packet->ensureIndex(array('ID' => 1), array('unique' => true));
 		$this->mongo->packet->ensureIndex(array('Jid' => 1), array('unique' => true));
 
-		foreach( $this->config{'Applications'} as $app => $val)
+		foreach( JNTP::config{'Applications'} as $app => $val)
 		{
 			foreach($val as $datatype => $content)
 			{
@@ -204,7 +188,7 @@ class JNTP
 		setcookie("JNTP-Session", $session, time()+360000);
 
 		$this->id = $userid;
-		$this->userid = $userid.'@'.$this->config{'domain'};
+		$this->userid = $userid.'@'.JNTP::config{'domain'};
 		$this->privilege = $privilege;
 		$this->session = $session;
 	}
@@ -213,9 +197,9 @@ class JNTP
 	function setSession()
 	{
 		$session = $_COOKIE["JNTP-Session"];
-		
+
 		// Permit local connection
-		if(!isset($_SERVER['HTTP_REFERER']) || $this->config['crossDomainAccept'])
+		if(!isset($_SERVER['HTTP_REFERER']) || JNTP::config['crossDomainAccept'])
 		{
 			header("Access-Control-Allow-Headers: JNTP-Session");
 			header("Access-Control-Allow-Origin: *");
@@ -224,7 +208,7 @@ class JNTP
 				$session = $_SERVER['JNTP-Session'];
 			}
 		}
-		
+
 		if(!$session)
 		{
 			$headers = getallheaders();
@@ -236,7 +220,7 @@ class JNTP
 		if(count($obj) > 0)
 		{
 			$this->id = $obj{'UserID'};
-			$this->userid = $obj{'UserID'}.'@'.$this->config{'domain'};
+			$this->userid = $obj{'UserID'}.'@'.JNTP::config{'domain'};
 			$this->privilege = $obj{'privilege'};
 			$this->session = $obj{'Session'};
 		}
@@ -292,17 +276,17 @@ class JNTP
 		if(!$this->packet{'Route'}) $this->packet{'Route'} = array();
 		if(!$this->packet{'Meta'}) $this->packet{'Meta'} = array();
 
-		if (!$privateKey = openssl_pkey_get_private($this->config{'privateKey'})) die('Loading Private Key failed');
+		if (!$privateKey = openssl_pkey_get_private(JNTP::config{'privateKey'})) die('Loading Private Key failed');
 		openssl_private_encrypt($this->packet{'Jid'}, $signature, $privateKey);
-		
+
 		$this->packet{'Meta'}{'ServerSign'} = base64_encode($signature);
-		$this->packet{'Meta'}{'ServerPublicKey'} = $this->config{'publicKey'};
+		$this->packet{'Meta'}{'ServerPublicKey'} = JNTP::config{'publicKey'};
 	}
 
 	// Insère le packet dans la base
 	function insertPacket()
 	{
-		array_push($this->packet{'Route'}, $this->config{'domain'});
+		array_push($this->packet{'Route'}, JNTP::config{'domain'});
 		$res = $this->mongo->counters->findAndModify(
 			array("_id"=>"packetID"),
 			array('$inc'=>array("seq"=>1)),
@@ -342,22 +326,22 @@ class JNTP
 	// Contacte les feeds pour distribuer $this->packet
 	function superDiffuse()
 	{
-		foreach($this->config{'outFeeds'} as $server => $value)
+		foreach(JNTP::config{'outFeeds'} as $server => $value)
 		{
-			if(!$this->config{'outFeeds'}{$server}{'actif'}) continue;
+			if(!JNTP::config{'outFeeds'}{$server}{'actif'}) continue;
 			if(in_array($server, $this->packet{'Route'})) continue;
 
 			$jid = str_replace("'","\'",$this->packet{'Jid'});
 			$datatype = str_replace("'","\'",$this->packet{'Data'}{'DataType'});
 			$dataid = str_replace("'","\'",$this->packet{'Data'}{'DataID'});
-			if($this->config{'shellExec'})
+			if(JNTP::config{'shellExec'})
 			{
-				$cmd = $this->config{'phpPath'}.' '.__DIR__.'/../../../connector/'.$this->config{'outFeeds'}{$server}{'type'}[1].' '.$server." '$jid' '$dataid' '$datatype'";
+				$cmd = JNTP::config{'phpPath'}.' '.__DIR__.'/../../../connector/'.JNTP::config{'outFeeds'}{$server}{'type'}[1].' '.$server." '$jid' '$dataid' '$datatype'";
 				shell_exec($cmd. ' >> /dev/null &');
 			}
 			else
 			{
-				require_once(__DIR__.'/../../../connector/'.$this->config{'outFeeds'}{$server}{'type'}[1]);
+				require_once(__DIR__.'/../../../connector/'.JNTP::config{'outFeeds'}{$server}{'type'}[1]);
 				J2_($server, $jid, $dataid, $datatype);
 			}
 		}
@@ -380,8 +364,8 @@ class JNTP
 		}
 		return $ip;
 	}
-	
-	
+
+
 	// Retourne la ressource d'un packet requêtée au format URI ex : http://[server]/jntp/[Jid]/Data.FromName
 	function getResource($path) // à corriger.
 	{
@@ -452,30 +436,6 @@ class JNTP
 			}
 		}
 	}
-	
-	
-	function logFeed($post, $server, $direct = '<')
-	{
-		if($this->config{'activeLog'})
-		{
-			$post = is_array($post) ? json_encode($post) : $post;
-			$handle = fopen($this->config{'logFeedPath'}, 'a');
-			$put = '['.date(DATE_RFC822).'] ['.$server.'] '.$direct.' '.rtrim(mb_strimwidth($post, 0, 300))."\n";
-			fwrite($handle, $put);
-			fclose($handle);
-		}
-	}
-
-	function log($post, $direct = '<')
-	{
-		if($this->config{'activeLog'} && $post != '')
-		{
-			$handle = fopen($this->config{'logPath'}, 'a');
-			$put = '['.date(DATE_RFC822).'] ['.$_SERVER['REMOTE_ADDR'].'] '.$direct.' '.mb_strimwidth($post, 0, 300)."\n";
-			fwrite($handle, $put);
-			fclose($handle);
-		}
-	}
 
 	static function canonicFormat($json, $firstRecursivLevel = true)
 	{
@@ -542,7 +502,7 @@ class JNTP
 		$str = base64_decode($str);
 		return substr(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $iv.$str, MCRYPT_MODE_CFB, $iv), 16);
 	}
-	
+
 	static function getTpl($tpl, $assign)
 	{
 	  $tpl = file_get_contents($tpl);
@@ -552,6 +512,5 @@ class JNTP
 	  }
 	  return $tpl;
 	}
-	
-}
 
+}

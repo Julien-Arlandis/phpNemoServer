@@ -1,4 +1,4 @@
-<?php
+-<?php
 
 /**
 Copyright © 2013-2014 Julien Arlandis
@@ -27,7 +27,7 @@ function J2_($server, $jid, $dataid, $datatype)
 	$propose = array();
 	$propose[0]{'Jid'} = $jid;
 	$propose[0]{'Data'}{'DataType'} = $datatype;
-	if($jid != $dataid) 
+	if($jid != $dataid)
 	{
 		$propose[0]{'Data'}{'DataID'} = $dataid;
 	}
@@ -39,10 +39,10 @@ function J2_($server, $jid, $dataid, $datatype)
 
 	$jntp->exec($post, $server);
 
-	$jntp->logFeed($post, $server, '(SEND)');
-	$jntp->logFeed($jntp->reponse, $server, '(RESP)');
+	Tools::logFeed($post, $server, '(SEND)');
+	Tools::logFeed($jntp->reponse, $server, '(RESP)');
 
-	if($jntp->reponse{'code'} == '200') 
+	if($jntp->reponse{'code'} == '200')
 	{
 		foreach($jntp->reponse{'body'}{'Jid'} as $jid)
 		{
@@ -52,13 +52,13 @@ function J2_($server, $jid, $dataid, $datatype)
 			$post[1]{'From'} = $jntp->config['domain'];
 			$jntp->exec($post, $server);
 
-			$jntp->logFeed($post, $server, '(SEND)');
-			$jntp->logFeed($jntp->reponse, $server, '(RESP)');
+			Tools::logFeed($post, $server, '(SEND)');
+			Tools::logFeed($jntp->reponse, $server, '(RESP)');
 		}
 	}
 }
 
-if(count($argv)>1) 
+if(count($argv)>1)
 {
 
 	//test github app

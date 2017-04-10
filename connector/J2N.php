@@ -26,32 +26,32 @@ function J2_($server, $jid, $dataid, $datatype)
 	global $jntp;
 	$fp = fsockopen($server, 119, $errno, $errstr, 10);
 	fgets($fp, 128);
-	if (!$fp && $argv[0]) 
+	if (!$fp && $argv[0])
 	{
-		$jntp->logFeed('can not connect', $server, '(SEND)');
-		die ($errstr." ".$errno."\n"); 
+		Tools::logFeed('can not connect', $server, '(SEND)');
+		die ($errstr." ".$errno."\n");
 	}
 
 	$put = "CHECK <".$dataid.">\n";
 	fputs($fp, $put);
-	$jntp->logFeed($put, $server, '(SEND)');
+	Tools::logFeed($put, $server, '(SEND)');
 	$reponse = fgets($fp);
-	$jntp->logFeed($reponse, $server, '(RESP)');
+	Tools::logFeed($reponse, $server, '(RESP)');
 	$reponses = preg_split("/[\s]+/", $reponse);
 	if ($reponses[0] == "238")
 	{
 		$packet = $jntp->getPacket( array('Data.DataType'=>'Article', 'Data.DataID'=>$dataid) );
 		$put = "TAKETHIS <".$packet{'Data'}{'DataID'}.">\n".NNTP::articleJ2N($packet)."\r\n.\r\n";
 		fputs($fp, $put);
-		$jntp->logFeed($put, $server, '(SEND)');
+		Tools::logFeed($put, $server, '(SEND)');
 		$reponse = fgets($fp);
 		$reponses = preg_split("/[\s]+/", $reponse);
-		$jntp->logFeed($reponse, $server, '(RESP)');
+		Tools::logFeed($reponse, $server, '(RESP)');
 	}
 	fclose($fp);
 }
 
-if(count($argv)>1) 
+if(count($argv)>1)
 {
 	require_once(__DIR__."/../Applications/core/lib/class.jntp.php");
 	require_once(__DIR__."/../Applications/NemoNetwork/lib/class.nntp.php");
