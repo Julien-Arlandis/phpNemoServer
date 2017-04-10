@@ -1,9 +1,9 @@
 <?php
-$jntp->reponse{'code'} = "200";
+JNTP::$reponse{'code'} = "200";
 
-switch($jntp->param)
+switch(JNTP::$param)
 {
-	case 'get' : $jntp->reponse{'info'} = <<<EOF
+	case 'get' : JNTP::$reponse{'info'} = <<<EOF
 ["get",{"Jid":[],"ID":[],"select":[],filter:[]}]
 
 Pour lire un article :
@@ -20,7 +20,7 @@ Pour lire le sujet des 10 derniers articles de la hiérarchie fr.sci.* :
 EOF;
 	break;
 
-	case 'diffuse' : $jntp->reponse{'info'} = <<<EOF
+	case 'diffuse' : JNTP::$reponse{'info'} = <<<EOF
 Pour envoyer un article sur fr.test
 {"diffuse":{"Data":{"FromName":"Julien","FromMail":"julien@test","Subject":"test","Newsgroups":["fr.test"],"Body":"Message de test"}}}
 
@@ -29,25 +29,25 @@ Pour transférer un article entre deux serveurs
 EOF;
 	break;
 
-	case 'auth' : $jntp->reponse{'info'} = <<<EOF
+	case 'auth' : JNTP::$reponse{'info'} = <<<EOF
 Permet de s'authentifier sur le serveur de newsgroup
 ["auth",{"email":"un_email_valide","password":"un_password_valide"}]
 EOF;
 	break;
 
-	case 'whoami' :	$jntp->reponse{'info'} = <<<EOF
+	case 'whoami' :	JNTP::$reponse{'info'} = <<<EOF
 Informe le client de son identité et de ses droits sur le serveur, utile pour savoir si on est encore connecté
 ["whoami"]
 EOF;
 	break;
 
-	case 'quit' : $jntp->reponse{'info'} = <<<EOF
+	case 'quit' : JNTP::$reponse{'info'} = <<<EOF
 Ferme la connexion avec le serveur
 ["quit"]
 EOF;
 	break;
 
-	default : $jntp->reponse{'info'} = <<<EOF
+	default : JNTP::$reponse{'info'} = <<<EOF
 Pour obtenir de l'aide sur la commande get, taper ["help","get"]
    get            : Récupère un ou plusieurs articles
    diffuse        : Diffuse un article sur le réseau

@@ -7,14 +7,14 @@ $userid = isset($_GET['userid']) ? $_GET['userid'] : '';
 
 if($action == "inscription")
 {
-	$jntp = new JNTP();
-	$obj = $jntp->mongo->user->findOne(array('UserID' => intval($userid) ));
+	JNTP::init();
+	$obj = JNTP::$mongo->user->findOne(array('UserID' => intval($userid) ));
 
 	if($obj)
 	{
 		if($check == $obj{'check'})
 		{
-			$jntp->mongo->user->update(
+			JNTP::$mongo->user->update(
 				array("UserID" => intval($userid)),
 				array('$unset' => array("check"=>true))
 			);
@@ -29,8 +29,8 @@ if($action == "inscription")
 	{
 		$txt = "Ce compte n'existe pas.";
 	}
-	
-	echo JNTP::getTpl(__DIR__."/tpl/valid_inscription.tpl",
+
+	echo Tools::getTpl(__DIR__."/tpl/valid_inscription.tpl",
 			array(
 				"txt" => $txt
 				)
@@ -40,14 +40,14 @@ elseif($action == "unsubscribe")
 {
 	$valid = isset($_POST['valid']);
 	if($valid) {
-		$jntp = new JNTP();
-		$obj = $jntp->mongo->user->findOne(array('UserID' => intval($userid) ));
+		JNTP::init();
+		$obj = JNTP::$mongo->user->findOne(array('UserID' => intval($userid) ));
 
 		if($obj)
 		{
 			if($check == $obj{'checkunsubcribe'})
 			{
-				$jntp->mongo->user->remove(array('UserID' => intval($userid) ));
+				JNTP::$mongo->user->remove(array('UserID' => intval($userid) ));
 				$txt = "Votre compte ".$obj{'email'}." a bien été supprimé.";
 				$redirection = true;
 			}
@@ -61,20 +61,19 @@ elseif($action == "unsubscribe")
 			$txt = "Ce compte n'existe pas.";
 		}
 	}
-	
-	echo JNTP::getTpl(__DIR__."/tpl/valid_unsubscribe.tpl",
+
+	echo Tools::getTpl(__DIR__."/tpl/valid_unsubscribe.tpl",
 		array(
 				"txt" => $txt
 				)
 	);
-	
+
 }
 elseif( $action == "changepassword" )
 {
 	$valid = isset($_POST['valid']);
 	if($valid) {
-		$jntp = new JNTP();
-		$obj = $jntp->mongo->user->findOne(array('UserID' => intval($userid) ));
+		$obj = JNTP::$mongo->user->findOne(array('UserID' => intval($userid) ));
 
 		if($obj)
 		{
@@ -95,7 +94,7 @@ elseif( $action == "changepassword" )
 					$checksum = sha1(uniqid());
 					$password_crypt = sha1($checksum.$password1);
 
-					$jntp->mongo->user->update(
+					JNTP::$mongo->user->update(
 						array("UserID" => intval($userid)),
 						array('$set'=>array('password'=>$password_crypt, 'checksum'=>$checksum), '$unset'=>array('checkpassword'=>true) )
 					);
@@ -113,13 +112,13 @@ elseif( $action == "changepassword" )
 			$txt = "Ce compte n'existe pas.";
 		}
 	}
-	
-	echo JNTP::getTpl(__DIR__."/tpl/confirm_changePassword.tpl",
+
+	echo Tools::getTpl(__DIR__."/tpl/confirm_changePassword.tpl",
 	array(
 				"txt" => $txt
 			)
 	);
-	
+
 }
 else
 {

@@ -1,39 +1,39 @@
 <?php
 
-if(strlen($jntp->param{'user'}) < 1)
+if(strlen(JNTP::$param{'user'}) < 1)
 {
-	$jntp->reponse{'code'} = "500";
-	$jntp->reponse{'info'} = "Bad parameters";
-	$jntp->send();
+	JNTP::$reponse{'code'} = "500";
+	JNTP::$reponse{'info'} = "Bad parameters";
+	JNTP::send();
 }
 
-$email = new MongoRegex("/^".preg_quote($jntp->param{'user'})."$/i");
-$obj = $jntp->mongo->user->findOne(  array('$or' => array(array('email' => $email), array('user' => $email)))     );
+$email = new MongoRegex("/^".preg_quote(JNTP::$param{'user'})."$/i");
+$obj = JNTP::$mongo->user->findOne(  array('$or' => array(array('email' => $email), array('user' => $email)))     );
 
 if(count($obj) > 0)
 {
-	if(sha1($obj{'checksum'}.$jntp->param{'password'}) != $obj{'password'})
+	if(sha1($obj{'checksum'}.JNTP::$param{'password'}) != $obj{'password'})
 	{
-		$jntp->reponse{'code'} = "400";
-		$jntp->reponse{'info'} = "Bad authentification";
-		$jntp->send();
+		JNTP::$reponse{'code'} = "400";
+		JNTP::$reponse{'info'} = "Bad authentification";
+		JNTP::send();
 	}
 
 	if($obj{'check'})
 	{
-		$jntp->reponse{'code'} = "401";
-		$jntp->reponse{'info'} = "The account has not yet been validated";
-		$jntp->send();
+		JNTP::$reponse{'code'} = "401";
+		JNTP::$reponse{'info'} = "The account has not yet been validated";
+		JNTP::send();
 	}
 
-	$jntp->startSession($obj{'Session'}, $obj{'UserID'}, $obj{'privilege'});
+	JNTP::startSession($obj{'Session'}, $obj{'UserID'}, $obj{'privilege'});
 
-	$jntp->reponse{'code'} = "200";
-	$jntp->reponse{'body'} = array("FromName"=>$obj{'FromName'}, "FromMail"=>$obj{'FromMail'}, "ReplyTo"=>$obj{'ReplyTo'}, "UserID"=>$jntp->userid, "email"=>$obj{'email'}, "privilege"=>$jntp->privilege, "Session"=>$jntp->session, "HashKey"=>$obj{'hashkey'});
-	$jntp->reponse{'info'} = $jntp->userid." connected";
+	JNTP::$reponse{'code'} = "200";
+	JNTP::$reponse{'body'} = array("FromName"=>$obj{'FromName'}, "FromMail"=>$obj{'FromMail'}, "ReplyTo"=>$obj{'ReplyTo'}, "UserID"=>JNTP::$userid, "email"=>$obj{'email'}, "privilege"=>JNTP::$privilege, "Session"=>JNTP::$session, "HashKey"=>$obj{'hashkey'});
+	JNTP::$reponse{'info'} = JNTP::$userid." connected";
 }
 else
 {
-	$jntp->reponse{'code'} = "402";
-	$jntp->reponse{'info'} = "Bad user";
+	JNTP::$reponse{'code'} = "402";
+	JNTP::$reponse{'info'} = "Bad user";
 }

@@ -26,45 +26,41 @@ require_once(__DIR__."/functions.php");
 
 class JNTP
 {
-
-	public static $config;
-
-	var $reponse; // reponse du serveur
-	var $param; // contient les arguments de la requête JNTP
-	var $command; // Commande JNTP requêtée par le client
-	var $packet; // Packet JNTP
-	var $id = false; // id de l'utilisateur
-	var $userid = false; // UserID de l'utilisateur
-	var $privilege = false; // Privilege de l'utilisateur
-	var $datatype; // class DataType
-	var $mongo; // class MongoClient
-	var $session = false; // JNTP-Session
-	var $commandByApplication;
-	var $datatypeByApplication;
-	var $maxDataLength;
-	var $stopSuperDiffuse = false;
-	var $publicKeyForModeration = false;
+	static $config; // configuration du serveur
+	static $reponse; // reponse du serveur
+	static $param; // contient les arguments de la requête JNTP
+	static $command; // Commande JNTP requêtée par le client
+	static $packet; // Packet JNTP
+	static $id = false; // id de l'utilisateur
+	static $userid = false; // UserID de l'utilisateur
+	static $privilege = false; // Privilege de l'utilisateur
+	static $datatype; // class DataType
+	static $mongo; // class MongoClient
+	static $session = false; // JNTP-Session
+	static $commandByApplication;
+	static $datatypeByApplication;
+	static $stopSuperDiffuse = false;
+	static $publicKeyForModeration = false;
 
 	// Constructeur
-	function __construct($withSession = true)
+	static function init($withSession = true)
 	{
 		date_default_timezone_set('UTC');
-		$this->getConfig();
+		Tools::getConfig();
 		$m = new MongoClient();
-		$this->mongo = $m->selectDB(self::config{'dbName'});
-		self::config{'serverVersion'} = SERVER_VERSION;
-		$this->maxDataLength = self::config['maxDataLength'];
-		if( $withSession ) $this->setSession();
+		self::$mongo = $m->selectDB(self::$config{'dbName'});
+		self::$config{'serverVersion'} = SERVER_VERSION;
+		if( $withSession ) self::setSession();
 	}
 
 	// Execute une commande JNTP sur le présent serveur ou sur un serveur distant
-	function exec($post, $server = false)
+	static function exec($post, $server = false)
 	{
 		Tools::log($post);
 		if($post === '')
 		{
 			$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == true) ? 'https' : 'http';
-			die( "200 ".$protocol.'://'.self::config{'domain'}.'/jntp/ - PhpNemoServer/'.self::config{'serverVersion'}.' - JNTP Service Ready - '.self::config{'administrator'}.' - Type ["help"] for help' );
+			die( "200 ".$protocol.'://'.self::$config{'domain'}.'/jntp/ - PhpNemoServer/'.self::$config{'serverVersion'}.' - JNTP Service Ready - '.self::$config{'administrator'}.' - Type ["help"] for help' );
 		}
 		if($server)
 		{
@@ -86,28 +82,28 @@ class JNTP
 				curl_setopt_array($CURL, $options);
 				$reponse = curl_exec($CURL);
 				curl_close($CURL);
-				$this->reponse = json_decode($reponse, true);
+				self::$reponse = json_decode($reponse, true);
 			}
 			else
 			{
-				$this->reponse{'code'} = "500";
-				$this->reponse{'info'} = "Connection failed";
+				self::$reponse{'code'} = "500";
+				self::$reponse{'info'} = "Connection failed";
 			}
 			return;
 		}
 
 		$json = json_decode($post, true);
 
-		$this->command = $json[0];
-		$this->param = (count($json)> 1) ? $json[1] : null;
+		self::$command = $json[0];
+		self::$param = (count($json)> 1) ? $json[1] : null;
 
 		if (!is_array($json))
 		{
-			$this->reponse{'code'} = "500";
-			$this->reponse{'info'} = "Bad Syntax, type help command";
-			$this->send();
+			self::$reponse{'code'} = "500";
+			self::$reponse{'info'} = "Bad Syntax, type help command";
+			self::send();
 		}
-		$application = $this->commandByApplication[$this->command];
+		$application = self::$commandByApplication[self::$command];
 		if ($application)
 		{
 			function go($script)
@@ -115,40 +111,40 @@ class JNTP
 				global $jntp;
 				require($script);
 			}
-			go(__DIR__.'/../../'.$application.'/command/'.$this->command.'.php');
+			go(__DIR__.'/../../'.$application.'/command/'.self::$command.'.php');
 		}
 		else
 		{
-			$this->reponse{'code'} = "500";
-			$this->reponse{'info'} = "Command not found, [".$this->command."]";
+			self::$reponse{'code'} = "500";
+			self::$reponse{'info'} = "Command not found, [".self::$command."]";
 		}
 	}
 
 	// Met à jour les informations de l' utilisateur
-	function updateUserConfig($arr)
+	static function updateUserConfig($arr)
 	{
-		$this->mongo->user->update(
-		    array("UserID" => $this->id),
+		self::$mongo->user->update(
+		    array("UserID" => self::$id),
 		    array('$set' => $arr)
 		);
 	}
 
 	// Retourne le résultat de la requête et stoppe le script
-	function send()
+	static function send()
 	{
-		$res = json_encode( $this->reponse );
+		$res = json_encode( self::$reponse );
 		Tools::log($res, '>');
 		die( $res );
 	}
 
-	function createIndex()
+	static function createIndex()
 	{
-		$this->mongo->user->ensureIndex(array('email' => 1), array('unique' => true));
-		$this->mongo->user->ensureIndex(array('UserID' => 1), array('unique' => true));
-		$this->mongo->packet->ensureIndex(array('ID' => 1), array('unique' => true));
-		$this->mongo->packet->ensureIndex(array('Jid' => 1), array('unique' => true));
+		self::$mongo->user->ensureIndex(array('email' => 1), array('unique' => true));
+		self::$mongo->user->ensureIndex(array('UserID' => 1), array('unique' => true));
+		self::$mongo->packet->ensureIndex(array('ID' => 1), array('unique' => true));
+		self::$mongo->packet->ensureIndex(array('Jid' => 1), array('unique' => true));
 
-		foreach( self::config{'Applications'} as $app => $val)
+		foreach( self::$config{'Applications'} as $app => $val)
 		{
 			foreach($val as $datatype => $content)
 			{
@@ -156,50 +152,50 @@ class JNTP
 				{
 					if($key != 'ID' && $key != 'Jid')
 					{
-						$this->mongo->packet->ensureIndex(array($key => 1, 'ID' => 1));
+						self::$mongo->packet->ensureIndex(array($key => 1, 'ID' => 1));
 					}
 				}
 			}
 		}
 	}
 
-	function loadDataType()
+	static function loadDataType()
 	{
-		$datatype = $this->packet{'Data'}{'DataType'};
-		if( $application = $this->datatypeByApplication[$datatype] )
+		$datatype = self::$packet{'Data'}{'DataType'};
+		if( $application = self::$datatypeByApplication[$datatype] )
 		{
 			require_once(__DIR__.'/../../'.$application.'/DataType/'.$datatype.'/'.$datatype.'.php');
-			$this->datatype = new DataType();
+			self::$datatype = new DataType();
 			return true;
 		}
 		return false;
 	}
 
-	function startSession($session, $userid, $privilege)
+	static function startSession($session, $userid, $privilege)
 	{
 		if(!$session)
 		{
 			$session = sha1(rand(0, 9e16).uniqid());
-			$this->mongo->user->update(
+			self::$mongo->user->update(
 			    array("UserID" => $userid),
 			    array('$set' => array('Session'=>$session))
 			);
 		}
 		setcookie("JNTP-Session", $session, time()+360000);
 
-		$this->id = $userid;
-		$this->userid = $userid.'@'.self::config{'domain'};
-		$this->privilege = $privilege;
-		$this->session = $session;
+		self::$id = $userid;
+		self::$userid = $userid.'@'.self::$config{'domain'};
+		self::$privilege = $privilege;
+		self::$session = $session;
 	}
 
 	// Initialise la session
-	function setSession()
+	static function setSession()
 	{
 		$session = $_COOKIE["JNTP-Session"];
 
 		// Permit local connection
-		if(!isset($_SERVER['HTTP_REFERER']) || self::config['crossDomainAccept'])
+		if(!isset($_SERVER['HTTP_REFERER']) || self::$config['crossDomainAccept'])
 		{
 			header("Access-Control-Allow-Headers: JNTP-Session");
 			header("Access-Control-Allow-Origin: *");
@@ -216,37 +212,37 @@ class JNTP
 			if(!$session) return;
 		}
 
-		$obj = $this->mongo->user->findOne( array('Session' => ''.$session) );
+		$obj = self::$mongo->user->findOne( array('Session' => ''.$session) );
 		if(count($obj) > 0)
 		{
-			$this->id = $obj{'UserID'};
-			$this->userid = $obj{'UserID'}.'@'.self::config{'domain'};
-			$this->privilege = $obj{'privilege'};
-			$this->session = $obj{'Session'};
+			self::$id = $obj{'UserID'};
+			self::$userid = $obj{'UserID'}.'@'.self::$config{'domain'};
+			self::$privilege = $obj{'privilege'};
+			self::$session = $obj{'Session'};
 		}
 	}
 
 	// Détruit la session
-	function destroySession()
+	static function destroySession()
 	{
-		$this->mongo->user->update(
-		    array("UserID" => $this->id),
+		self::$mongo->user->update(
+		    array("UserID" => self::$id),
 		    array('$set' => array('Session'=>false))
 		);
-		$this->id = false;
-		$this->userid = false;
-		$this->privilege = false;
-		$this->session = false;
+		self::$id = false;
+		self::$userid = false;
+		self::$privilege = false;
+		self::$session = false;
 	}
 
 	// Vérifie la validité d'un packet JNTP
-	function isValidPacket()
+	static function isValidPacket()
 	{
 		return true;
 	}
 
 	// Remplace les data longues par leur hash.
-	function replaceHash( $packet )
+	static function replaceHash( $packet )
 	{
 		if($packet{'Data'}{'Media'})
 		{
@@ -254,9 +250,9 @@ class JNTP
 			{
 				foreach($packet{'Data'}{'Media'}[$ind] as $key => $value)
 				{
-					if($this->maxDataLength!=0 && is_string($packet{'Data'}{'Media'}[$ind][$key]) && strlen($packet{'Data'}{'Media'}[$ind][$key]) > $this->maxDataLength)
+					if(self::$config{'maxDataLength'}!=0 && is_string($packet{'Data'}{'Media'}[$ind][$key]) && strlen($packet{'Data'}{'Media'}[$ind][$key]) > self::$config{'maxDataLength'})
 					{
-						$packet{'Data'}{'Media'}[$ind]['#'.$key] = $this->hashString($packet{'Data'}{'Media'}[$ind][$key]);
+						$packet{'Data'}{'Media'}[$ind]['#'.$key] = self::hashString($packet{'Data'}{'Media'}[$ind][$key]);
 						unset ( $packet{'Data'}{'Media'}[$ind][$key] );
 					}
 				}
@@ -266,38 +262,38 @@ class JNTP
 	}
 
 	// Fabrique le paquet JNTP qui encapsule la Data
-	function forgePacket()
+	static function forgePacket()
 	{
-		$this->packet{'Jid'} = $this->hashString( $this->canonicFormat($this->packet{'Data'}) );
-		if($this->packet{'Data'}{'DataID'} === "@jntp")
+		self::$packet{'Jid'} = self::hashString( self::canonicFormat(self::$packet{'Data'}) );
+		if(self::$packet{'Data'}{'DataID'} === "@jntp")
 		{
-			$this->packet{'Data'}{'DataID'} = $this->packet{'Jid'}.$this->packet{'Data'}{'DataID'};
+			self::$packet{'Data'}{'DataID'} = self::$packet{'Jid'}.self::$packet{'Data'}{'DataID'};
 		}
-		if(!$this->packet{'Route'}) $this->packet{'Route'} = array();
-		if(!$this->packet{'Meta'}) $this->packet{'Meta'} = array();
+		if(!self::$packet{'Route'}) self::$packet{'Route'} = array();
+		if(!self::$packet{'Meta'}) self::$packet{'Meta'} = array();
 
-		if (!$privateKey = openssl_pkey_get_private(self::config{'privateKey'})) die('Loading Private Key failed');
-		openssl_private_encrypt($this->packet{'Jid'}, $signature, $privateKey);
+		if (!$privateKey = openssl_pkey_get_private(self::$config{'privateKey'})) die('Loading Private Key failed');
+		openssl_private_encrypt(self::$packet{'Jid'}, $signature, $privateKey);
 
-		$this->packet{'Meta'}{'ServerSign'} = base64_encode($signature);
-		$this->packet{'Meta'}{'ServerPublicKey'} = self::config{'publicKey'};
+		self::$packet{'Meta'}{'ServerSign'} = base64_encode($signature);
+		self::$packet{'Meta'}{'ServerPublicKey'} = self::$config{'publicKey'};
 	}
 
 	// Insère le packet dans la base
-	function insertPacket()
+	static function insertPacket()
 	{
-		array_push($this->packet{'Route'}, self::config{'domain'});
-		$res = $this->mongo->counters->findAndModify(
+		array_push(self::$packet{'Route'}, self::$config{'domain'});
+		$res = self::$mongo->counters->findAndModify(
 			array("_id"=>"packetID"),
 			array('$inc'=>array("seq"=>1)),
 			null,
 			array("new" => true, "upsert"=>true)
 		);
 
-		$this->packet{'ID'} = $this->packet{'Data'}{'InjectionDate'}.'/'.$res['seq'];
+		self::$packet{'ID'} = self::$packet{'Data'}{'InjectionDate'}.'/'.$res['seq'];
 
 		try {
-			$this->mongo->packet->save($this->packet);
+			self::$mongo->packet->save(self::$packet);
 			return true;
 		} catch(MongoCursorException $e) {
 			return false;
@@ -305,72 +301,53 @@ class JNTP
 	}
 
 	// Supprime un packet JNTP
-	function deletePacket( $query )
+	static function deletePacket( $query )
 	{
-		return $this->mongo->packet->remove( $query );
+		return self::$mongo->packet->remove( $query );
 	}
 
 	// Récupère un packet JNTP
-	function getPacket( $query )
+	static function getPacket( $query )
 	{
-		return $this->mongo->packet->findOne( $query, array('_id'=>0) );
+		return self::$mongo->packet->findOne( $query, array('_id'=>0) );
 	}
 
 	// Vérifie si un packet d'un Jid donné est stocké dans la base
 	function isStorePacket( $query )
 	{
-		$bool = ($this->mongo->packet->find( $query )->count() > 0 ) ? true : false;
+		$bool = (self::$mongo->packet->find( $query )->count() > 0 ) ? true : false;
 		return $bool;
 	}
 
-	// Contacte les feeds pour distribuer $this->packet
-	function superDiffuse()
+	// Contacte les feeds pour distribuer packets
+	static function superDiffuse()
 	{
-		foreach(self::config{'outFeeds'} as $server => $value)
+		foreach(self::$config{'outFeeds'} as $server => $value)
 		{
-			if(!self::config{'outFeeds'}{$server}{'actif'}) continue;
-			if(in_array($server, $this->packet{'Route'})) continue;
+			if(!self::$config{'outFeeds'}{$server}{'actif'}) continue;
+			if(in_array($server, self::$packet{'Route'})) continue;
 
-			$jid = str_replace("'","\'",$this->packet{'Jid'});
-			$datatype = str_replace("'","\'",$this->packet{'Data'}{'DataType'});
-			$dataid = str_replace("'","\'",$this->packet{'Data'}{'DataID'});
-			if(self::config{'shellExec'})
+			$jid = str_replace("'","\'",self::$packet{'Jid'});
+			$datatype = str_replace("'","\'",self::$packet{'Data'}{'DataType'});
+			$dataid = str_replace("'","\'",self::$packet{'Data'}{'DataID'});
+			if(self::$config{'shellExec'})
 			{
-				$cmd = self::config{'phpPath'}.' '.__DIR__.'/../../../connector/'.self::config{'outFeeds'}{$server}{'type'}[1].' '.$server." '$jid' '$dataid' '$datatype'";
+				$cmd = self::$config{'phpPath'}.' '.__DIR__.'/../../../connector/'.self::$config{'outFeeds'}{$server}{'type'}[1].' '.$server." '$jid' '$dataid' '$datatype'";
 				shell_exec($cmd. ' >> /dev/null &');
 			}
 			else
 			{
-				require_once(__DIR__.'/../../../connector/'.self::config{'outFeeds'}{$server}{'type'}[1]);
+				require_once(__DIR__.'/../../../connector/'.self::$config{'outFeeds'}{$server}{'type'}[1]);
 				J2_($server, $jid, $dataid, $datatype);
 			}
 		}
 	}
 
-	function getIPs()
-	{
-		$record = dns_get_record ( $this->param{'From'}, DNS_ALL );
-		$ip = array();
-		for($i=0; $i < count($record); $i++)
-		{
-			if($record[$i]['type'] == 'A')
-			{
-				array_push($ip, $record[$i]['ip']);
-			}
-			else if($record[$i]['type'] == 'AAAA')
-			{
-				array_push($ip, $record[$i]['ipv6']);
-			}
-		}
-		return $ip;
-	}
-
-
 	// Retourne la ressource d'un packet requêtée au format URI ex : http://[server]/jntp/[Jid]/Data.FromName
-	function getResource($path) // à corriger.
+	static function getResource($path) // à corriger.
 	{
 		$tab = preg_split('/\//', $path);
-		$json  = $this->mongo->packet->findOne( array('Data.DataID'=>$tab[0]), array('_id'=>0) );
+		$json  = self::$mongo->packet->findOne( array('Data.DataID'=>$tab[0]), array('_id'=>0) );
 		$tab = preg_split("/([:\.\/]+)/", $tab[1], -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY );
 
 		if(!$json) {
@@ -457,23 +434,7 @@ class JNTP
 				}
 			}
 		}
-		if( $firstRecursivLevel ) return (json_encode(self::sortJSON($json), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
-		return $json;
-	}
-
-	static function sortJSON($json)
-	{
-		if (is_array($json) )
-		{
-			ksort($json);
-			foreach ($json as $key => $value)
-			{
-				if(is_array($value) || is_int($key) )
-				{
-					$json[$key] = self::sortJSON($value);
-				}
-			}
-		}
+		if( $firstRecursivLevel ) return (json_encode(Tools::sortJSON($json), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
 		return $json;
 	}
 
@@ -501,16 +462,6 @@ class JNTP
 		$iv = pack('H*', substr($key_iv, 65));
 		$str = base64_decode($str);
 		return substr(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $iv.$str, MCRYPT_MODE_CFB, $iv), 16);
-	}
-
-	static function getTpl($tpl, $assign)
-	{
-	  $tpl = file_get_contents($tpl);
-	  foreach ($assign as $key => $value)
-	  {
-	    $tpl = str_replace('%'.$key.'%', $value, $tpl);
-	  }
-	  return $tpl;
 	}
 
 }

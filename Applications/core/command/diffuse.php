@@ -1,130 +1,130 @@
 <?php
 
 // Query from Client
-if($jntp->param{'Data'})
+if(JNTP::$param{'Data'})
 {
-	$jntp->packet{'Data'} = $jntp->param{'Data'};
+	JNTP::$packet{'Data'} = JNTP::$param{'Data'};
 
 	// Check if Data.DataType is valid
-	if ($jntp->loadDataType())
+	if (JNTP::loadDataType())
 	{
 		// Check if Data is conform to DataType declaration
-		if( $jntp->datatype->isValidData() )
+		if( JNTP::$datatype->isValidData() )
 		{
 			// Traitment before insertion
-			if ( $jntp->datatype->beforeInsertion() )
+			if ( JNTP::$datatype->beforeInsertion() )
 			{
 				// Complete Data
-				$jntp->datatype->forgeData();
+				JNTP::$datatype->forgeData();
 				// Forge packet
-				$jntp->forgePacket();
+				JNTP::forgePacket();
 				// Insert packet in database
-				$jntp->insertPacket();
-				$jntp->datatype->afterInsertion($jntp->packet{'ID'});
+				JNTP::insertPacket();
+				JNTP::$datatype->afterInsertion(JNTP::$packet{'ID'});
 
-				$jntp->reponse{'code'} = "200";
-				$jntp->reponse{'body'}{'Data'}{'DataID'} = $jntp->packet{'Data'}{'DataID'};
-				$jntp->reponse{'body'}{'Data'}{'DataType'} = $jntp->packet{'Data'}{'DataType'};
-				$jntp->reponse{'body'}{'Jid'} = $jntp->packet{'Jid'};
-				$jntp->reponse{'body'}{'ID'} = $jntp->packet{'ID'};
-				$jntp->reponse{'info'} = 'Diffuse '.$jntp->packet{'Data'}{'DataID'}.' OK';
+				JNTP::$reponse{'code'} = "200";
+				JNTP::$reponse{'body'}{'Data'}{'DataID'} = JNTP::$packet{'Data'}{'DataID'};
+				JNTP::$reponse{'body'}{'Data'}{'DataType'} = JNTP::$packet{'Data'}{'DataType'};
+				JNTP::$reponse{'body'}{'Jid'} = JNTP::$packet{'Jid'};
+				JNTP::$reponse{'body'}{'ID'} = JNTP::$packet{'ID'};
+				JNTP::$reponse{'info'} = 'Diffuse '.JNTP::$packet{'Data'}{'DataID'}.' OK';
 			}
 		}
 		else
 		{
-			$jntp->reponse{'code'} = "400";
+			JNTP::$reponse{'code'} = "400";
 		}
 	}
 	else
 	{
-		$jntp->reponse{'code'} = "400";
-		$jntp->reponse{'info'} = "DataType ".$jntp->packet{'Data'}{'DataType'}." unsupported";
+		JNTP::$reponse{'code'} = "400";
+		JNTP::$reponse{'info'} = "DataType ".JNTP::$packet{'Data'}{'DataType'}." unsupported";
 	}
 }
 
 // Query from Server
-elseif($jntp->param{'Packet'})
+elseif(JNTP::$param{'Packet'})
 {
-	$jntp->packet = $jntp->param{'Packet'};
-	$jntp->loadDataType();
+	JNTP::$packet = JNTP::$param{'Packet'};
+	JNTP::loadDataType();
 
 	$want = false;
 	// Check if packet exists
-	if( !isset($jntp->packet{'Data'}{'DataID'}) || $jntp->packet{'Jid'} == substr($jntp->packet{'Data'}{'DataID'},0,27) )
+	if( !isset(JNTP::$packet{'Data'}{'DataID'}) || JNTP::$packet{'Jid'} == substr(JNTP::$packet{'Data'}{'DataID'},0,27) )
 	{
-		if( !$jntp->isStorePacket( array('Jid' => $jntp->packet{'Jid'}) ) )
+		if( !JNTP::isStorePacket( array('Jid' => JNTP::$packet{'Jid'}) ) )
 		{
 			$want = true;
 		}
 		else
 		{
-			$jntp->reponse{'code'} = "400";
-			$jntp->reponse{'info'} = 'Jid ' . $jntp->packet{'Jid'} . " already inserted";
+			JNTP::$reponse{'code'} = "400";
+			JNTP::$reponse{'info'} = 'Jid ' . JNTP::$packet{'Jid'} . " already inserted";
 		}
 	}
 	else
 	{
-		if( !$jntp->isStorePacket( array('Data.DataID'=>$jntp->packet{'Data'}{'DataID'}, 'Data.DataType'=>$jntp->packet{'Data'}{'DataType'} ) ) )
+		if( !JNTP::isStorePacket( array('Data.DataID'=>JNTP::$packet{'Data'}{'DataID'}, 'Data.DataType'=>JNTP::$packet{'Data'}{'DataType'} ) ) )
 		{
 			$want = true;
 		}
 		else
 		{
-			$jntp->reponse{'code'} = "400";
-			$jntp->reponse{'info'} = $jntp->packet{'Data'}{'DataType'} .':'. $jntp->packet{'Data'}{'DataID'} . " already inserted";
+			JNTP::$reponse{'code'} = "400";
+			JNTP::$reponse{'info'} = JNTP::$packet{'Data'}{'DataType'} .':'. JNTP::$packet{'Data'}{'DataID'} . " already inserted";
 		}
 	}
 
 	if( $want )
 	{
-		if( $jntp->isValidPacket() )
+		if( JNTP::isValidPacket() )
 		{
 			// Traitment before insertion
-			if ( $jntp->datatype->beforeInsertion() )
+			if ( JNTP::$datatype->beforeInsertion() )
 			{
 				// Insert packet in database
-				if($jntp->insertPacket())
+				if(JNTP::insertPacket())
 				{
-					$jntp->datatype->afterInsertion($jntp->packet{'ID'});
-					$jntp->reponse{'code'} = "200";
-					$jntp->reponse{'info'} = $jntp->packet{'Jid'} . " : inserted";
+					JNTP::$datatype->afterInsertion(JNTP::$packet{'ID'});
+					JNTP::$reponse{'code'} = "200";
+					JNTP::$reponse{'info'} = JNTP::$packet{'Jid'} . " : inserted";
 				}
 				else
 				{
-					$jntp->reponse{'code'} = "400";
-					$jntp->reponse{'info'} = $jntp->packet{'Jid'} . " : not inserted";
+					JNTP::$reponse{'code'} = "400";
+					JNTP::$reponse{'info'} = JNTP::$packet{'Jid'} . " : not inserted";
 				}
 			}
 		}
 		else
 		{
-			$jntp->reponse{'code'} = "400";
-			$jntp->reponse{'info'} = "invalid packet";
+			JNTP::$reponse{'code'} = "400";
+			JNTP::$reponse{'info'} = "invalid packet";
 		}
 	}
 	else
 	{
-		$jntp->reponse{'code'} = "400";
-		$jntp->reponse{'info'} = $jntp->packet{'Jid'} . " already inserted";
+		JNTP::$reponse{'code'} = "400";
+		JNTP::$reponse{'info'} = JNTP::$packet{'Jid'} . " already inserted";
 	}
 }
-elseif($jntp->param{'Propose'})
+elseif(JNTP::$param{'Propose'})
 {
-	for($i=0; $i<count($jntp->param{'Propose'}); $i++)
+	for($i=0; $i<count(JNTP::$param{'Propose'}); $i++)
 	{
-		$pack = $jntp->param{'Propose'}[$i];
+		$pack = JNTP::$param{'Propose'}[$i];
 		$jid = array();
 		$dataid = array();
 		if( !isset($pack{'Data'}{'DataID'}) || $pack{'Jid'} == substr($pack{'Data'}{'DataID'},0,27) )
 		{
-			if( !$jntp->isStorePacket( array('Jid' => $pack{'Jid'}) ) )
+			if( !JNTP::isStorePacket( array('Jid' => $pack{'Jid'}) ) )
 			{
 				array_push($jid, $pack{'Jid'});
 			}
 		}
 		else
 		{
-			if( !$jntp->isStorePacket( array('Data.DataID'=>$pack{'Data'}{'DataID'}, 'Data.DataType'=>$pack{'Data'}{'DataType'} ) ) )
+			if( !JNTP::isStorePacket( array('Data.DataID'=>$pack{'Data'}{'DataID'}, 'Data.DataType'=>$pack{'Data'}{'DataType'} ) ) )
 			{
 				array_push($dataid, $pack{'Data'}{'DataID'});
 			}
@@ -132,8 +132,8 @@ elseif($jntp->param{'Propose'})
 	}
 
 	$commande = array();
-	$jntp->reponse{'code'} = "200";
-	$jntp->reponse{'body'}{'Jid'} = $jid;
-	$jntp->reponse{'body'}{'Data.DataID'} = $dataid;
-	$jntp->reponse{'info'} = 'Proposition processed';
+	JNTP::$reponse{'code'} = "200";
+	JNTP::$reponse{'body'}{'Jid'} = $jid;
+	JNTP::$reponse{'body'}{'Data.DataID'} = $dataid;
+	JNTP::$reponse{'info'} = 'Proposition processed';
 }

@@ -1,15 +1,15 @@
 <?php
 
-if( $jntp->id )
+if( JNTP::$id )
 {
-	$obj = $jntp->mongo->user->findOne( array('UserID' => $jntp->id) );
-	$jntp->reponse{'code'} = "200";
-	$jntp->reponse{'body'} = array("FromName"=>$obj{'FromName'}, "FromMail"=>$obj{'FromMail'}, "ReplyTo"=>$obj{'ReplyTo'}, "UserID"=>$jntp->userid, "email"=>$obj{'email'}, "privilege"=>$jntp->privilege, "Session"=>$jntp->session, "hashkey"=>$obj{'hashkey'});
-	$jntp->reponse{'info'} = "User ".$jntp->userid." connected on ".$jntp->config{'domain'};
+	$obj = JNTP::$mongo->user->findOne( array('UserID' => JNTP::$id) );
+	JNTP::$reponse{'code'} = "200";
+	JNTP::$reponse{'body'} = array("FromName"=>$obj{'FromName'}, "FromMail"=>$obj{'FromMail'}, "ReplyTo"=>$obj{'ReplyTo'}, "UserID"=>JNTP::$userid, "email"=>$obj{'email'}, "privilege"=>JNTP::$privilege, "Session"=>JNTP::$session, "hashkey"=>$obj{'hashkey'});
+	JNTP::$reponse{'info'} = "User ".JNTP::$userid." connected on ".JNTP::$config{'domain'};
 }
 else
 {
-	$jntp->reponse{'code'} = "400";
-	$jntp->reponse{'body'} = array();
-	$jntp->reponse{'info'} = "User not connected";
+	JNTP::$reponse{'code'} = "400";
+	JNTP::$reponse{'body'} = array();
+	JNTP::$reponse{'info'} = "User not connected";
 }

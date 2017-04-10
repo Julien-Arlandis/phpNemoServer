@@ -88,18 +88,18 @@ if (!isset($_POST['action']) )
       "private_key_bits" => 1024,
       "private_key_type" => OPENSSL_KEYTYPE_RSA,
   );
-  
+
   $res = openssl_pkey_new($config);
   openssl_pkey_export($res, $privateKey);
-  
+
   $pubkey = openssl_pkey_get_details($res);
   $publicKey = $pubkey['key'];
-  
+
   $publicKey = (substr($publicKey, -1, 1) == "\n") ? substr($publicKey, 0, -1) : $publicKey;
   $privateKey = (substr($privateKey, -1, 1) == "\n") ? substr($privateKey, 0, -1) : $privateKey;
-  
-  
-  echo JNTP::getTpl(__DIR__."/tpl/install_form.tpl",
+
+
+  echo Tools::getTpl(__DIR__."/tpl/install_form.tpl",
   			array(
   				"server_version" => SERVER_VERSION,
   				"publicKey" => $publicKey,
@@ -117,7 +117,7 @@ else
 /*
 * Création du fichier general.json
 */
-	
+
 $file_general_copy = __DIR__."/config.inc.json";
 $file_general_final = __DIR__."/../conf/config.json";
 $buffer = json_decode(file_get_contents($file_general_copy), true);
@@ -137,11 +137,11 @@ fclose($file);
 * Création de la base de données
 */
 
-$jntp = new JNTP();
+JNTP::init();
 if(isset($_POST['DEL_DB']))
 {
-	$jntp->mongo->drop();
-	$jntp->createIndex();
+	JNTP::$mongo->drop();
+	JNTP::createIndex();
 }
 
 /*
@@ -155,7 +155,7 @@ if(isset($_POST['ADD_ADMIN']))
 	$password_crypt = sha1($checksum.$_POST['PASSWORD']);
 	$date = date("Y-m-d").'T'.date("H:i:s").'Z';
 
-	$res = $jntp->mongo->counters->findAndModify(
+	$res = JNTP::$mongo->counters->findAndModify(
 		array("_id"=>"UserID"),
 		array('$inc'=>array("seq"=>1)),
 		null,
@@ -164,20 +164,20 @@ if(isset($_POST['ADD_ADMIN']))
 	$userid = $res['seq'];
 	$user = array('UserID' => $userid, 'user' => $_POST['USER'], 'email' => $_POST['EMAIL'], 'password' => $password_crypt, 'privilege' => 'admin', 'hashkey' => $hashkey, 'date' => $date, 'checksum' => $checksum, 'Session'=>$session);
 
-	$jntp->mongo->user->insert($user);
+	JNTP::$mongo->user->insert($user);
 }
 
 /*
 * Synchronisation des groupes
 */
-$jntp->privilege = 'admin';
-$jntp->exec('["synchronizeNewsgroup"]');
+JNTP::$privilege = 'admin';
+JNTP::exec('["synchronizeNewsgroup"]');
 
-echo JNTP::getTpl(__DIR__."/tpl/install_valid.tpl",
+echo Tools::getTpl(__DIR__."/tpl/install_valid.tpl",
 			array(
 				"server_version" => SERVER_VERSION,
-				"dbName" => $jntp->config{'dbName'},
-				"info" => $jntp->reponse{'info'}
+				"dbName" => JNTP::$config{'dbName'},
+				"info" => JNTP::$reponse{'info'}
 			     )
 	);
 

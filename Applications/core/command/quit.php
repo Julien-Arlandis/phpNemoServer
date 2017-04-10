@@ -1,5 +1,5 @@
 <?php
 
-$jntp->destroySession();
-$jntp->reponse{'code'} = "200";
-$jntp->reponse{'info'} = "GoodBye!";
+JNTP::destroySession();
+JNTP::$reponse{'code'} = "200";
+JNTP::$reponse{'info'} = "GoodBye!";

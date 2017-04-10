@@ -3,48 +3,48 @@
 $query = array();
 $sort = array('name' => 1);
 
-if(isset($jntp->param{'name'}))
+if(isset(JNTP::$param{'name'}))
 {
-	if(!preg_match('/^#?[a-zA-Z0-9*.-]+$/', $jntp->param{'name'}))
+	if(!preg_match('/^#?[a-zA-Z0-9*.-]+$/', JNTP::$param{'name'}))
 	{
-		$jntp->reponse{'code'} = "400";
-		$jntp->reponse{'info'} = "char not allowed";
-		$jntp->send();
+		JNTP::$reponse{'code'} = "400";
+		JNTP::$reponse{'info'} = "char not allowed";
+		JNTP::send();
 	}
 	else
 	{
-		$search = str_replace("*","[a-zA-Z0-9*.-]*",$jntp->param{'name'});
+		$search = str_replace("*","[a-zA-Z0-9*.-]*",JNTP::$param{'name'});
 		$regexObj = new MongoRegex("/^".$search."/i");
 		array_push($query, array('name' => $regexObj));
 	}
 }
 
-if(isset($jntp->param{'level'}))
+if(isset(JNTP::$param{'level'}))
 {
-	$level = substr_count($jntp->param{'name'}, '.') + $jntp->param{'level'};
+	$level = substr_count(JNTP::$param{'name'}, '.') + JNTP::$param{'level'};
 	array_push($query, array('level' => $level));
 }
 
-if(isset($jntp->param{'type'}))
+if(isset(JNTP::$param{'type'}))
 {
-	array_push($query, array('type' => $jntp->param{'type'}));
+	array_push($query, array('type' => JNTP::$param{'type'}));
 }
 
-if(isset($jntp->param{'category'}))
+if(isset(JNTP::$param{'category'}))
 {
 	array_push($query, array('category' => array('$exists' => true) ));
 	$sort = array('sort' => 1, 'name' => 1);
 }
 
-if(isset($jntp->param{'total'}) && is_numeric($jntp->param{'total'}) )
+if(isset(JNTP::$param{'total'}) && is_numeric(JNTP::$param{'total'}) )
 {
-	$cursor = $jntp->mongo->newsgroup->find( array('$and' => $query) )->sort($sort)->limit($jntp->param{'total'});
+	$cursor = JNTP::$mongo->newsgroup->find( array('$and' => $query) )->sort($sort)->limit(JNTP::$param{'total'});
 }else{
-	$cursor = $jntp->mongo->newsgroup->find( array('$and' => $query) )->sort($sort);
+	$cursor = JNTP::$mongo->newsgroup->find( array('$and' => $query) )->sort($sort);
 }
 
-$jntp->reponse{'code'} = "200";
-$jntp->reponse{'body'} = array();
+JNTP::$reponse{'code'} = "200";
+JNTP::$reponse{'body'} = array();
 
 foreach ($cursor as $obj)
 {
@@ -60,9 +60,9 @@ foreach ($cursor as $obj)
 	}
 	$data{'rules'}{'w'} = $obj['rules']['w'];
 	if($obj['rules']['m']) $data{'rules'}{'m'} = $obj['rules']['m'];
-	if(!$jntp->userid) $data{'rules'}{'w'} = 0;
-	if(!$jntp->userid && $obj['rulesIfNotConnected']) $data{'rules'}{'w'} = $obj['rulesIfNotConnected']['w'];
+	if(!JNTP::$userid) $data{'rules'}{'w'} = 0;
+	if(!JNTP::$userid && $obj['rulesIfNotConnected']) $data{'rules'}{'w'} = $obj['rulesIfNotConnected']['w'];
 	if($obj['rules']['m'] == '1') $data{'rules'}{'w'} = '0';
-	array_push($jntp->reponse{'body'}, $data);
+	array_push(JNTP::$reponse{'body'}, $data);
 }
-$jntp->reponse{'info'} = "Get ".count($jntp->reponse{'body'})." Newsgroup(s)";
+JNTP::$reponse{'info'} = "Get ".count(JNTP::$reponse{'body'})." Newsgroup(s)";

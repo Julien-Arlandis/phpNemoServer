@@ -2,16 +2,15 @@
 
 class DataType
 {
-	function __construct() 
+	function __construct()
 	{
 	}
 
 	function isValidData()
 	{
-		global $jntp;
-		if($jntp->privilege != "admin")
+		if(JNTP::$privilege != "admin")
 		{
-			$jntp->reponse{'info'} = "Authentification required";
+			JNTP::$reponse{'info'} = "Authentification required";
 			return false;
 		}
 		return true;
@@ -19,35 +18,32 @@ class DataType
 
 	function forgeData()
 	{
-		global $jntp;
-		$jntp->packet{'Data'}{'DataID'} = "@jntp";
-		$jntp->packet{'Data'}{'InjectionDate'} = date("Y-m-d")."T".date("H:i:s")."Z";
-		$jntp->packet{'Data'}{'OriginServer'} = $jntp->config{'domain'};
-		$jntp->packet{'Data'}{'Organization'} = $jntp->config{'organization'};
-		$jntp->packet{'Data'}{'Browser'} = $_SERVER['HTTP_USER_AGENT'];
-		$jntp->packet{'Data'}{'PostingHost'} = sha1($_SERVER['REMOTE_ADDR']);
-		$jntp->packet{'Data'}{'ComplaintsTo'} = $jntp->config{'administrator'};
-		$jntp->packet{'Data'}{'ProtocolVersion'} = $jntp->config{'protocolVersion'};
-		$jntp->packet{'Data'}{'Server'} = "PhpNemoServer/".$jntp->config{'serverVersion'};
+		JNTP::$packet{'Data'}{'DataID'} = "@jntp";
+		JNTP::$packet{'Data'}{'InjectionDate'} = date("Y-m-d")."T".date("H:i:s")."Z";
+		JNTP::$packet{'Data'}{'OriginServer'} = JNTP::$config{'domain'};
+		JNTP::$packet{'Data'}{'Organization'} = JNTP::$config{'organization'};
+		JNTP::$packet{'Data'}{'Browser'} = $_SERVER['HTTP_USER_AGENT'];
+		JNTP::$packet{'Data'}{'PostingHost'} = sha1($_SERVER['REMOTE_ADDR']);
+		JNTP::$packet{'Data'}{'ComplaintsTo'} = JNTP::$config{'administrator'};
+		JNTP::$packet{'Data'}{'ProtocolVersion'} = JNTP::$config{'protocolVersion'};
+		JNTP::$packet{'Data'}{'Server'} = "PhpNemoServer/".JNTP::$config{'serverVersion'};
 
-		if ($jntp->userid)
+		if (JNTP::$userid)
 		{
-			$jntp->packet{'Data'}{'UserID'} = $jntp->userid;
+			JNTP::$packet{'Data'}{'UserID'} = JNTP::$userid;
 		}
 	}
 
 	function beforeInsertion()
 	{
-		global $jntp;
-		
 		$cfg = json_decode(file_get_contents(__DIR__.'/../../conf/newsgroups.json'), true);
-		
-		if( $jntp->packet{'Data'}{'DataType'} == 'ListGroup' && $jntp->packet{'Data'}{'ListGroup'} )
+
+		if( JNTP::$packet{'Data'}{'DataType'} == 'ListGroup' && JNTP::$packet{'Data'}{'ListGroup'} )
 		{
-			$value = new MongoRegex("/^".preg_quote(substr($jntp->packet{'Data'}{'Hierarchy'},0,-1))."/");
-			$jntp->mongo->newsgroup->remove(array("name"=>$value));
-			$jntp->mongo->newsgroup->ensureIndex(array('name' => 1), array('unique' => true)); // à vérifier
-			foreach($jntp->packet{'Data'}{'ListGroup'} as $cle => $obj)
+			$value = new MongoRegex("/^".preg_quote(substr(JNTP::$packet{'Data'}{'Hierarchy'},0,-1))."/");
+			JNTP::$mongo->newsgroup->remove(array("name"=>$value));
+			JNTP::$mongo->newsgroup->ensureIndex(array('name' => 1), array('unique' => true)); // à vérifier
+			foreach(JNTP::$packet{'Data'}{'ListGroup'} as $cle => $obj)
 			{
 				if(isset($cfg['rules'][$obj['name']]))
 				{
@@ -59,7 +55,7 @@ class DataType
 
 				unset( $obj{'_id'} );
 				try {
-					$jntp->mongo->newsgroup->save($obj);
+					JNTP::$mongo->newsgroup->save($obj);
 				} catch(MongoCursorException $e) { }
 
 				$hierarchies = getHierarchy(array($obj['name']));
@@ -80,7 +76,7 @@ class DataType
 					$obj2['type'] = 'H';
 					$obj2['level'] = substr_count($oneHierarchy,'.');
 					try {
-					$jntp->mongo->newsgroup->save($obj2);
+					JNTP::$mongo->newsgroup->save($obj2);
 					} catch(MongoCursorException $e) { }
 				}
 			}
@@ -91,8 +87,7 @@ class DataType
 
 	function afterInsertion($idPacket)
 	{
-		global $jntp;
-		$jntp->superDiffuse();
+		JNTP::superDiffuse();
 		return $idPacket;
 	}
 }
@@ -100,8 +95,6 @@ class DataType
 // Retourne les hiérarchies et les sous hiérarchies qui contiennent les newsgroups déclarés dans Data/Newsgroups
 function getHierarchy($newsgroups = false)
 {
-	global $jntp;
-
 	$hierarchy = array();
 	foreach($newsgroups as $oneGroup)
 	{
@@ -118,7 +111,7 @@ function getHierarchy($newsgroups = false)
 				for ($i=0; $i<count($tab)-1; $i++)
 				{
 					$str .= $tab[$i].".";
-					if( !in_array($str."*", $hierarchy) ) 
+					if( !in_array($str."*", $hierarchy) )
 					{
 						array_push($hierarchy, $str."*");
 					}

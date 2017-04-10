@@ -2,7 +2,7 @@
 
 function setProjection($key)
 {
-	/* 
+	/*
 	Syntaxe pour extraire un tableau :
 	Data.References:3,5 => renvoie les cellules 3, 4 et 5 => $slice: [ 3, 5 ]
 	Data.References:2,N => renvoie les cellules 2 à N
@@ -11,7 +11,7 @@ function setProjection($key)
 	*/
     $key = explode(':', $key);
     $res = array();
-    
+
     if( count($key) != 2) {
         return 1;
     }else{
@@ -61,25 +61,25 @@ function setProjection($key)
 
 $projection = array('_id'=>0);
 $count = false;
-$listen = ($jntp->param{'listen'} && $jntp->param{'listen'} == 1 ) ? true : false;
+$listen = (JNTP::$param{'listen'} && JNTP::$param{'listen'} == 1 ) ? true : false;
 $delay = 1;
 $limit = 500;
 $count_packet = 0;
 
-if($jntp->param{'limit'} && is_numeric($jntp->param{'limit'}) )
+if(JNTP::$param{'limit'} && is_numeric(JNTP::$param{'limit'}) )
 {
-	$limit = ($jntp->param{'limit'} > $limit) ? $limit : $jntp->param{'limit'};
+	$limit = (JNTP::$param{'limit'} > $limit) ? $limit : JNTP::$param{'limit'};
 }
 
-if(is_int($jntp->param{'maxDataLength'}) && ($jntp->param{'maxDataLength'} > 27 || $jntp->param{'maxDataLength'} == 0) )
+if(is_int(JNTP::$param{'maxDataLength'}) && (JNTP::$param{'maxDataLength'} > 27 || JNTP::$param{'maxDataLength'} == 0) )
 {
-	$jntp->maxDataLength = $jntp->param{'maxDataLength'};
+	JNTP::$config{'maxDataLength'} = JNTP::$param{'maxDataLength'};
 }
 
-// 
-if($jntp->param{'group'})
+//
+if(JNTP::$param{'group'})
 {
-	foreach($jntp->param{'group'} as $field)
+	foreach(JNTP::$param{'group'} as $field)
 	{
 		if($field == 'count')
 		{
@@ -87,36 +87,36 @@ if($jntp->param{'group'})
 		}
 	}
 }
-elseif($jntp->param{'select'})
+elseif(JNTP::$param{'select'})
 {
 	$projection['ID'] = 1;
 	$projection['Jid'] = 1;
-	foreach($jntp->param{'select'} as $field)
-	{		
+	foreach(JNTP::$param{'select'} as $field)
+	{
 		$item = explode(':',$field);
 		$projection[$item[0]] = setProjection($field);
 	}
 }
 
-if( $jntp->param{'filter'})
+if( JNTP::$param{'filter'})
 {
-	$application = $jntp->datatypeByApplication[ $jntp->param{'filter'}{'Data.DataType'} ];
+	$application = JNTP::$datatypeByApplication[ JNTP::$param{'filter'}{'Data.DataType'} ];
 	if( !$application )
 	{
-		$jntp->reponse{'code'} = "500";
-		$jntp->reponse{'info'} = "DataType not found";
-		$jntp->send();
+		JNTP::$reponse{'code'} = "500";
+		JNTP::$reponse{'info'} = "DataType not found";
+		JNTP::send();
 	}
 
 	$query = array();
 
-	foreach($jntp->param{'filter'} as $key => $value)
+	foreach(JNTP::$param{'filter'} as $key => $value)
 	{
-		if( !in_array($key, $jntp->config['Applications']['core']['DataType']['ProtoData']['filter'] ) && !in_array($key, $jntp->config['Applications'][$application]['DataType'][$jntp->param{'filter'}{'Data.DataType'}]['filter'] ) )
+		if( !in_array($key, JNTP::$config['Applications']['core']['DataType']['ProtoData']['filter'] ) && !in_array($key, JNTP::$config['Applications'][$application]['DataType'][JNTP::$param{'filter'}{'Data.DataType'}]['filter'] ) )
 		{
-			$jntp->reponse{'code'} = "400";
-			$jntp->reponse{'info'} = "Filter [".$key."] not allowed";
-			$jntp->send();
+			JNTP::$reponse{'code'} = "400";
+			JNTP::$reponse{'info'} = "Filter [".$key."] not allowed";
+			JNTP::send();
 		}
 
 		if( is_string($value) || is_numeric($value) )
@@ -156,11 +156,11 @@ if( $jntp->param{'filter'})
 	do {
 		if(!$count)
 		{
-			$cursor = $jntp->mongo->packet->find( array('$and'=>$query), $projection )->limit($limit)->sort(array('ID' => -1));
+			$cursor = JNTP::$mongo->packet->find( array('$and'=>$query), $projection )->limit($limit)->sort(array('ID' => -1));
 		}
 		else
 		{
-			$cursor = $jntp->mongo->packet->count(array('$and'=>$query));
+			$cursor = JNTP::$mongo->packet->count(array('$and'=>$query));
 		}
 		if(!$firstQuery)
 		{
@@ -170,33 +170,32 @@ if( $jntp->param{'filter'})
 		$time_execution += $delay;
 		if($time_execution >= $time_execution_max)
 		{
-			$jntp->reponse{'code'} = "200";
-			$jntp->reponse{'body'} = array();
-			$jntp->send();
+			JNTP::$reponse{'code'} = "200";
+			JNTP::$reponse{'body'} = array();
+			JNTP::send();
 		}
 	} while($listen && $cursor->count()==0);
 }
 
 if(!$count)
 {
-	$jntp->reponse{'code'} = "200";
-	$jntp->reponse{'body'} = array();
+	JNTP::$reponse{'code'} = "200";
+	JNTP::$reponse{'body'} = array();
 	foreach($cursor as $packet)
 	{
 		$count_packet++;
-		if( $jntp->privilege != 'admin' && $jntp->privilege != 'moderator')
+		if( JNTP::$privilege != 'admin' && JNTP::$privilege != 'moderator')
 		{
 			unset( $packet{'Meta'}{'ForAdmin'} );
 		}
-		array_push($jntp->reponse{'body'}, $jntp->replaceHash( $packet ) );
+		array_push(JNTP::$reponse{'body'}, JNTP::replaceHash( $packet ) );
 	}
-	$jntp->reponse{'info'} = "Get ".$count_packet." packet(s)";
-	if ($jntp->param{'select'}) $jntp->reponse{'info'} .= " with projection";
+	JNTP::$reponse{'info'} = "Get ".$count_packet." packet(s)";
+	if (JNTP::$param{'select'}) JNTP::$reponse{'info'} .= " with projection";
 }
 else
 {
-	$jntp->reponse{'code'} = "200";
-	$jntp->reponse{'body'} = array("count"=>$cursor);
-	$jntp->reponse{'info'} = "Count ".$cursor->count()." packet(s)";
+	JNTP::$reponse{'code'} = "200";
+	JNTP::$reponse{'body'} = array("count"=>$cursor);
+	JNTP::$reponse{'info'} = "Count ".$cursor->count()." packet(s)";
 }
-
