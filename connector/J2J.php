@@ -23,8 +23,7 @@ This file is part of PhpNemoServer.
 
 function J2_($server, $jid, $dataid, $datatype)
 {
-	$jntp = new JNTP(false);
-
+	global $jntp;
 	$propose = array();
 	$propose[0]{'Jid'} = $jid;
 	$propose[0]{'Data'}{'DataType'} = $datatype;
@@ -61,6 +60,7 @@ function J2_($server, $jid, $dataid, $datatype)
 
 if(count($argv)>1) 
 {
+	if (!$jntp) $jntp = new JNTP(false);
 	require_once(__DIR__."/../Applications/core/lib/class.jntp.php");
 	J2_($argv[1], $argv[2], $argv[3], $argv[4]);
 }
