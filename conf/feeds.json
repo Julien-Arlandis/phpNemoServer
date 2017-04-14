@@ -1,5 +1,5 @@
 {
-	"news2.nemoweb.net": {
+	"admin.3dmap.fr": {
 		"actif": 1,
 		"type": [
 			"JNTP",
@@ -19,8 +19,8 @@
 		}],
 		"mail": "newsmaster@exemple2.net"
 	},
-	"nntpserver.net": {
-		"actif": 0,
+	"usenet.pasdenom.info": {
+		"actif": 1,
 		"type": [
 			"NNTP",
 			"J2N.php"
