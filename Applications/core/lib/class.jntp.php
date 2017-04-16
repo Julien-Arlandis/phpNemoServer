@@ -53,6 +53,11 @@ class JNTP
 		if( $withSession ) self::setSession();
 	}
 
+	static function go($app, $cmd)
+	{
+		require(__DIR__.'/../../'.$app.'/command/'.$cmd.'.php');
+	}
+	
 	// Execute une commande JNTP sur le présent serveur ou sur un serveur distant
 	static function exec($post, $server = false)
 	{
@@ -106,12 +111,7 @@ class JNTP
 		$application = self::$commandByApplication[self::$command];
 		if ($application)
 		{
-			function go($script)
-			{
-				global $jntp;
-				require($script);
-			}
-			go(__DIR__.'/../../'.$application.'/command/'.self::$command.'.php');
+			self::go($application, self::$command);
 		}
 		else
 		{
