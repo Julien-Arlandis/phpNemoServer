@@ -175,10 +175,12 @@ class NNTP
 					$body = implode("\r\n", $body);
 				}
 				
-				$body = preg_replace('/(\[youtube\])([a-zA-Z0-9_\-]*)(\[\/youtube\])/', "\r\nhttp://youtu.be/$2\r\n", $body);
+				
+				
+				$body = preg_replace('/(\[youtube\])([a-zA-Z0-9_\-]*)(\[\/youtube\])/', "\r\n<http://youtu.be/$2>\r\n", $body);
 				$body = preg_replace('/(\[signature\])(.*)(\[\/signature\])/s', "\r\n-- \r\n$2", $body);
-				$body = preg_replace('/(\[dailymotion\])([a-zA-Z0-9_\-]*)(\[\/dailymotion\])/', "\r\nhttp://www.dailymotion.com/embed/video/$2\r\n", $body);
-				$body = preg_replace('/(\[twitter\])(.*)(\[\/twitter\])/', "\r\nhttps://twitter.com/twitterapi/status/$2\r\n", $body);
+				$body = preg_replace('/(\[dailymotion\])([a-zA-Z0-9_\-]*)(\[\/dailymotion\])/', "\r\n<http://www.dailymotion.com/embed/video/$2>\r\n", $body);
+				$body = preg_replace('/(\[twitter\])(.*)(\[\/twitter\])/', "\r\n<https://twitter.com/twitterapi/status/$2>\r\n", $body);
 				$pattern = '/\[\/?(a|img|file|pdf|tex|b|i|u|s|spoil|signature|abc|pgn|map|twitter|code|cite|audio|youtube|dailymotion|table|td|tr|font(=.{1,15})?|size(=.{1,3})?)\]/';
 				$body = preg_replace($pattern, '', $body);
 
