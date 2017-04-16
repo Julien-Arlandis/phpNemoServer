@@ -415,10 +415,10 @@ possibilité d'indentation des clés et des valeurs.
 packet =
 {
    "Jid": String,
+   "ID": String,
    "Route": Array,
-   "ID": Number,
-   "ServerSign": String,
    "Data": Object,
+   "ServerSign": String,
    "Meta": Object
 }
 
