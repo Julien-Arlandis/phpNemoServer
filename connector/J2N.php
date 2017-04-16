@@ -52,7 +52,7 @@ function J2_($server, $jid, $dataid, $datatype)
 
 if(count($argv)>1)
 {
-	require_once(__DIR__."/../Applications/core/lib/class.jntp.php");
+	require_once(__DIR__."/../lib/class.jntp.php");
 	require_once(__DIR__."/../Applications/NemoNetwork/lib/class.nntp.php");
 	JNTP::init(false);
 	J2_($argv[1], $argv[2], $argv[3], $argv[4]);
