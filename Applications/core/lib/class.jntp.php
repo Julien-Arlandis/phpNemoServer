@@ -120,43 +120,12 @@ class JNTP
 		}
 	}
 
-	// Met à jour les informations de l' utilisateur
-	static function updateUserConfig($arr)
-	{
-		self::$mongo->user->update(
-		    array("UserID" => self::$id),
-		    array('$set' => $arr)
-		);
-	}
-
 	// Retourne le résultat de la requête et stoppe le script
 	static function send()
 	{
 		$res = json_encode( self::$reponse );
 		Tools::log($res, '>');
 		die( $res );
-	}
-
-	static function createIndex()
-	{
-		self::$mongo->user->ensureIndex(array('email' => 1), array('unique' => true));
-		self::$mongo->user->ensureIndex(array('UserID' => 1), array('unique' => true));
-		self::$mongo->packet->ensureIndex(array('ID' => 1), array('unique' => true));
-		self::$mongo->packet->ensureIndex(array('Jid' => 1), array('unique' => true));
-
-		foreach( self::$config{'Applications'} as $app => $val)
-		{
-			foreach($val{'DataType'} as $datatype => $content)
-			{
-				foreach($content{'filter'} as $key)
-				{
-					if($key != 'ID' && $key != 'Jid')
-					{
-						self::$mongo->packet->ensureIndex(array($key => 1, 'ID' => 1));
-					}
-				}
-			}
-		}
 	}
 
 	static function loadDataType()
@@ -169,70 +138,6 @@ class JNTP
 			return true;
 		}
 		return false;
-	}
-
-	static function startSession($session, $userid, $privilege)
-	{
-		if(!$session)
-		{
-			$session = sha1(rand(0, 9e16).uniqid());
-			self::$mongo->user->update(
-			    array("UserID" => $userid),
-			    array('$set' => array('Session'=>$session))
-			);
-		}
-		setcookie("JNTP-Session", $session, time()+360000);
-
-		self::$id = $userid;
-		self::$userid = $userid.'@'.self::$config{'domain'};
-		self::$privilege = $privilege;
-		self::$session = $session;
-	}
-
-	// Initialise la session
-	static function setSession()
-	{
-		$session = $_COOKIE["JNTP-Session"];
-
-		// Permit local connection
-		if(!isset($_SERVER['HTTP_REFERER']) || self::$config['crossDomainAccept'])
-		{
-			header("Access-Control-Allow-Headers: JNTP-Session");
-			header("Access-Control-Allow-Origin: *");
-			if(isset( $_SERVER['JNTP-Session'] ) && $_SERVER['JNTP-Session'] != '')
-			{
-				$session = $_SERVER['JNTP-Session'];
-			}
-		}
-
-		if(!$session)
-		{
-			$headers = getallheaders();
-			$session = $headers["JNTP-Session"];
-			if(!$session) return;
-		}
-
-		$obj = self::$mongo->user->findOne( array('Session' => ''.$session) );
-		if(count($obj) > 0)
-		{
-			self::$id = $obj{'UserID'};
-			self::$userid = $obj{'UserID'}.'@'.self::$config{'domain'};
-			self::$privilege = $obj{'privilege'};
-			self::$session = $obj{'Session'};
-		}
-	}
-
-	// Détruit la session
-	static function destroySession()
-	{
-		self::$mongo->user->update(
-		    array("UserID" => self::$id),
-		    array('$set' => array('Session'=>false))
-		);
-		self::$id = false;
-		self::$userid = false;
-		self::$privilege = false;
-		self::$session = false;
 	}
 
 	// Vérifie la validité d'un packet JNTP
@@ -437,6 +342,8 @@ class JNTP
 		if( $firstRecursivLevel ) return (json_encode(Tools::sortJSON($json), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
 		return $json;
 	}
+	
+	/* à migrer */
 
 	static function hashString($str)
 	{
@@ -462,6 +369,101 @@ class JNTP
 		$iv = pack('H*', substr($key_iv, 65));
 		$str = base64_decode($str);
 		return substr(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $iv.$str, MCRYPT_MODE_CFB, $iv), 16);
+	}
+	
+	static function createIndex()
+	{
+		self::$mongo->user->ensureIndex(array('email' => 1), array('unique' => true));
+		self::$mongo->user->ensureIndex(array('UserID' => 1), array('unique' => true));
+		self::$mongo->packet->ensureIndex(array('ID' => 1), array('unique' => true));
+		self::$mongo->packet->ensureIndex(array('Jid' => 1), array('unique' => true));
+
+		foreach( self::$config{'Applications'} as $app => $val)
+		{
+			foreach($val{'DataType'} as $datatype => $content)
+			{
+				foreach($content{'filter'} as $key)
+				{
+					if($key != 'ID' && $key != 'Jid')
+					{
+						self::$mongo->packet->ensureIndex(array($key => 1, 'ID' => 1));
+					}
+				}
+			}
+		}
+	}
+	
+	// Met à jour les informations de l' utilisateur
+	static function updateUserConfig($arr)
+	{
+		self::$mongo->user->update(
+		    array("UserID" => self::$id),
+		    array('$set' => $arr)
+		);
+	}
+	
+	static function startSession($session, $userid, $privilege)
+	{
+		if(!$session)
+		{
+			$session = sha1(rand(0, 9e16).uniqid());
+			self::$mongo->user->update(
+			    array("UserID" => $userid),
+			    array('$set' => array('Session'=>$session))
+			);
+		}
+		setcookie("JNTP-Session", $session, time()+360000);
+
+		self::$id = $userid;
+		self::$userid = $userid.'@'.self::$config{'domain'};
+		self::$privilege = $privilege;
+		self::$session = $session;
+	}
+
+	// Initialise la session
+	static function setSession()
+	{
+		$session = $_COOKIE["JNTP-Session"];
+
+		// Permit local connection
+		if(!isset($_SERVER['HTTP_REFERER']) || self::$config['crossDomainAccept'])
+		{
+			header("Access-Control-Allow-Headers: JNTP-Session");
+			header("Access-Control-Allow-Origin: *");
+			if(isset( $_SERVER['JNTP-Session'] ) && $_SERVER['JNTP-Session'] != '')
+			{
+				$session = $_SERVER['JNTP-Session'];
+			}
+		}
+
+		if(!$session)
+		{
+			$headers = getallheaders();
+			$session = $headers["JNTP-Session"];
+			if(!$session) return;
+		}
+
+		$obj = self::$mongo->user->findOne( array('Session' => ''.$session) );
+		if(count($obj) > 0)
+		{
+			self::$id = $obj{'UserID'};
+			self::$userid = $obj{'UserID'}.'@'.self::$config{'domain'};
+			self::$privilege = $obj{'privilege'};
+			self::$session = $obj{'Session'};
+		}
+	}
+	
+	// Détruit la session
+	static function destroySession()
+	{
+		self::$mongo->user->update(
+		    array("UserID" => self::$id),
+		    array('$set' => array('Session'=>false))
+		);
+		self::$id = false;
+		self::$userid = false;
+		self::$privilege = false;
+		self::$session = false;
 	}
 
 }
