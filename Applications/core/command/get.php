@@ -59,35 +59,25 @@ function setProjection($key)
     }
 }
 
-$projection = array('_id'=>0);
-$count = false;
-$listen = (JNTP::$param{'listen'} && JNTP::$param{'listen'} == 1 ) ? true : false;
-$delay = 1;
-$limit = 500;
-$count_packet = 0;
+$projection = array('_id'=>0); // fixe le tableau des projections (propriété select)
+$delay = 1; // délai entre deux push
+$limit = 500; // nombre max de résultat
+$listen = (JNTP::$param{'listen'} && JNTP::$param{'listen'} == 1 ) ? true : false; // active le push
 
+// modifie le nombre maximal de résultat renvoyé par le get
 if(JNTP::$param{'limit'} && is_numeric(JNTP::$param{'limit'}) )
 {
 	$limit = (JNTP::$param{'limit'} > $limit) ? $limit : JNTP::$param{'limit'};
 }
 
+// utile pour renvoyer dans ll paquet le contenu d'une pièce jointe contenue dans Media
 if(is_int(JNTP::$param{'maxDataLength'}) && (JNTP::$param{'maxDataLength'} > 27 || JNTP::$param{'maxDataLength'} == 0) )
 {
 	JNTP::$config{'maxDataLength'} = JNTP::$param{'maxDataLength'};
 }
 
-//
-if(JNTP::$param{'group'})
-{
-	foreach(JNTP::$param{'group'} as $field)
-	{
-		if($field == 'count')
-		{
-			$count = true;
-		}
-	}
-}
-elseif(JNTP::$param{'select'})
+// définit les projections
+if(JNTP::$param{'select'})
 {
 	$projection['ID'] = 1;
 	$projection['Jid'] = 1;
@@ -109,13 +99,15 @@ if( JNTP::$param{'filter'})
 	}
 
 	$query = array();
-
+	
 	foreach(JNTP::$param{'filter'} as $key => $value)
 	{
-		if( !in_array($key, JNTP::$config['Applications']['core']['DataType']['ProtoData']['filter'] ) && !in_array($key, JNTP::$config['Applications'][$application]['DataType'][JNTP::$param{'filter'}{'Data.DataType'}]['filter'] ) )
+	    $trueKey = explode(':',$key);
+	    $trueKey = $trueKey[0];
+		if( !in_array($trueKey, JNTP::$config['Applications']['core']['DataType']['ProtoData']['filter'] ) && !in_array($trueKey, JNTP::$config['Applications'][$application]['DataType'][JNTP::$param{'filter'}{'Data.DataType'}]['filter'] ) )
 		{
 			JNTP::$reponse{'code'} = "400";
-			JNTP::$reponse{'info'} = "Filter [".$key."] not allowed";
+			JNTP::$reponse{'info'} = "Filter [".$trueKey."] not alloweddddd";
 			JNTP::send();
 		}
 
@@ -154,7 +146,7 @@ if( JNTP::$param{'filter'})
 	$time_execution = 0;
 	$time_execution_max = 30;
 	do {
-		if(!$count)
+		if(!JNTP::$param{'group'})
 		{
 			$cursor = JNTP::$mongo->packet->find( array('$and'=>$query), $projection )->limit($limit)->sort(array('ID' => -1));
 		}
@@ -162,10 +154,7 @@ if( JNTP::$param{'filter'})
 		{
 			$cursor = JNTP::$mongo->packet->count(array('$and'=>$query));
 		}
-		if(!$firstQuery)
-		{
-			sleep($delay);
-		}
+		if(!$firstQuery) sleep($delay);
 		$firstQuery = false;
 		$time_execution += $delay;
 		if($time_execution >= $time_execution_max)
@@ -177,20 +166,17 @@ if( JNTP::$param{'filter'})
 	} while($listen && $cursor->count()==0);
 }
 
-if(!$count)
+// Renvoie les résultats
+if(!JNTP::$param{'group'})
 {
-	JNTP::$reponse{'code'} = "200";
 	JNTP::$reponse{'body'} = array();
 	foreach($cursor as $packet)
 	{
-		$count_packet++;
-		if( JNTP::$privilege != 'admin' && JNTP::$privilege != 'moderator')
-		{
-			unset( $packet{'Meta'}{'ForAdmin'} );
-		}
+		if( JNTP::$privilege != 'admin' && JNTP::$privilege != 'moderator') unset( $packet{'Meta'}{'ForAdmin'} );
 		array_push(JNTP::$reponse{'body'}, JNTP::replaceHash( $packet ) );
 	}
-	JNTP::$reponse{'info'} = "Get ".$count_packet." packet(s)";
+	JNTP::$reponse{'code'} = "200";
+	JNTP::$reponse{'info'} = "Get ".count($packet)." packet(s)";
 	if (JNTP::$param{'select'}) JNTP::$reponse{'info'} .= " with projection";
 }
 else
