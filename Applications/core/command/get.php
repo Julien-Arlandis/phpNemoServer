@@ -102,10 +102,6 @@ if( JNTP::$param{'filter'})
 	
 	foreach(JNTP::$param{'filter'} as $key => $value)
 	{
-<<<<<<< HEAD
-	    $trueKey = explode(':',$key);
-	    $trueKey = $trueKey[0];
-=======
 	    $arrKey = explode(':',$key);
 	    $trueKey = $arrKey[0];
 	    if(count($arrKey) > 1)
@@ -113,7 +109,6 @@ if( JNTP::$param{'filter'})
 	        $index = intval($arrKey[1])-1;
 	        $key = $trueKey.".".$index;
 	    }
->>>>>>> 3652c2a227fb31bc13b491a6f6c08c34d5ebb66e
 		if( !in_array($trueKey, JNTP::$config['Applications']['core']['DataType']['ProtoData']['filter'] ) && !in_array($trueKey, JNTP::$config['Applications'][$application]['DataType'][JNTP::$param{'filter'}{'Data.DataType'}]['filter'] ) )
 		{
 			JNTP::$reponse{'code'} = "400";
