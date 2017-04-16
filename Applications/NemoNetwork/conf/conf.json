@@ -5,7 +5,10 @@
 		"set",
 		"inscription",
 		"help",
-		"changePassword"
+		"changePassword",
+		"auth",
+		"whoami",
+		"quit"
 	],
 	"maxCrosspost": 5,
 	"maxFU2": 5,

@@ -22,7 +22,7 @@ This file is part of PhpNemoServer.
 */
 
 define('SERVER_VERSION', '0.94.2');
-require_once(__DIR__."/functions.php");
+require_once(__DIR__."/class.tools.php");
 
 class JNTP
 {
