@@ -56,8 +56,8 @@ class JNTP
 
 	static function go($app, $cmd)
 	{
-		//require(__DIR__.'/../../'.$app.'/lib/class.app.php');
-		//self::$app = new App();
+		require(__DIR__.'/../../'.$app.'/lib/class.app.php');
+		self::$app = new App();
 		require(__DIR__.'/../../'.$app.'/command/'.$cmd.'.php');
 	}
 	
