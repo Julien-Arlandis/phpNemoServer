@@ -41,6 +41,7 @@ class JNTP
 	static $datatypeByApplication;
 	static $stopSuperDiffuse = false;
 	static $publicKeyForModeration = false;
+	static $app; // class de l'application
 
 	// Constructeur
 	static function init($withSession = true)
@@ -56,6 +57,7 @@ class JNTP
 	static function go($app, $cmd)
 	{
 		require(__DIR__.'/../../'.$app.'/lib/class.app.php');
+		self::$app = new App();
 		require(__DIR__.'/../../'.$app.'/command/'.$cmd.'.php');
 	}
 	
