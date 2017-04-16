@@ -772,19 +772,6 @@ partialPacket = {
    }
 }
 
-5.3. La commande auth
-
-Permet de s'authentifier sur un serveur JNTP.
-
-5.4. La commande whoami
-
-Renvoie les informations relatives à la connexion (login,
-session...).
-
-5.5. La commande quit
-
-Permet de fermer la connexion avec le serveur JNTP.
-
 X. References
 
 X.1. Normative References
