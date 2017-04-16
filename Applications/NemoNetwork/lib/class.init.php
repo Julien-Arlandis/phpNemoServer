@@ -1,5 +1,5 @@
 <?php
-class Tools
+class Init
 {
   static function setSession()
 	{
