@@ -1,6 +1,6 @@
-Différences par rapport à la version 0.21.2 :
+Différences par rapport à la version 0.21.3 :
 
-*) Spécification des codes de statut
+*) Suppression des commandes auth, quit et whoami
 
 Statut du présent mémoire
 
