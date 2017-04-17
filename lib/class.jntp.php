@@ -239,14 +239,24 @@ class JNTP
 			$jid = str_replace("'","\'",self::$packet{'Jid'});
 			$datatype = str_replace("'","\'",self::$packet{'Data'}{'DataType'});
 			$dataid = str_replace("'","\'",self::$packet{'Data'}{'DataID'});
+			
+			if(self::$config{'outFeeds'}{$server}{'type'})
+		    {
+		        $connector = __DIR__.'/../'.self::$config{'outFeeds'}{$server}{'type'}[1];
+		    }
+		    else
+		    {
+		        $connector = __DIR__.'/../Applications/core/connector/J2J.php';
+		    }
+			
 			if(self::$config{'shellExec'})
 			{
-				$cmd = self::$config{'phpPath'}.' '.__DIR__.'/../connector/'.self::$config{'outFeeds'}{$server}{'type'}[1].' '.$server." '$jid' '$dataid' '$datatype'";
+				$cmd = self::$config{'phpPath'}.' '.$connector.' '.$server." '$jid' '$dataid' '$datatype'";
 				shell_exec($cmd. ' >> /dev/null &');
 			}
 			else
 			{
-				require_once(__DIR__.'/../connector/'.self::$config{'outFeeds'}{$server}{'type'}[1]);
+				require_once($connector);
 				J2_($server, $jid, $dataid, $datatype);
 			}
 		}
