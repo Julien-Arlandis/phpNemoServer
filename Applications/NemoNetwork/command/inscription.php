@@ -76,7 +76,7 @@ if(JNTP::$config{'activeInscription'} || JNTP::$privilege == 'admin')
 					"organization" => JNTP::$config{'organization'},
 					"email" => JNTP::$param{'email'},
 					"password" => JNTP::$param{'password'},
-					"url" => "http://".JNTP::$config{'domain'}."/jntp/Applications/NemoNetwork/account.php?action=inscription&amp;userid=".$res['userid']."&amp;check=".$res['check']
+					"url" => "http://".JNTP::$config{'domain'}."/jntp/Applications/NemoNetwork/pages/account.php?action=inscription&amp;userid=".$res['userid']."&amp;check=".$res['check']
 				     )
 		);
 		if(!$mail->Send())
