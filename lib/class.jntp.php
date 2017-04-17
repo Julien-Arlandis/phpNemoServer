@@ -223,8 +223,7 @@ class JNTP
 	// Vérifie si un packet d'un Jid donné est stocké dans la base
 	static function isStorePacket( $query )
 	{
-		$bool = (self::$mongo->packet->find( $query )->count() > 0 ) ? true : false;
-		return $bool;
+		return (self::$mongo->packet->find( $query )->count() > 0 ) ? true : false;
 	}
 
 	// Contacte les feeds pour distribuer packets
