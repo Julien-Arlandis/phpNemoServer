@@ -2,7 +2,7 @@ phpNemoServer Readme
 ===================
 
 phpNemoServer is a set of PHP-scripts to manage JNTP Server.  
-http://news.nemoweb.net/
+http://news2.nemoweb.net/
 
 Copyright
 ---------
