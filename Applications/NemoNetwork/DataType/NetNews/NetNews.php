@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__."/../Article/functions.php");
+require_once(__DIR__."/../Article/lib/functions.php");
 
 class DataType
 {
