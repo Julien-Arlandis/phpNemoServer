@@ -1,10 +1,6 @@
 {
 	"admin.3dmap.fr": {
 		"actif": 1,
-		"type": [
-			"JNTP",
-			"J2J.php"
-		],
 		"match": [{
 			"Data.DataType": [
 				"Article"
@@ -23,7 +19,7 @@
 		"actif": 1,
 		"type": [
 			"NNTP",
-			"J2N.php"
+			"/Applications/NemoNetwork/connector/J2N.php"
 		],
 		"match": [{
 			"Data.DataType": [
