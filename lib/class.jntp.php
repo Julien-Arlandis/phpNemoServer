@@ -111,8 +111,7 @@ class JNTP
 			self::$reponse{'info'} = "Bad Syntax, type help command";
 			self::send();
 		}
-		$application = self::$commandByApplication[self::$command];
-		if ($application)
+		if ($application = self::$commandByApplication[self::$command])
 		{
 			self::go($application, self::$command);
 		}
