@@ -41,7 +41,7 @@ class JNTP
 	static $datatypeByApplication;
 	static $stopSuperDiffuse = false;
 	static $publicKeyForModeration = false;
-	static $app; // class de l'application
+	static $app; // class des applications
 
 	// Constructeur
 	static function init($withSession = true)
@@ -54,11 +54,11 @@ class JNTP
 		if( $withSession ) self::setSession();
 	}
 
-	static function go($app, $cmd)
+	static function go($application, $cmd)
 	{
-		require(__DIR__.'/../Applications/'.$app.'/lib/class.app.php');
-		self::$app = new App();
-		require(__DIR__.'/../Applications/'.$app.'/command/'.$cmd.'.php');
+		require_once(__DIR__.'/../Applications/'.$application.'/lib/class.app.php');
+		self::$app = new $application();
+		require_once(__DIR__.'/../Applications/'.$application.'/command/'.$cmd.'.php');
 	}
 	
 	// Execute une commande JNTP sur le présent serveur ou sur un serveur distant
@@ -136,6 +136,7 @@ class JNTP
 		$datatype = self::$packet{'Data'}{'DataType'};
 		if( $application = self::$datatypeByApplication[$datatype] )
 		{
+		    require_once(__DIR__.'/../Applications/'.$application.'/lib/class.app.php');
 			require_once(__DIR__.'/../Applications/'.$application.'/DataType/'.$datatype.'/'.$datatype.'.php');
 			self::$datatype = new DataType();
 			return true;
@@ -394,15 +395,6 @@ class JNTP
 				}
 			}
 		}
-	}
-	
-	// Met à jour les informations de l' utilisateur
-	static function updateUserConfig($arr)
-	{
-		self::$mongo->user->update(
-		    array("UserID" => self::$id),
-		    array('$set' => $arr)
-		);
 	}
 	
 	static function startSession($session, $userid, $privilege)

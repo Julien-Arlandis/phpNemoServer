@@ -1,11 +1,6 @@
 <?php
-class App
+class core
 {
-	function __construct()
-	{
-
-	}
-	
 	function setProjection($key)
     {
     	/*

@@ -2,7 +2,7 @@
 
 require_once(__DIR__."/functions.php");
 
-class DataType
+class DataType extends NemoNetwork
 {
 	var $moderationArticle;
 
@@ -210,7 +210,12 @@ class DataType
 		}
 		if (JNTP::$userid)
 		{
-			JNTP::updateUserConfig( array("FromName" => JNTP::$packet{'Data'}{'FromName'}, "FromMail" => JNTP::$packet{'Data'}{'FromMail'}, "ReplyTo" => JNTP::$packet{'Data'}{'ReplyTo'}) );
+		    $this->updateUserConfig( array(
+		        "FromName" => JNTP::$packet{'Data'}{'FromName'},
+		        "FromMail" => JNTP::$packet{'Data'}{'FromMail'},
+		        "ReplyTo" => JNTP::$packet{'Data'}{'ReplyTo'}
+		        )
+		    );
 		}
 		return true;
 	}
