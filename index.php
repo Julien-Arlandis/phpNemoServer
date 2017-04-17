@@ -30,5 +30,6 @@ if( file_exists( __DIR__ . '/sleep' ) ) { die( 'You must remove sleep file to co
 
 JNTP::init();
 if( $_SERVER['QUERY_STRING'] ) { die( JNTP::getResource( $_SERVER['QUERY_STRING'] ) ); }
+JNTP::setSession();
 JNTP::exec( file_get_contents( "php://input" ) );
 JNTP::send();

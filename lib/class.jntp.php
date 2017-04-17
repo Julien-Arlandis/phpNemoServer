@@ -44,14 +44,13 @@ class JNTP
 	static $app; // class des applications
 
 	// Constructeur
-	static function init($withSession = true)
+	static function init()
 	{
 		date_default_timezone_set('UTC');
 		Tools::getConfig();
 		self::$config{'serverVersion'} = SERVER_VERSION;
 		$m = new MongoClient();
 		self::$mongo = $m->selectDB(self::$config{'dbName'});
-		if( $withSession ) self::setSession();
 	}
 
 	static function go($application, $cmd)

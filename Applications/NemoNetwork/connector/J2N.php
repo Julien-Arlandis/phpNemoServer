@@ -46,6 +46,6 @@ if(count($argv)>1)
 {
 	require_once(__DIR__."/../../../lib/class.jntp.php");
 	require_once(__DIR__."/../lib/class.nntp.php");
-	JNTP::init(false);
+	JNTP::init();
 	J2_($argv[1], $argv[2], $argv[3], $argv[4]);
 }
