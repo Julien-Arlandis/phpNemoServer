@@ -52,8 +52,8 @@ if(JNTP::$config{'activeInscription'} || JNTP::$privilege == 'admin')
 	$res = insertUser(JNTP::$param{'email'}, JNTP::$param{'password'});
 	if($res['code'] == "200")
 	{
-		require_once(__DIR__.'/../../core/lib/class.phpmailer.php');
-		require_once(__DIR__.'/../../core/lib/class.smtp.php');
+		require_once(__DIR__.'/../lib/class.phpmailer.php');
+		require_once(__DIR__.'/../lib/class.smtp.php');
 
 		$mail = new PHPMailer();
 		$mail->isSMTP();

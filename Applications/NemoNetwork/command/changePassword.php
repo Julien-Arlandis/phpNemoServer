@@ -6,8 +6,8 @@ if( isset( $jntp->param{'email'} ) )
 
 	if ( $isRegister )
 	{
-		require_once(__DIR__.'/../../core/lib/class.phpmailer.php');
-		require_once(__DIR__.'/../../core/lib/class.smtp.php');
+		require_once(__DIR__.'/../lib/class.phpmailer.php');
+		require_once(__DIR__.'/../lib/class.smtp.php');
 		$check = (string)rand(1e15, 9e15);
 		$obj = $jntp->mongo->user->findOne( array('email' => $jntp->param{'email'}) );
 		$jntp->mongo->user->update(array('UserID' => $obj['UserID']), array('$set' => array('checkpassword' => $check) ));
