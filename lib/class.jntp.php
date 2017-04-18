@@ -53,21 +53,6 @@ class JNTP
 		self::$mongo = $m->selectDB(self::$config{'dbName'});
 	}
 
-	static function go()
-	{
-		if ($application = self::$commandByApplication[self::$command])
-		{
-			require_once(__DIR__.'/../Applications/'.$application.'/lib/class.app.php');
-			self::$app = new $application();
-			require_once(__DIR__.'/../Applications/'.$application.'/command/'.self::$command.'.php');
-		}
-		else
-		{
-			self::$reponse{'code'} = "500";
-			self::$reponse{'info'} = "Command not found, [".self::$command."]";
-		}
-	}
-	
 	// Execute une commande JNTP sur le présent serveur ou sur un serveur distant
 	static function exec($post, $server = false)
 	{
@@ -118,7 +103,17 @@ class JNTP
 			self::$reponse{'info'} = "Bad Syntax, type help command";
 			self::send();
 		}
-		self::go();
+		if ($application = self::$commandByApplication[self::$command])
+		{
+			require_once(__DIR__.'/../Applications/'.$application.'/lib/class.app.php');
+			self::$app = new $application();
+			require_once(__DIR__.'/../Applications/'.$application.'/command/'.self::$command.'.php');
+		}
+		else
+		{
+			self::$reponse{'code'} = "500";
+			self::$reponse{'info'} = "Command not found, [".self::$command."]";
+		}
 	}
 
 	// Retourne le résultat de la requête et stoppe le script
