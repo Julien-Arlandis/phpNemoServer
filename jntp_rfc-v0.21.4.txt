@@ -592,7 +592,7 @@ valeur que le Jid du paquet.
 
 Contient la date au format UTC à laquelle le paquet a été émis sur
 le réseau JNTP.
-Data/InjectionDate = AAAA"-" MM "-" JJ "T" HH ":" MM ":" SS "Z"
+Data.InjectionDate = AAAA"-" MM "-" JJ "T" HH ":" MM ":" SS "Z"
 Ce champ est renseigné par le serveur.
 
 3.4. Meta (Object, facultatif)
