@@ -70,7 +70,7 @@ if(JNTP::$config{'activeInscription'} || JNTP::$privilege == 'admin')
 		$mail->Subject = "Bienvenue sur ".JNTP::$config{'organization'};
 		$mail->isHTML( true );
 		$mail->CharSet = "UTF-8";
-		$mail->Body = Tools::getTpl(__DIR__."/../tpl/mail_inscription.tpl",
+		$mail->Body = Tools::getTpl(__DIR__."/../pages/tpl/mail_inscription.tpl",
 				array(
 					"domain" => JNTP::$config{'domain'},
 					"organization" => JNTP::$config{'organization'},
