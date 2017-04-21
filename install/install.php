@@ -56,7 +56,7 @@ $die = false;
 if( !file_exists( __DIR__ . '/../sleep'))
 {
 	$die = true;
-	echo 'You must create '.__DIR__.'sleep file to continue installation : <br>';
+	echo 'You must create jntp/sleep file to continue installation : <br>';
 	echo '<strong>touch jntp/sleep</strong><p>';
 }
 
