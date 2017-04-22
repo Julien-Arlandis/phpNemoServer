@@ -114,13 +114,17 @@ if (!isset($_POST['action']) )
 }
 else
 {
-/*
-* Création du fichier general.json
-*/
 
-$file_general_copy = __DIR__."/config.inc.json";
-$file_general_final = __DIR__."/../conf/config.json";
-$buffer = json_decode(file_get_contents($file_general_copy), true);
+$file_feeds_copy = __DIR__."/feeds.inc.json";
+$file_feeds_final = __DIR__."/../conf/feeds.json";
+copy($file_feeds_copy, $file_feeds_final);
+	
+/*
+* Création du fichier config.json
+*/	
+$file_config_copy = __DIR__."/config.inc.json";
+$file_config_final = __DIR__."/../conf/config.json";
+$buffer = json_decode(file_get_contents($file_config_copy), true);
 
 $buffer['dbName'] = $_POST['DB_NAME'];
 $buffer['phpPath'] = $_POST['PHP_PATH'];
