@@ -133,7 +133,7 @@ $buffer['privateKey'] = str_replace("\r", "", $_POST['PRIVATE_KEY']);
 $buffer['domain'] = $_SERVER['SERVER_NAME'];
 $buffer['administrator'] = 'newsmaster@'.$_SERVER['SERVER_NAME'];
 $buffer = json_encode($buffer, JSON_PRETTY_PRINT);
-$file = fopen($file_general_final, 'w');
+$file = fopen($file_config_final, 'w');
 fputs($file, $buffer);
 fclose($file);
 
