@@ -1,8 +1,7 @@
 <?php
 class Tools
 {
-
-  static function logFeed($post, $server, $direct = '<')
+	static function logFeed($post, $server, $direct = '<')
 	{
 		if(JNTP::$config{'activeLog'})
 		{
@@ -25,7 +24,7 @@ class Tools
 		}
 	}
 
-  static function getConfig()
+  	static function getConfig()
 	{
 		JNTP::$config = json_decode(file_get_contents(__DIR__.'/../conf/config.json'),true);
 		JNTP::$config{'outFeeds'} = json_decode(file_get_contents(__DIR__.'/../conf/feeds.json'),true);
