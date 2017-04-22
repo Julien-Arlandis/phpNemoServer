@@ -16,7 +16,7 @@
 		"mail": "newsmaster@exemple2.net"
 	},
 	"usenet.pasdenom.info": {
-		"actif": 1,
+		"actif": 0,
 		"type": [
 			"NNTP",
 			"/Applications/NemoNetwork/connector/J2N.php"
