@@ -227,6 +227,7 @@ class JNTP
 		{
 			if(!self::$config{'outFeeds'}{$server}{'actif'}) continue;
 			if(in_array($server, self::$packet{'Route'})) continue;
+			$port = (self::$config{'outFeeds'}{$server}{'port'}) ? self::$config{'outFeeds'}{$server}{'port'} : 80;
 
 			$jid = str_replace("'","\'",self::$packet{'Jid'});
 			$datatype = str_replace("'","\'",self::$packet{'Data'}{'DataType'});
@@ -243,13 +244,13 @@ class JNTP
 			
 			if(self::$config{'shellExec'})
 			{
-				$cmd = self::$config{'phpPath'}.' '.$connector.' '.$server." '$jid' '$dataid' '$datatype'";
+				$cmd = self::$config{'phpPath'}.' '.$connector.' '.$server." '$jid' '$dataid' '$datatype' '$port'";
 				shell_exec($cmd. ' >> /dev/null &');
 			}
 			else
 			{
 				require_once($connector);
-				J2_($server, $jid, $dataid, $datatype);
+				J2_($server, $jid, $dataid, $datatype, $port);
 			}
 		}
 	}
