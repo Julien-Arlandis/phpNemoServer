@@ -1,1 +1,38 @@
-
+{
+	"news2.nemoweb.net": {
+		"actif": 1,
+		"match": [{
+			"Data.DataType": [
+				"Article"
+			],
+			"Data.Newsgroups": [
+				"*"
+			]
+		}, {
+			"Data.DataType": [
+				"*"
+			]
+		}],
+		"mail": "julien.arlandis@gmail.com"
+	},
+	"usenet.pasdenom.info": {
+		"actif": 0,
+		"type": [
+			"NNTP",
+			"/Applications/NemoNetwork/connector/J2N.php"
+		],
+		"match": [{
+			"Data.DataType": [
+				"Article"
+			],
+			"Data.Newsgroups": [
+				"*"
+			]
+		}, {
+			"Data.DataType": [
+				"*"
+			]
+		}],
+		"mail": "newsmaster@nntpserver.net"
+	}
+}
