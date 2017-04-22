@@ -21,7 +21,7 @@ This file is part of PhpNemoServer.
     along with PhpNemoServer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-function J2_($server, $jid, $dataid, $datatype)
+function J2_($server, $jid, $dataid, $datatype, $port)
 {
 	$propose = array();
 	$propose[0]{'Jid'} = $jid;
@@ -36,7 +36,7 @@ function J2_($server, $jid, $dataid, $datatype)
 	$post[1]{'Propose'} = $propose;
 	$post[1]{'From'} = JNTP::$config['domain'];
 
-	JNTP::exec($post, $server);
+	JNTP::exec($post, $server, $port);
 
 	Tools::logFeed($post, $server, '(SEND)');
 	Tools::logFeed(JNTP::$reponse, $server, '(RESP)');
@@ -61,5 +61,5 @@ if(count($argv)>1)
 {
 	require_once(__DIR__."/../lib/class.jntp.php");
 	JNTP::init();
-	J2_($argv[1], $argv[2], $argv[3], $argv[4]);
+	J2_($argv[1], $argv[2], $argv[3], $argv[4], $argv[5]);
 }
