@@ -15,9 +15,9 @@ This file is part of PhpNemoServer.
     You should have received a copy of the GNU Affero General Public License
     along with PhpNemoServer.  If not, see <http://www.gnu.org/licenses/>.
 */
-function J2_($server, $jid, $dataid, $datatype)
+function J2_($server, $jid, $dataid, $datatype, $port = 119)
 {
-	$fp = fsockopen($server, 119, $errno, $errstr, 10);
+	$fp = fsockopen($server, $port, $errno, $errstr, 10);
 	fgets($fp, 128);
 	if (!$fp && $argv[0])
 	{
@@ -47,5 +47,5 @@ if(count($argv)>1)
 	require_once(__DIR__."/../../../lib/class.jntp.php");
 	require_once(__DIR__."/../lib/class.nntp.php");
 	JNTP::init();
-	J2_($argv[1], $argv[2], $argv[3], $argv[4]);
+	J2_($argv[1], $argv[2], $argv[3], $argv[4], $argv[5]);
 }
