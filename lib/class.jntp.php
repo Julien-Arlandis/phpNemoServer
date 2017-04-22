@@ -54,7 +54,7 @@ class JNTP
 	}
 
 	// Execute une commande JNTP sur le présent serveur ou sur un serveur distant
-	static function exec($post, $server = false)
+	static function exec($post, $server = false, $port = 80)
 	{
 		Tools::log($post);
 		if($post === '')
@@ -67,7 +67,7 @@ class JNTP
 			$post = is_array($post) ? json_encode($post) : $post;
 
 			$options = array(
-				CURLOPT_URL            => "http://".$server."/jntp/",
+				CURLOPT_URL            => "http://".$server.":".$port."/jntp/",
 				CURLOPT_RETURNTRANSFER => true,
 				CURLOPT_HEADER         => false,
 				CURLOPT_FAILONERROR    => true,
