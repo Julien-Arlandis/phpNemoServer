@@ -18,7 +18,7 @@ class Tools
 		if(JNTP::$config{'activeLog'} && $post != '')
 		{
 			$handle = fopen(JNTP::$config{'logPath'}, 'a');
-			$put = '['.date(DATE_RFC822).'] [THIS] '.$direct.' '.mb_strimwidth($post, 0, 300)."\n";
+			$put = '['.date(DATE_RFC822).'] ['.$_SERVER['REMOTE_ADDR'].'] '.$direct.' '.mb_strimwidth($post, 0, 300)."\n";
 			fwrite($handle, $put);
 			fclose($handle);
 		}
