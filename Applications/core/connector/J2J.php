@@ -37,7 +37,6 @@ function J2_($server, $jid, $dataid, $datatype, $port)
 	$post[1]{'From'} = JNTP::$config['domain'];
 
 	JNTP::exec($post, $server, $port);
-
 	Tools::logFeed($post, $server, '(SEND)');
 	Tools::logFeed(JNTP::$reponse, $server, '(RESP)');
 
@@ -49,8 +48,7 @@ function J2_($server, $jid, $dataid, $datatype, $port)
 			$post[0] = "diffuse";
 			$post[1]{'Packet'} = JNTP::getPacket( array('Jid'=>$jid) );
 			$post[1]{'From'} = JNTP::$config['domain'];
-			JNTP::exec($post, $server);
-
+			JNTP::exec($post, $server, $port);
 			Tools::logFeed($post, $server, '(SEND)');
 			Tools::logFeed(JNTP::$reponse, $server, '(RESP)');
 		}
