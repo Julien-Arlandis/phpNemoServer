@@ -21,9 +21,6 @@ This file is part of PhpNemoServer.
     along with PhpNemoServer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-define('SERVER_VERSION', '0.94.4');
-require_once(__DIR__."/class.tools.php");
-
 class JNTP
 {
 	static $config; // configuration du serveur
