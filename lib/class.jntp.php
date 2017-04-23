@@ -37,7 +37,6 @@ class JNTP
 	static $commandByApplication;
 	static $datatypeByApplication;
 	static $stopSuperDiffuse = false;
-	static $publicKeyForModeration = false;
 	static $app; // class des applications
 
 	// Constructeur
