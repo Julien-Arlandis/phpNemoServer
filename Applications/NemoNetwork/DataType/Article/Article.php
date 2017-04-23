@@ -40,7 +40,7 @@ class DataType extends NemoNetwork
 		if($this->moderationArticle)
 		{
 			JNTP::forgePacket();
-			return forModeration();
+			return forModeration($this);
 		}
 	}
 
