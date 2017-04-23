@@ -26,7 +26,6 @@ require_once( __DIR__."/start.php" );
 error_reporting( ~E_NOTICE );
 header( "Cache-Control: no-cache, must-revalidate" );
 
-JNTP::init();
 if( $_SERVER['QUERY_STRING'] ) { die( JNTP::getResource( $_SERVER['QUERY_STRING'] ) ); }
 JNTP::setSession();
 JNTP::exec( file_get_contents( "php://input" ) );
