@@ -44,8 +44,7 @@ function J2_($server, $jid, $dataid, $datatype, $port = 119)
 }
 if(count($argv)>1)
 {
-	require_once(__DIR__."/../../../lib/class.jntp.php");
+	require_once(__DIR__."/../../../start.php");
 	require_once(__DIR__."/../lib/class.nntp.php");
-	JNTP::init();
 	J2_($argv[1], $argv[2], $argv[3], $argv[4]);
 }
