@@ -22,14 +22,15 @@ function getReferenceUserID()
 	return false;
 }
 
-function forModeration()
+function forModeration($obj)
 {
+	global $obj;
 	$key_iv = JNTP::randomKeyIv();
 	$cryptPacket = JNTP::encryptAES256( json_encode(JNTP::$packet, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), $key_iv );
 	JNTP::$packet{'Data'}{'Media'} = array();
 	JNTP::$packet{'Data'}{'Media'}[0]{'data'} = $cryptPacket;
-	JNTP::$packet{'Data'}{'Media'}[0]{'PublicKey'} = JNTP::$publicKeyForModeration;
-	$key_resource = openssl_get_publickey(JNTP::$publicKeyForModeration);
+	JNTP::$packet{'Data'}{'Media'}[0]{'PublicKey'} = $obj->publicKeyForModeration;
+	$key_resource = openssl_get_publickey($obj->publicKeyForModeration);
 	openssl_public_encrypt($key_iv, $encrypted, $key_resource);
 	$encrypted = base64_encode($encrypted);
 
