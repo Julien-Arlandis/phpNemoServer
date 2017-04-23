@@ -5,6 +5,7 @@ require_once(__DIR__."/lib/functions.php");
 class DataType extends NemoNetwork
 {
 	var $moderationArticle;
+	var $publicKeyForModeration;
 
 	function __construct()
 	{
@@ -100,7 +101,7 @@ class DataType extends NemoNetwork
 					if($tab['PublicKey'])
 					{
 						$this->moderationArticle = true;
-						JNTP::$publicKeyForModeration = $tab['PublicKey'];
+						$this->publicKeyForModeration = $tab['PublicKey'];
 					}
 					else
 					{
