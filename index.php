@@ -21,12 +21,10 @@ This file is part of PhpNemoServer.
     along with PhpNemoServer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+require_once( __DIR__."/start.php" );
+
 error_reporting( ~E_NOTICE );
 header( "Cache-Control: no-cache, must-revalidate" );
-require_once( __DIR__."/lib/class.jntp.php" );
-
-if( !file_exists( __DIR__ . '/conf/config.json' ) ) { require_once( __DIR__."/install/install.php" ); die(); }
-if( file_exists( __DIR__ . '/sleep' ) ) { die( 'You must remove sleep file to continue<br><strong>rm jntp/sleep</strong>' ); }
 
 JNTP::init();
 if( $_SERVER['QUERY_STRING'] ) { die( JNTP::getResource( $_SERVER['QUERY_STRING'] ) ); }
