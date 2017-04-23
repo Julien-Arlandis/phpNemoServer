@@ -24,7 +24,6 @@ function getReferenceUserID()
 
 function forModeration($obj)
 {
-	global $obj;
 	$key_iv = JNTP::randomKeyIv();
 	$cryptPacket = JNTP::encryptAES256( json_encode(JNTP::$packet, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), $key_iv );
 	JNTP::$packet{'Data'}{'Media'} = array();
