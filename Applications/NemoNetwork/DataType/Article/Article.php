@@ -15,7 +15,7 @@ class DataType extends NemoNetwork
 	{
 		JNTP::$packet{'Data'}{'DataID'} = "@jntp";
 		JNTP::$packet{'Data'}{'OriginServer'} = JNTP::$config{'domain'};
-		JNTP::$packet{'Data'}{'InjectionDate'} = date("Y-m-d")."T".date("H:i:s")."Z";
+		JNTP::$packet{'Data'}{'InjectionDate'} = date("Y-m-d")."T".date("H:i:s")."Z"; // à insérer dans class.jntp.php
 		JNTP::$packet{'Data'}{'Organization'} = JNTP::$config{'organization'};
 		JNTP::$packet{'Data'}{'Browser'} = $_SERVER['HTTP_USER_AGENT'];
 		JNTP::$packet{'Data'}{'PostingHost'} = (JNTP::$config{'cryptPostingHost'} == "ifconnected" && !JNTP::$userid) ? $_SERVER['REMOTE_ADDR'] : sha1($_SERVER['REMOTE_ADDR']);
