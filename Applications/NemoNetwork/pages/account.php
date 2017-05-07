@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__."/../../../lib/class.jntp.php");
+require_once(__DIR__."/../../../start.php");
 
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 $check = isset($_GET['check']) ? $_GET['check'] : '';
